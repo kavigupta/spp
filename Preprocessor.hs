@@ -16,6 +16,10 @@ import System.Console.ArgParser.Run
 import FileHandler
 import ArgumentProcessor
 
+import Prelude hiding (catch)
+import Control.Exception
+import System.IO.Error hiding (catch)
+
 main :: IO ()
 main = withParseResult optionParser doProcessing
 
@@ -26,49 +30,59 @@ doProcessing opts
 
 runPreprocessor :: Options -> IO ()
 runPreprocessor opts = do
-    contents <-allFiles $ srcDir opts
-    createBackups contents
-    forM_ contents $ preprocess opts
-    forM_ contents $ setWritable False
+    files <- allFiles $ srcDir opts
+    createBackups files
+    results <- forM files $ preprocess opts
+    let failure = concatenateEither results
+    case failure of
+        (Just err) -> putStrLn "FAILURE!!!" >> putStrLn err >> removeFiles files
+        Nothing -> forM_ files $ setWritable False
+
+concatenateEither :: [Either a b] -> Maybe a
+concatenateEither [] = Nothing
+concatenateEither ((Right _):xs) = concatenateEither xs
+concatenateEither ((Left err):_) = Just err
 
 runClean :: Options -> IO ()
 runClean opts = do
     contents <- allFiles $ srcDir opts
-    let files = filter (not . isSuffixOf ".bak") contents
-    bakExists <- forM (map (++ ".bak") files) doesFileExist
-    let fWithBackup = zip bakExists files
-    let existingBak = find (not . fst) fWithBackup
-    case existingBak of
-        (Just (_, path)) -> putStrLn ("No backup exists for file " ++ path) >> exitFailure
-        Nothing -> return ()
-    forM_ files (setWritable True)
-    putStrLn $ "Removing : " ++ show files
-    forM_ files removeFile
-    forM_ files $ \path -> renameFile (path ++ ".bak") path
+    files <- removeGenerated contents
+    removeFiles files
 
-preprocess :: Options -> FilePath -> IO ()
+removeFiles :: [FilePath] -> IO ()
+removeFiles files = do
+    forM_ files (setWritable True) `catch` handleExists
+    putStrLn $ "Removing : " ++ show files
+    forM_ files removeIfExists
+    forM_ files $ \path -> renameFile (makeBackup path) path
+
+preprocess :: Options -> FilePath -> IO (Either String ())
 preprocess opts out =
         do
-            contents <- readFile inp
+            contents <- readFile $ makeBackup out
             output <- process . lines $ contents
-            writeFile out (output)
-    where
-    inp = out ++ ".bak"
+            case output of
+                Left err -> return $ Left err
+                Right outputValue -> Right <$> writeFile out outputValue
 
-process :: [String] -> IO String
-process ("preprocess:":xs)
-        = performAll commands $ unlines rest
+process :: [String] -> IO (Either String String)
+process ("preprocess:":xs) =
+        case performAll commands of
+            Left err -> return $ Left err
+            Right f -> Right <$> f (unlines rest)
     where
     (commandlines, rest) = span startsWithTab xs
         where
         startsWithTab str = "\t" `isPrefixOf` str || "    " `isPrefixOf` str
     commandnames = map tail commandlines
-    commands = map (getCommand . parseCommand) commandnames
-process x = return $ unlines x
+    commands :: [Either String (String -> IO String)]
+    commands = map (\x -> getCommand <$> parseCommand x) commandnames
+process x = return . Right . unlines $ x
 
-performAll :: [a -> IO a] -> a -> IO a
-performAll [] x = return x
-performAll (f:fs) x = f x >>= performAll fs
+performAll :: [Either err (a -> IO a)] -> Either err (a -> IO a)
+performAll [] = Right return
+performAll ((Left err):_)     = Left err
+performAll ((Right f):fs) = fmap (\rfunc -> (\x -> f x >>= rfunc)) $ performAll fs
 
 getCommand :: Command -> String -> IO String
 getCommand (Replace regex replacement)= return . replacer
@@ -82,11 +96,11 @@ data Command =
 
 type Parser x = ParsecT String String Data.Functor.Identity.Identity x
 
-parseCommand :: String -> Command
+parseCommand :: String -> Either String Command
 parseCommand input
     = case runIdentity $ runParserT command "(unknown)" "" input of
-        Left err -> error $ "Invalid command " ++ input ++ "\n" ++ show err
-        Right x -> x
+        Left err -> Left $ "Invalid command " ++ input ++ "\n" ++ show err
+        Right x -> Right x
 
 command :: Parser Command
 command = do

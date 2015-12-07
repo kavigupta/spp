@@ -1,5 +1,7 @@
 module FileHandler(
-        allFiles, setWritable, createBackups
+        allFiles, setWritable, createBackups, removeGenerated,
+        makeBackup, isBackup,
+        removeIfExists, handleExists
     ) where
 
 import Data.List
@@ -8,6 +10,11 @@ import System.Exit
 import Control.Monad
 import Control.Applicative
 import ArgumentProcessor
+
+import Prelude hiding (catch)
+import Control.Exception
+import System.IO.Error hiding (catch)
+
 
 allFiles :: FilePath -> IO [FilePath]
 allFiles path = do
@@ -42,7 +49,30 @@ createBackups files = do
                     ++ "; You probably forgot to run 'gpp --clean' last time") >>
                     exitFailure
             Nothing -> return ()
-        forM_ files $ \path -> renameFile path (createBackup path)
+        forM_ files $ \path -> renameFile path (makeBackup path)
     where
-    createBackup = (++ ".bak")
-    backups = map createBackup files
+    backups = map makeBackup files
+
+removeGenerated :: [FilePath] -> IO [FilePath]
+removeGenerated contents = do
+    let files = filter (not . isBackup) contents
+    bakExists <- forM (map makeBackup files) doesFileExist
+    let fWithBackup = zip bakExists files
+    let existingBak = find (not . fst) fWithBackup
+    case existingBak of
+        (Just (_, path)) -> putStrLn ("No backup exists for file " ++ path) >> exitFailure
+        Nothing -> return ()
+    return files
+
+isBackup :: FilePath -> Bool
+isBackup = isSuffixOf ".bak"
+
+makeBackup :: FilePath -> FilePath
+makeBackup = (++ ".bak")
+
+removeIfExists :: FilePath -> IO ()
+removeIfExists fileName = removeFile fileName `catch` handleExists
+
+handleExists e
+    | isDoesNotExistError e = return ()
+    | otherwise = throwIO e

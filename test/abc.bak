@@ -1,9 +1,0 @@
-preprocess:
-    replace: "abc" -> "def"
-    replace: "def(...)" -> "\\1"
-
-abc245 abcd3f
-
-abef3abcdef
-
-defghi
