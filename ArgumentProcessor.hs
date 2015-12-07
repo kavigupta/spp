@@ -1,21 +1,20 @@
 module ArgumentProcessor(
-        Options
-            srcDir, nameRegex, nameReplacement,
+        Options,
+            srcDir, clean,
         optionParser
     ) where
 
-import System.Console.ArgParser.Run
+import System.Console.ArgParser
+import System.Console.ArgParser.QuickParams
 import System.Environment
 import System.Exit
 
 data Options = Options {
-        srcDir :: String,
-        nameRegex :: String,
-        nameReplacement :: String,
+        clean :: Bool,
+        srcDir :: String
     }
 
 optionParser :: ParserSpec Options
 optionParser = Options `parsedBy`
-    optFlag "." "src" `andBy`
-    optFlag  "(.+)\\.gpp" "regex" `andBy`
-    optFlag "\\1" "replacement"
+    boolFlag "clean" `andBy`
+    optFlag "." "src"

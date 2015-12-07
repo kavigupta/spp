@@ -2,58 +2,79 @@
 module Main (main) where
 
 import System.Directory
+import System.Exit
 import Data.List
 import Control.Monad
+import Control.Applicative hiding ((<|>))
 import Text.Parsec.Token
 import Text.Parsec
 import Data.Functor.Identity
-import Text.RegexPR
+import Text.Regex
 import Text.Parsec.Language (haskellDef)
 import System.Environment
 import System.Console.ArgParser.Run
-
-rawposts = "_posts-raw"
-posts = "_posts"
+import FileHandler
+import ArgumentProcessor
 
 main :: IO ()
-main = withParseResult optionParser
+main = withParseResult optionParser doProcessing
 
 doProcessing :: Options -> IO ()
 doProcessing opts
-    = do
-        contents <- getDirectoryContents rawposts
-        let files = filter (".md" `isSuffixOf`) contents
-        forM_ files preprocess
+    | clean opts = runClean opts
+    | otherwise  = runPreprocessor opts
 
-preprocess :: FilePath -> IO ()
-preprocess name =
+runPreprocessor :: Options -> IO ()
+runPreprocessor opts = do
+    contents <-allFiles $ srcDir opts
+    createBackups contents
+    forM_ contents $ preprocess opts
+    forM_ contents $ setWritable False
+
+runClean :: Options -> IO ()
+runClean opts = do
+    contents <- allFiles $ srcDir opts
+    let files = filter (not . isSuffixOf ".bak") contents
+    bakExists <- forM (map (++ ".bak") files) doesFileExist
+    let fWithBackup = zip bakExists files
+    let existingBak = find (not . fst) fWithBackup
+    case existingBak of
+        (Just (_, path)) -> putStrLn ("No backup exists for file " ++ path) >> exitFailure
+        Nothing -> return ()
+    forM_ files (setWritable True)
+    putStrLn $ "Removing : " ++ show files
+    forM_ files removeFile
+    forM_ files $ \path -> renameFile (path ++ ".bak") path
+
+preprocess :: Options -> FilePath -> IO ()
+preprocess opts out =
         do
             contents <- readFile inp
             output <- process . lines $ contents
-            writeFile out (unlines output)
+            writeFile out (output)
     where
-    inp = rawposts ++ "/" ++ name
-    out = posts ++ "/" ++ name
+    inp = out ++ ".bak"
 
-
-process :: [String] -> IO [String]
+process :: [String] -> IO String
 process ("preprocess:":xs)
-        = performAll commands rest
+        = performAll commands $ unlines rest
     where
     (commandlines, rest) = span startsWithTab xs
+        where
+        startsWithTab str = "\t" `isPrefixOf` str || "    " `isPrefixOf` str
     commandnames = map tail commandlines
     commands = map (getCommand . parseCommand) commandnames
-    startsWithTab str = "\t" `isPrefixOf` str || "    " `isPrefixOf` str
-process x = return x
+process x = return $ unlines x
 
 performAll :: [a -> IO a] -> a -> IO a
 performAll [] x = return x
 performAll (f:fs) x = f x >>= performAll fs
 
-getCommand :: Command -> [String] -> IO [String]
-getCommand (Replace regex replacement) = return . lines . subRegexPR regex replacement . unlines
-getCommand (CodeDump name ext)
-    = return
+getCommand :: Command -> String -> IO String
+getCommand (Replace regex replacement)= return . replacer
+    where
+    replacer x = subRegex (mkRegex regex) x replacement
+getCommand (CodeDump name ext) = return
 
 data Command =
     Replace String String |
@@ -63,12 +84,14 @@ type Parser x = ParsecT String String Data.Functor.Identity.Identity x
 
 parseCommand :: String -> Command
 parseCommand input
-    = case runIdentity $ runParserT command "(unknown)" input "" of
-        Left err -> error $ "Invalid command " ++ input
+    = case runIdentity $ runParserT command "(unknown)" "" input of
+        Left err -> error $ "Invalid command " ++ input ++ "\n" ++ show err
         Right x -> x
 
 command :: Parser Command
-command = replace
+command = do
+    spaces
+    replace <|> codeDump
 
 haskellString :: Parser String
 haskellString = stringLiteral (makeTokenParser haskellDef)
