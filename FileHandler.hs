@@ -8,13 +8,9 @@ import Data.List
 import System.Directory
 import System.Exit
 import Control.Monad
-import Control.Applicative
-import ArgumentProcessor
 
-import Prelude hiding (catch)
 import Control.Exception
-import System.IO.Error hiding (catch)
-
+import System.IO.Error
 
 allFiles :: FilePath -> IO [FilePath]
 allFiles path = do
@@ -24,9 +20,7 @@ allFiles path = do
 subFiles :: FilePath -> IO [FilePath]
 subFiles path = do
     contents <- getDirectoryContents path
-    putStrLn $ show contents
     let nonup = filter actual contents
-    putStrLn $ show nonup
     let paths = map ((path ++ "/") ++) nonup
     allSubdrs <- forM paths allFiles
     return $ concat allSubdrs
@@ -73,6 +67,7 @@ makeBackup = (++ ".bak")
 removeIfExists :: FilePath -> IO ()
 removeIfExists fileName = removeFile fileName `catch` handleExists
 
+handleExists :: IOError -> IO ()
 handleExists e
     | isDoesNotExistError e = return ()
     | otherwise = throwIO e

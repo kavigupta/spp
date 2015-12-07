@@ -5,9 +5,6 @@ module ArgumentProcessor(
     ) where
 
 import System.Console.ArgParser
-import System.Console.ArgParser.QuickParams
-import System.Environment
-import System.Exit
 
 data Options = Options {
         clean :: Bool,
