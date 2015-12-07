@@ -9,14 +9,17 @@ import Text.Parsec
 import Data.Functor.Identity
 import Text.RegexPR
 import Text.Parsec.Language (haskellDef)
+import System.Environment
+import System.Console.ArgParser.Run
 
 rawposts = "_posts-raw"
 posts = "_posts"
 
-quoted = "\"(?<!\\\\)([\\\\\\\\]+)\""
-
 main :: IO ()
-main
+main = withParseResult optionParser
+
+doProcessing :: Options -> IO ()
+doProcessing opts
     = do
         contents <- getDirectoryContents rawposts
         let files = filter (".md" `isSuffixOf`) contents
