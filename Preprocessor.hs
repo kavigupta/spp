@@ -64,7 +64,10 @@ removeFiles files = do
     forM_ files $ \path -> renameFile (makeBackup path) path
 
 preprocess :: FilePath -> IO (Either String ())
-preprocess out = unsafePreprocess out `catch` (\err -> return . Left $ "An error occured in preprocessing: " ++ show (err :: IOException))
+preprocess out = unsafePreprocess out `catch` eitherHandler
+
+eitherHandler :: IOException -> IO (Either String ())
+eitherHandler err = return . Left $ "An error occured in preprocessing: " ++ show err
 
 {-
 An IO Action for either processing a file or producing an error without doing anything
