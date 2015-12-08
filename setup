@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ghc -outputdir bin -Wall -Werror -fno-warn-unused-do-bind Preprocessor.hs
+
+rm spp
+mv Preprocessor spp
+chmod +x spp
+rm -r bin
