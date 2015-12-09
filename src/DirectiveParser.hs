@@ -1,41 +1,33 @@
-module DirectiveParser (toCommand) where
+module DirectiveParser (
+        doParse, parseCommand, Command(..), Parser, spacedString, haskellString
+    ) where
 
 import Text.Parsec.Language (haskellDef)
 import Text.Parsec.Token
 import Text.Parsec
-import Control.Applicative hiding ((<|>), many)
 import Data.Functor.Identity
-import Text.Regex
-import ShellHandler
-import System.FilePath
+
 
 data Command =
     Replace String String |
     Exec String |
-    PassThrough String
+    PassThrough String |
+    DoWrite |
+    DoInclude
 
 type Parser x = ParsecT String String Data.Functor.Identity.Identity x
 
-toCommand :: FilePath -> String -> Either String (String -> IO String)
-toCommand path str = getCommand path <$> parseCommand str
-
-getCommand :: FilePath -> Command -> String -> IO String
-getCommand _ (Replace regex replacement) u = return . replacer $ u
-    where
-    replacer x = subRegex (mkRegex regex) x replacement
-getCommand path (Exec toExec) x = systemInDir (takeDirectory path) toExec >> return x
-getCommand path (PassThrough toPass) str = readProcessInDir path toPass str
 
 parseCommand :: String -> Either String Command
 parseCommand input
-    = case runIdentity $ runParserT command "(unknown)" "" input of
+    = case doParse command input of
         Left err -> Left $ "Invalid command " ++ input ++ "\n" ++ show err
         Right x -> Right x
 
 command :: Parser Command
 command = do
     spaces
-    replace <|> exec <|> passThrough
+    replace <|> exec <|> passThrough <|> write <|> include
 
 haskellString :: Parser String
 haskellString = stringLiteral (makeTokenParser haskellDef)
@@ -62,3 +54,12 @@ passThrough = do
     spacedString "pass"
     toPass <- many anyChar
     return $ PassThrough toPass
+
+write :: Parser Command
+write = spacedString "writeout" >> return DoWrite
+
+include :: Parser Command
+include = spacedString "include" >> return DoInclude
+
+doParse :: Parser a -> String -> Either ParseError a
+doParse parser input = runIdentity $ runParserT parser "(unknown)" "" input

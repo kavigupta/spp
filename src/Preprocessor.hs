@@ -10,7 +10,7 @@ import Control.Applicative hiding ((<|>))
 import System.Console.ArgParser.Run
 import FileHandler
 import ArgumentProcessor
-import DirectiveParser
+import CommandGenerator
 import System.Exit
 
 import Control.Exception
