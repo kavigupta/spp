@@ -1,16 +1,24 @@
 module FileHandler(
-        allFiles, setWritable, createBackups, removeGenerated,
-        makeBackup, isBackup,
-        removeIfExists, handleExists
+        BackedUpFile(..),
+        BackedUpFolder(..),
+        createBackups, removeBackups,
+        setWritable
     ) where
 
-import Data.List
 import System.Directory
 import System.Exit
 import Control.Monad
 
-import Control.Exception
-import System.IO.Error
+data BackedUpFile = BackedUpFile {
+    originalFile :: FilePath,
+    backupFile :: FilePath
+}
+
+data BackedUpFolder = BackedUpFolder {
+    originalRoot :: FilePath,
+    backedUpRoot :: FilePath,
+    backups :: [BackedUpFile]
+}
 
 allFiles :: FilePath -> IO [FilePath]
 allFiles path = do
@@ -24,50 +32,56 @@ subFiles path = do
     let paths = map ((path ++ "/") ++) nonup
     allSubdrs <- forM paths allFiles
     return $ concat allSubdrs
-        where actual x = x /= "." && x /= ".."
+
+actual :: String -> Bool
+actual x = x /= "." && x /= ".."
+
+copyDirectories :: FilePath -> FilePath -> IO ()
+copyDirectories src dest = do
+    contents <- getDirectoryContents src
+    dirs <- filterM (doesDirectoryExist . sourcify) $ filter actual contents
+    createDirectory dest
+    forM_ dirs $ \p -> copyDirectories (sourcify p) (destify p)
+        where
+        sourcify = ((src ++ "/") ++)
+        destify = ((dest ++ "/") ++)
 
 setWritable :: Bool -> FilePath -> IO ()
 setWritable b f = do
     p <- getPermissions f
     setPermissions f (p {writable = b})
 
-createBackups :: [FilePath] -> IO ()
-createBackups files = do
-        bakExists <- forM backups doesFileExist
-        let fWithBackup = zip bakExists files
-        let existingBak = find fst fWithBackup
-        case existingBak of
-            Just (_, path)
-                -> putStrLn ("A backup exists for file "
-                    ++ path
-                    ++ "; You probably forgot to run 'gpp --clean' last time") >>
-                    exitFailure
-            Nothing -> return ()
-        forM_ files $ \path -> renameFile path (makeBackup path)
+backupExistsError :: String
+backupExistsError = "A backup already exists. Perhaps you forgot to run spp --clean last time"
+
+createBackups :: FilePath -> IO BackedUpFolder
+createBackups root = do
+        backupExists <- doesFileExist buRoot
+        when backupExists $ putStrLn backupExistsError >> exitFailure
+        files <- allFiles root
+        let newFiles = map (makeBackup root) files
+        let backedUpFiles = zipWith BackedUpFile files newFiles
+        renameDirectory root buRoot
+        copyDirectories buRoot root
+        return BackedUpFolder {originalRoot=root, backedUpRoot=buRoot, backups = backedUpFiles}
     where
-    backups = map makeBackup files
+    buRoot = rootBackup root
 
-removeGenerated :: [FilePath] -> IO [FilePath]
-removeGenerated contents = do
-    let files = filter (not . isBackup) contents
-    bakExists <- forM (map makeBackup files) doesFileExist
-    let fWithBackup = zip bakExists files
-    let existingBak = find (not . fst) fWithBackup
-    case existingBak of
-        (Just (_, path)) -> putStrLn ("No backup exists for file " ++ path) >> exitFailure
-        Nothing -> return ()
-    return files
+{-
+Returns whether or not the backup was successfully removed
+-}
+removeBackups :: FilePath -> IO Bool
+removeBackups root = do
+        backupExists <- doesDirectoryExist buRoot
+        if (not backupExists) then return False
+        else do
+            removeDirectoryRecursive root
+            renameDirectory buRoot root
+            return True
+    where buRoot = rootBackup root
 
-isBackup :: FilePath -> Bool
-isBackup = isSuffixOf ".bak"
+makeBackup :: FilePath -> FilePath -> FilePath
+makeBackup root file = (rootBackup root) ++ (drop (length root) file)
 
-makeBackup :: FilePath -> FilePath
-makeBackup = (++ ".bak")
-
-removeIfExists :: FilePath -> IO ()
-removeIfExists fileName = removeFile fileName `catch` handleExists
-
-handleExists :: IOError -> IO ()
-handleExists e
-    | isDoesNotExistError e = return ()
-    | otherwise = throwIO e
+rootBackup :: FilePath -> FilePath
+rootBackup = (++ ".bak")
