@@ -14,4 +14,4 @@ data Options = Options {
 optionParser :: ParserSpec Options
 optionParser = Options `parsedBy`
     boolFlag "clean" `andBy`
-    optFlag "." "src"
+    reqFlag "src"
