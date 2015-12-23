@@ -7,7 +7,9 @@ module ArgumentProcessor(
 import System.Console.ArgParser
 
 data Options = Options {
+        -- Whether or not this is a cleaning run
         clean :: Bool,
+        -- The source directory to preprocess or clean
         srcDir :: String
     }
 
