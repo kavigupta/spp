@@ -10,6 +10,7 @@ import System.Console.ArgParser.Run
 import FileHandler
 import ArgumentProcessor
 import CommandGenerator
+import ShellHandler
 
 import Control.Exception
 
@@ -18,7 +19,7 @@ main = withParseResult optionParser doProcessing
 
 doProcessing :: Options -> IO ()
 doProcessing opts
-    | clean opts = removeBackups (srcDir opts) >> return ()
+    | clean opts = void $ removeBackups (srcDir opts)
     | otherwise  = runPreprocessor opts
 
 {-
@@ -48,9 +49,6 @@ concatErrors (Left err:_) = Just err
 preprocess :: BackedUpFile -> IO (Either String ())
 preprocess out = unsafePreprocess out `catch` eitherHandler
 
-eitherHandler :: IOException -> IO (Either String ())
-eitherHandler err = return . Left $ "An error occured in preprocessing: " ++ show err
-
 {-
 An IO Action for either processing a file or producing an error without doing anything
 -}
@@ -58,7 +56,7 @@ unsafePreprocess :: BackedUpFile -> IO (Either String ())
 unsafePreprocess buFile =
         do
             contents <- readFile $ backupFile buFile
-            output <- (process (originalFile buFile) . lines $ contents)
+            output <- process (originalFile buFile) . lines $ contents
             case output of
                 Left err -> return $ Left err
                 Right outputValue -> Right <$> writeFile (originalFile buFile) outputValue
@@ -70,13 +68,14 @@ process :: FilePath -> [String] -> IO (Either String String)
 process path ("preprocess:":xs) =
         case performAll commands of
             Left err -> return $ Left err
-            Right f -> Right <$> f (unlines rest)
+            Right f -> f (unlines rest)
     where
     (commandlines, rest) = span startsWithTab xs
         where
         startsWithTab str = "\t" `isPrefixOf` str || "    " `isPrefixOf` str
-    commandnames = map tail commandlines
-    commands :: [Either String (String -> IO String)]
+    commandnames :: [String]
+    commandnames = map tail commandlines -- TODO FIX
+    commands :: [Either String Action]
     commands = map (toCommand path) commandnames
 process _ x = return . Right . unlines $ x
 
@@ -85,5 +84,11 @@ process _ x = return . Right . unlines $ x
     If any of the values are `Left` errors, the entire result is an error.
     Otherwise, the result is considered to be all the other actions chained together
 -}
-performAll :: forall a err. [Either err (a -> IO a)] -> Either err (a -> IO a)
-performAll fs = foldr (>=>) return <$> sequence fs
+performAll :: forall a err. [Either err (a -> IO (Either err a))] -> Either err (a -> IO (Either err a))
+performAll = foldr comp (Right $ return . Right)
+    where
+    comp :: Either err (a -> IO (Either err a)) -> Either err (a -> IO (Either err a)) -> Either err (a -> IO (Either err a))
+    comp = either (const . Left) feed
+    feed :: (a -> IO (Either err a)) -> Either err (a -> IO (Either err a)) -> Either err (a -> IO (Either err a))
+    feed f (Left err) = Left err
+    feed f (Right g) = Right (f >=> either (return . Left) g)

@@ -1,4 +1,4 @@
-module ShellHandler (inDir) where
+module ShellHandler (inDir, eitherHandler) where
 
 import System.Directory
 
@@ -10,3 +10,6 @@ inDir path action = do
     original <- getCurrentDirectory
     setCurrentDirectory path
     finally action $ setCurrentDirectory original
+
+eitherHandler :: IOException -> IO (Either String a)
+eitherHandler err = return . Left $ "An error occured in preprocessing: " ++ show err

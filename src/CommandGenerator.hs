@@ -1,5 +1,5 @@
 module CommandGenerator(
-        toCommand
+        toCommand, Action
     ) where
 
 import DirectiveParser
@@ -12,34 +12,44 @@ import Text.Regex
 import Control.Applicative hiding ((<|>), many)
 import Control.Monad
 
+import Control.Exception(catch)
+
 import Text.Parsec
 
-toCommand :: FilePath -> String -> Either String (String -> IO String)
+type Errored = Either String String
+
+type Action = String -> IO Errored
+
+-- Converts a directive into a command, possibly producing an error.
+toCommand :: FilePath -> String -> Either String Action
 toCommand path str = getCommand path <$> parseCommand str
 
-getCommand :: FilePath -> Command -> String -> IO String
-getCommand path cmd original = inDir (takeDirectory path) $ getUnShiftedCommand path cmd original
+-- Applies the given command in
+getCommand :: FilePath -> Command -> Action
+getCommand path cmd = inDir (takeDirectory path) . uscmd path cmd
 
-getUnShiftedCommand :: FilePath -> Command -> String -> IO String
-getUnShiftedCommand _ (Replace regex replacement) original
-        = return replaced
-    where replaced = subRegex (mkRegex regex) original replacement
-getUnShiftedCommand _ (Exec toExec) original
-        = system toExec >> return original
-getUnShiftedCommand path (PassThrough toPass) original
-        = readProcess toPass [path] original
-getUnShiftedCommand _ DoWrite original
-        = processParseResult writeChunk processOutput original
-getUnShiftedCommand _ DoInclude original
-        = processParseResult includeChunk processInclude original
+-- Gets the action for the given system command
+uscmd :: FilePath -> Command -> Action
+uscmd _ (Replace regex replacement) original
+        = return . Right $ subRegex (mkRegex regex) original replacement
+uscmd _ (Exec toExec) original
+        = do
+            result <- fmap Right (system toExec) `catch` eitherHandler
+            case result of
+                Left err -> return (Left err)
+                Right _ -> return (Right original)
+uscmd path (PassThrough toPass) original
+        = fmap Right (readProcess toPass [path] original) `catch` eitherHandler
+uscmd _ DoWrite original
+        = processParseResult writeChunk processOutput original `catch` eitherHandler
+uscmd _ DoInclude original
+        = processParseResult includeChunk processInclude original `catch` eitherHandler
 
-processParseResult :: Parser a -> (([String], [a]) -> IO String) -> String -> IO String
+processParseResult :: Parser a -> (([String], [a]) -> IO String) -> Action
 processParseResult parser f input
     = case doParse (intersperse parser) input of
-        Left err -> putStrLn (show err) >> return input
-        Right x -> f x
---getUnShiftedCommand _ DoWrite original = undefined
---getUnShiftedCommand _ DoInclude original = undefined
+        (Left err) -> return $ Left . show $ err
+        (Right x) -> Right <$> f x
 
 processOutput :: ([String], [(FilePath, String)]) -> IO String
 processOutput (newText, toWrite) = sequence (map (uncurry writeFile) toWrite) >> return (concat newText)

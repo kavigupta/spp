@@ -74,7 +74,7 @@ Returns whether or not the backup was successfully removed
 removeBackups :: FilePath -> IO Bool
 removeBackups root = do
         backupExists <- doesDirectoryExist buRoot
-        if (not backupExists) then return False
+        if not backupExists then return False
         else do
             removeDirectoryRecursive root
             renameDirectory buRoot root
@@ -82,7 +82,7 @@ removeBackups root = do
     where buRoot = rootBackup root
 
 makeBackup :: FilePath -> FilePath -> FilePath
-makeBackup root file = (rootBackup root) ++ (drop (length root) file)
+makeBackup root file = rootBackup root ++ drop (length root) file
 
 rootBackup :: FilePath -> FilePath
 rootBackup = (++ ".bak")
