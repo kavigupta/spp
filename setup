@@ -1,10 +1,13 @@
 #!/bin/bash
 
-cd src
-ghc -outputdir bin -Wall -Werror -fno-warn-unused-do-bind Preprocessor.hs
-rm -r bin
-cd ..
+set -e
+cabal build
+suggestions=$(hlint src | perl -0p -e 's/[^\n]*\b(\w+) (suggestions?).*/\1/sg')
+if [ $suggestions != "No" ]; then
+    hlint src
+    exit 1
+fi
 
-rm spp
-mv src/Preprocessor spp
-chmod +x spp
+cabal test
+
+echo "Success!"
