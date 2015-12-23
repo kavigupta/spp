@@ -52,13 +52,13 @@ processParseResult parser f input
         (Right x) -> Right <$> f x
 
 processOutput :: ([String], [(FilePath, String)]) -> IO String
-processOutput (newText, toWrite) = sequence (map (uncurry writeFile) toWrite) >> return (concat newText)
+processOutput (newText, toWrite) = mapM_ (uncurry writeFile) toWrite >> return (concat newText)
 
 processInclude :: ([String], [FilePath]) -> IO String
 processInclude (strs, paths) =
     do
         readFiles <- forM paths readFile
-        let paddedFiles = readFiles ++ (repeat "")
+        let paddedFiles = readFiles ++ repeat ""
         let pad = zipWith (++) strs paddedFiles
         return $ concat pad
 
@@ -67,8 +67,8 @@ Applies the given parser multiple times, returning a list of all the intersperse
 -}
 intersperse :: Parser a -> Parser ([String], [a])
 intersperse parser = do
-    regular <- manyTill anyChar $ eof <|> (try $ lookAhead parser >> return ())
-    writeResult <- (eof >> return Nothing) <|> (parser >>= (return . Just))
+    regular <- manyTill anyChar $ eof <|> (try . void . lookAhead $ parser)
+    writeResult <- (eof >> return Nothing) <|> liftM Just parser
     case writeResult of
         Nothing -> return ([regular], [])
         Just result -> do
