@@ -1,0 +1,90 @@
+
+package: argparser-0.3.4
+os: linux
+arch: x86_64
+compiler: ghc-7.8.4
+client: cabal-install-1.22.0.1
+dependencies: containers-0.5.5.1 base-4.7.0.2
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: mtl-2.2.1
+os: linux
+arch: x86_64
+compiler: ghc-7.8.4
+client: cabal-install-1.22.0.1
+dependencies: transformers-0.4.3.0 base-4.7.0.2
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: parsec-3.1.9
+os: linux
+arch: x86_64
+compiler: ghc-7.8.4
+client: cabal-install-1.22.0.1
+flags: base4
+dependencies: text-1.2.1.3 mtl-2.2.1 bytestring-0.10.4.0
+              base-4.7.0.2
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: regex-base-0.93.2
+os: linux
+arch: x86_64
+compiler: ghc-7.8.4
+client: cabal-install-1.22.0.1
+flags: splitbase newbase
+dependencies: mtl-2.2.1 containers-0.5.5.1 bytestring-0.10.4.0
+              base-4.7.0.2 array-0.5.0.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: regex-compat-0.95.1
+os: linux
+arch: x86_64
+compiler: ghc-7.8.4
+client: cabal-install-1.22.0.1
+flags: splitbase newbase
+dependencies: regex-posix-0.95.2 regex-base-0.93.2 base-4.7.0.2
+              array-0.5.0.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: regex-posix-0.95.2
+os: linux
+arch: x86_64
+compiler: ghc-7.8.4
+client: cabal-install-1.22.0.1
+flags: splitbase newbase
+dependencies: regex-base-0.93.2 containers-0.5.5.1
+              bytestring-0.10.4.0 base-4.7.0.2 array-0.5.0.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: text-1.2.1.3
+os: linux
+arch: x86_64
+compiler: ghc-7.8.4
+client: cabal-install-1.22.0.1
+flags: -integer-simple -developer
+dependencies: integer-gmp-0.5.1.0 ghc-prim-0.3.1.0 deepseq-1.3.0.2
+              bytestring-0.10.4.0 binary-0.7.1.0 base-4.7.0.2 array-0.5.0.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
+
+package: transformers-0.4.3.0
+os: linux
+arch: x86_64
+compiler: ghc-7.8.4
+client: cabal-install-1.22.0.1
+dependencies: base-4.7.0.2
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried

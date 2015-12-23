@@ -1,0 +1,17 @@
+Configuring argparser-0.3.4...
+Building argparser-0.3.4...
+Preprocessing library argparser-0.3.4...
+[1 of 9] Compiling System.Console.ArgParser.BaseType ( src/System/Console/ArgParser/BaseType.hs, dist/dist-sandbox-84db1199/build/System/Console/ArgParser/BaseType.o )
+[2 of 9] Compiling System.Console.ArgParser.Parser ( src/System/Console/ArgParser/Parser.hs, dist/dist-sandbox-84db1199/build/System/Console/ArgParser/Parser.o )
+[3 of 9] Compiling System.Console.ArgParser.Params ( src/System/Console/ArgParser/Params.hs, dist/dist-sandbox-84db1199/build/System/Console/ArgParser/Params.o )
+[4 of 9] Compiling System.Console.ArgParser.QuickParams ( src/System/Console/ArgParser/QuickParams.hs, dist/dist-sandbox-84db1199/build/System/Console/ArgParser/QuickParams.o )
+[5 of 9] Compiling System.Console.ArgParser.ArgsProcess ( src/System/Console/ArgParser/ArgsProcess.hs, dist/dist-sandbox-84db1199/build/System/Console/ArgParser/ArgsProcess.o )
+[6 of 9] Compiling System.Console.ArgParser.Format ( src/System/Console/ArgParser/Format.hs, dist/dist-sandbox-84db1199/build/System/Console/ArgParser/Format.o )
+[7 of 9] Compiling System.Console.ArgParser.Run ( src/System/Console/ArgParser/Run.hs, dist/dist-sandbox-84db1199/build/System/Console/ArgParser/Run.o )
+[8 of 9] Compiling System.Console.ArgParser.SubParser ( src/System/Console/ArgParser/SubParser.hs, dist/dist-sandbox-84db1199/build/System/Console/ArgParser/SubParser.o )
+[9 of 9] Compiling System.Console.ArgParser ( src/System/Console/ArgParser.hs, dist/dist-sandbox-84db1199/build/System/Console/ArgParser.o )
+In-place registering argparser-0.3.4...
+Creating package registration file: /tmp/pkgConf-argparser-0.33314.4
+Installing library in
+/home/kavi/Dropbox/workspaces/Haskell/SimplePreprocessor/.cabal-sandbox/lib/x86_64-linux-ghc-7.8.4/argparser-0.3.4
+Registering argparser-0.3.4...
