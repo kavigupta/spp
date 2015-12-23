@@ -1,3 +1,4 @@
+{-# LANGUAGE DoAndIfThenElse #-}
 module FileHandler(
         BackedUpFile(..),
         BackedUpFolder(..),
