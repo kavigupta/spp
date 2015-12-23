@@ -90,5 +90,5 @@ performAll = foldr comp (Right $ return . Right)
     comp :: Either err (a -> IO (Either err a)) -> Either err (a -> IO (Either err a)) -> Either err (a -> IO (Either err a))
     comp = either (const . Left) feed
     feed :: (a -> IO (Either err a)) -> Either err (a -> IO (Either err a)) -> Either err (a -> IO (Either err a))
-    feed f (Left err) = Left err
+    feed _ (Left err) = Left err
     feed f (Right g) = Right (f >=> either (return . Left) g)
