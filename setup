@@ -3,7 +3,8 @@
 set -e
 cabal build
 suggestions=$(hlint src | perl -0p -e 's/[^\n]*\b(\w+) (suggestions?).*/\1/sg')
-if [ $suggestions != "No" ]; then
+if [ "$suggestions" != "No" ];
+then
     hlint src
     exit 1
 fi
