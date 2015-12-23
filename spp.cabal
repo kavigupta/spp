@@ -17,6 +17,7 @@ cabal-version:       >=1.8
 
 executable spp
     hs-source-dirs:      src
+    ghc-args:           -static -optl-pthread -optl-static
     main-is: Preprocessor.hs
     -- other-modules:
     build-depends:
