@@ -3,6 +3,7 @@ import Distribution.Simple
 
 import System.Process
 import System.Exit
+import System.Directory
 
 import Control.Monad
 
@@ -14,7 +15,7 @@ main = do
     hlintRun
     buildTest <- rawSystem "cabal" ["test"]
     when (buildTest /= ExitSuccess) $ die "Tests failed"
-
+    copyFile "dist/build/spp/spp" "spp"
 
 hlintRun :: IO ()
 hlintRun = do
