@@ -11,7 +11,7 @@ data Options = Options {
         clean :: Bool,
         -- The source directory to preprocess or clean
         srcDir :: String,
-        -- The string to start directives with, note this is a regex
+        -- The string to start directives with
         directiveStart :: String
     }
 
