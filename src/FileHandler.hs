@@ -6,8 +6,14 @@ module FileHandler(
         setWritable
     ) where
 
+import Prelude hiding (catch)
+
 import System.Directory
+
 import System.Exit
+import Control.Exception
+import System.IO.Error hiding (catch)
+
 import Control.Monad
 
 data BackedUpFile = BackedUpFile {
