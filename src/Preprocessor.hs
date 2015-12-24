@@ -3,16 +3,16 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Main (main) where
 
-import Data.List
 import Control.Monad
 import Control.Applicative hiding ((<|>))
+import Text.Regex.Posix
+
 import System.Console.ArgParser.Run
+import System.Exit
+
 import FileHandler
 import ArgumentProcessor
 import CommandGenerator
-import ShellHandler
-
-import Control.Exception
 
 main :: IO ()
 main = withParseResult optionParser doProcessing
@@ -28,14 +28,13 @@ Runs the preprocessor on the given options
 runPreprocessor :: Options -> IO ()
 runPreprocessor opts = do
     bufold <- createBackups $ srcDir opts
-    results <- forM (backups bufold) preprocess
+    results <- forM (backups bufold) $ preprocess opts
     let failure = concatErrors results
     case failure of
         (Just err) -> do
-            putStrLn "FAILURE!!!"
             putStrLn err
-            removeBackups (srcDir opts)
-            return ()
+            removeBackups $ srcDir opts
+            exitFailure
         Nothing -> forM_ (backups bufold) $ setWritable False . originalFile
 
 {-
@@ -43,20 +42,18 @@ Collects all `Left` errors from the given list of Eithers
 -}
 concatErrors :: [Either a b] -> Maybe a
 concatErrors [] = Nothing
-concatErrors (Right _:xs) = concatErrors xs
-concatErrors (Left err:_) = Just err
-
-preprocess :: BackedUpFile -> IO (Either String ())
-preprocess out = unsafePreprocess out `catch` eitherHandler
+concatErrors (x:xs) = either Just (const $ concatErrors xs) x
 
 {-
 An IO Action for either processing a file or producing an error without doing anything
 -}
-unsafePreprocess :: BackedUpFile -> IO (Either String ())
-unsafePreprocess buFile =
+preprocess :: Options -> BackedUpFile -> IO (Either String ())
+preprocess opts buFile =
         do
+            -- Ignore the possibility of error at this line.
             contents <- readFile $ backupFile buFile
-            output <- process (originalFile buFile) . lines $ contents
+            -- There should be no error at this line given that process should throw no error
+            output <- process opts (originalFile buFile) contents
             case output of
                 Left err -> return $ Left err
                 Right outputValue -> Right <$> writeFile (originalFile buFile) outputValue
@@ -64,21 +61,24 @@ unsafePreprocess buFile =
 {-
 Creates an IO instance for preprocessing a series of lines.
 -}
-process :: FilePath -> [String] -> IO (Either String String)
-process path ("preprocess:":xs) =
-        case performAll commands of
+process :: Options -> FilePath -> String -> IO (Either String String)
+process opts path str
+        = case performAll commands of
             Left err -> return $ Left err
-            Right f -> f (unlines rest)
+            Right f -> f rest
     where
-    (commandlines, rest) = span startsWithTab xs
-        where
-        startsWithTab str = "\t" `isPrefixOf` str || "    " `isPrefixOf` str
-    commandnames :: [String]
-    commandnames = map tail commandlines -- TODO FIX
+    (commandnames, rest) = collectDirectives (directiveStart opts) str
     commands :: [Either String Action]
     commands = map (toCommand path) commandnames
-process _ x = return . Right . unlines $ x
 
+collectDirectives :: String -> String -> ([String], String)
+collectDirectives start str
+        = case str =~ regex of
+            [[_, values, rest]] -> (getDirectives values, rest)
+            _ -> ([], str)
+    where
+    getDirectives = map (dropWhile (`elem` "\t ")) . lines
+    regex = start ++ "preprocess:\\r?\\n(\\s+" ++ start ++ ".+\\r?\\n)+"
 {-
     Perform all the actions in the given list of actions.
     If any of the values are `Left` errors, the entire result is an error.
