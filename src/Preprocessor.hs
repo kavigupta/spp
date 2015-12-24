@@ -13,6 +13,7 @@ import System.Exit
 import FileHandler
 import ArgumentProcessor
 import CommandGenerator
+import Debug.Trace
 
 main :: IO ()
 main = withParseResult optionParser doProcessing
@@ -73,12 +74,12 @@ process opts path str
 
 collectDirectives :: String -> String -> ([String], String)
 collectDirectives start str
-        = case str =~ regex of
-            [[_, values, rest]] -> (getDirectives values, rest)
+        = trace (show (str, regex)) $ case str =~ regex of
+            [[_, values, rest, _]] -> (getDirectives values, rest)
             _ -> ([], str)
     where
     getDirectives = map (dropWhile (`elem` "\t ")) . lines
-    regex = start ++ "preprocess:\\r?\\n(\\s+" ++ start ++ ".+\\r?\\n)+"
+    regex = start ++ "preprocess:\r?\n(([ \t]+" ++ start ++ ".+\r?\n)+)((.|\r?\n)+)"
 {-
     Perform all the actions in the given list of actions.
     If any of the values are `Left` errors, the entire result is an error.

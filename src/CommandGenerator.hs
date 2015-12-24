@@ -2,7 +2,7 @@ module CommandGenerator(
         toCommand, Action
     ) where
 
-import DirectiveParser
+import Directive.Parser
 import ShellHandler
 
 import System.Process(readProcess, system)
