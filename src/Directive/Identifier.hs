@@ -1,7 +1,8 @@
 {-# LANGUAGE TupleSections #-}
 module Directive.Identifier (parseDirectives) where
 
-import CommandGenerator
+import Directive.Parser
+
 import Tools.Parser
 import Interface.Errors
 
@@ -17,11 +18,11 @@ data Directives = Directives
     String -- ^ The rest of the file
         deriving Show
 
-parseDirectives :: String -> String -> String -> Either SPPError (String, [Action], String)
-parseDirectives path start input
+parseDirectives :: String -> String -> Either SPPError (String, [Command], String)
+parseDirectives start input
     = case doParse (directives start) input  of
         (Left err) -> Left $ DirectiveError input err
-        (Right (Directives header dirs rest)) -> (header,,rest) <$> mapM (toCommand path) dirs
+        (Right (Directives header dirs rest)) -> (header,,rest) <$> mapM parseCommand dirs
 
 
 -- takes a string containing a beginning of line condition and outputs a parser that parses directives

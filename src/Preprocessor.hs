@@ -9,6 +9,7 @@ import FileHandler
 import Interface.Args
 import CommandGenerator
 import Directive.Identifier
+import Directive.Parser
 import Interface.Errors
 
 {-
@@ -36,8 +37,9 @@ process opts path str
     where
         result :: Either SPPError (IO (Either SPPError String))
         result = do
-            (header, commands, rest) <- parseDirectives path (directiveStart opts) str :: Either SPPError (String, [Action], String)
-            return $ fmap (header ++) <$> performAll commands rest
+            (header, commands, rest) <- parseDirectives (directiveStart opts) str :: Either SPPError (String, [Command], String)
+            let actions = map (getCommand path) commands
+            return $ fmap (header ++) <$> performAll actions rest
 {-
     Perform all the actions in the given list of actions.
     If any of the values are `Left` errors, the entire result is an error.

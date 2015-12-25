@@ -1,5 +1,5 @@
 module CommandGenerator(
-        toCommand, Action
+        getCommand, Action
     ) where
 
 import Directive.Parser
@@ -22,10 +22,6 @@ import Tools.Parser
 type Errored = Either SPPError String
 
 type Action = String -> IO Errored
-
--- Converts a directive into a command, possibly producing an error.
-toCommand :: FilePath -> String -> Either SPPError Action
-toCommand path str = getCommand path <$> parseCommand str
 
 -- Applies the given command in
 getCommand :: FilePath -> Command -> Action
