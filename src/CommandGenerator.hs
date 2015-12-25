@@ -3,7 +3,8 @@ module CommandGenerator(
     ) where
 
 import Directive.Parser
-import ShellHandler
+import Tools.Files
+import Tools.Shell
 
 import System.Process(readProcess, system)
 import System.FilePath
