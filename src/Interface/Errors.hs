@@ -1,4 +1,5 @@
 module Interface.Errors (
+        IOExcHandler, ParseHandler,
         SPPError(..),
             concatErrors, isError
     ) where
@@ -10,13 +11,21 @@ import Data.Monoid
 
 type Input = String
 
+type IOExcHandler = IOException -> SPPError
+type ParseHandler = ParseError -> SPPError
+
 data SPPError
-    = DirectiveError Input ParseError
-    | InvalidCommand Input ParseError
-    | IOError IOException
-    | IncludeError ParseError
-    | WriteOutError ParseError
-    | ErrorSequence [SPPError]
+    = DirectiveError        Input ParseError
+    | InvalidCommand        Input ParseError
+    | IncludeIOError        Input IOException
+    | PassThroughError      Input String IOException
+    | WriteIOError          Input IOException
+    | IncludeParseError     Input ParseError
+    | WriteParseError       Input ParseError
+    | BackupExistsError     FilePath
+    | BackupError           FilePath IOException
+    | ExecError             String IOException
+    | ErrorSequence         [SPPError]
         deriving (Show, Eq)
 
 instance Monoid SPPError where
@@ -38,4 +47,6 @@ concatErrors = mconcat . map getError
     getError (Right _) = mempty
 
 isError :: SPPError -> Bool
-isError = (== ErrorSequence [])
+isError = (/= ErrorSequence [])
+
+--backupExistsError = "A backup already exists. Perhaps you forgot to run spp --clean last time"

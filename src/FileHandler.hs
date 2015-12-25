@@ -6,11 +6,18 @@ module FileHandler(
         setWritable
     ) where
 
+import Tools.Files
+import Interface.Errors
+
 import System.Directory
+import Control.Exception
 
-import System.Exit
+import Shelly.Lifted(cp_r, fromText, shelly)
 
-import Control.Monad
+import Data.Text(pack)
+import Data.Function(on)
+import Control.Monad(liftM2)
+import Control.Applicative((<$>))
 
 data BackedUpFile = BackedUpFile {
     originalFile :: FilePath,
@@ -23,50 +30,36 @@ data BackedUpFolder = BackedUpFolder {
     backups :: [BackedUpFile]
 }
 
-allFiles :: FilePath -> IO [FilePath]
-allFiles path = do
-    isdir <- doesDirectoryExist path
-    if isdir then subFiles path else return [path]
-
-subFiles :: FilePath -> IO [FilePath]
-subFiles path = do
-    contents <- getDirectoryContents path
-    let nonup = filter actual contents
-    let paths = map ((path ++ "/") ++) nonup
-    allSubdrs <- forM paths allFiles
-    return $ concat allSubdrs
-
-actual :: String -> Bool
-actual x = x /= "." && x /= ".."
-
-copyDirectories :: FilePath -> FilePath -> IO ()
-copyDirectories src dest = do
-    contents <- getDirectoryContents src
-    dirs <- filterM (doesDirectoryExist . sourcify) $ filter actual contents
-    createDirectory dest
-    forM_ dirs $ \p -> copyDirectories (sourcify p) (destify p)
-        where
-        sourcify = ((src ++ "/") ++)
-        destify = ((dest ++ "/") ++)
+copyDirectories :: IOExcHandler -> FilePath -> FilePath -> IO (Either SPPError ())
+copyDirectories handler src dst = unsafeCp `catch` eitherHandler handler
+    where
+    unsafeCp = Right <$> shelly ((cp_r `on` fromText . pack) src dst)
 
 setWritable :: Bool -> FilePath -> IO ()
 setWritable b f = do
     p <- getPermissions f
     setPermissions f (p {writable = b})
 
-backupExistsError :: String
-backupExistsError = "A backup already exists. Perhaps you forgot to run spp --clean last time"
-
-createBackups :: FilePath -> IO BackedUpFolder
+createBackups :: FilePath -> IO (Either SPPError BackedUpFolder)
 createBackups root = do
-        backupExists <- doesFileExist buRoot
-        when backupExists $ putStrLn backupExistsError >> exitFailure
-        files <- allFiles root
-        let newFiles = map (makeBackup root) files
-        let backedUpFiles = zipWith BackedUpFile files newFiles
-        renameDirectory root buRoot
-        copyDirectories buRoot root
-        return BackedUpFolder {originalRoot=root, backedUpRoot=buRoot, backups = backedUpFiles}
+        backupExists <- liftM2 (||) (doesFileExist buRoot) (doesDirectoryExist buRoot)
+        print (buRoot, backupExists)
+        if backupExists then
+            return $ Left $ BackupExistsError root
+        else do
+            files <- allFiles root
+            let newFiles = map (makeBackup root) files
+            let backedUpFiles = zipWith BackedUpFile files newFiles
+            renameDirectory root buRoot
+            copySuccess <- copyDirectories (BackupError root) buRoot root
+            case copySuccess of
+                (Left err) -> return $ Left err
+                (Right ()) ->
+                    return $ Right BackedUpFolder {
+                            originalRoot = root,
+                            backedUpRoot = buRoot,
+                            backups = backedUpFiles
+                        }
     where
     buRoot = rootBackup root
 

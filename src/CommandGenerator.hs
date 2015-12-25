@@ -34,26 +34,26 @@ uscmd _ (Replace regex replacement) original
 uscmd _ (Exec toExec) original
         = executeAndOutputOriginal toExec original
 uscmd path (PassThrough toPass) original
-        = fmap Right (readProcess toPass [path] original) `catch` eitherHandler
+        = fmap Right (readProcess toPass [path] original) `catch` eitherHandler (PassThroughError original toPass)
 uscmd _ DoWrite original
-        = processParseResult writeChunk processOutput WriteOutError original
+        = processParseResult (WriteIOError original) writeChunk processOutput (WriteParseError original) original
 uscmd _ DoInclude original
-        = processParseResult includeChunk processInclude IncludeError original
+        = processParseResult (IncludeIOError original) includeChunk processInclude (IncludeParseError original) original
 
 -- Executes the given command and outputs the original text
 --  This should not throw errors, since it catches all of them in the either handler
 executeAndOutputOriginal :: String -> Action
 executeAndOutputOriginal toExec original = do
-    result <- fmap Right (system toExec) `catch` eitherHandler
+    result <- fmap Right (system toExec) `catch` eitherHandler (ExecError toExec)
     return $ result >>= const (Right original)
 
 -- Processes the parse result.
 --  This should not throw errors, since it catches all of them and wraps them up in the internal Either.
-processParseResult :: Parser a -> (([String], [a]) -> IO String) -> (ParseError -> SPPError) -> Action
-processParseResult parser f handler input
+processParseResult :: IOExcHandler -> Parser a -> (([String], [a]) -> IO String) -> ParseHandler -> Action
+processParseResult iohandler parser f parsehandler input
     = case doParse (intersperse parser) input of
-        (Left err) -> return . Left . handler $ err
-        (Right x) -> (Right <$> f x) `catch` eitherHandler
+        (Left err) -> return . Left . parsehandler $ err
+        (Right x) -> (Right <$> f x) `catch` eitherHandler iohandler
 
 -- dumps the given filepaths and strings to a file, then returns the original non-write chuncks concatenated
 processOutput :: ([String], [(FilePath, String)]) -> IO String

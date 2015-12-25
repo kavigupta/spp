@@ -26,7 +26,8 @@ Runs the preprocessor on the given options
 -}
 runPreprocessor :: Options -> IO ()
 runPreprocessor opts = do
-    bufold <- createBackups $ srcDir opts
+    maybeBak <- createBackups $ srcDir opts
+    bufold <- onErrorExit maybeBak print
     results <- forM (backups bufold) $ preprocess opts
     let failure = concatErrors results
     if isError failure && not (noCleanOnErrors opts) then do
@@ -35,3 +36,7 @@ runPreprocessor opts = do
             exitFailure
         else
             forM_ (backups bufold) $ setWritable False . originalFile
+
+onErrorExit :: Either SPPError a -> (SPPError -> IO b) -> IO a
+onErrorExit (Left err) handler = handler err >> exitFailure
+onErrorExit (Right x) _        = return x
