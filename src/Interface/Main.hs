@@ -1,4 +1,4 @@
-module Interface.Main (
+module Main (
         main
     ) where
 
@@ -29,7 +29,7 @@ runPreprocessor opts = do
     bufold <- createBackups $ srcDir opts
     results <- forM (backups bufold) $ preprocess opts
     let failure = concatErrors results
-    if isError failure then do
+    if isError failure && not (noCleanOnErrors opts) then do
             print failure
             removeBackups $ srcDir opts
             exitFailure

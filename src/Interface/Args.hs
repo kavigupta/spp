@@ -1,6 +1,6 @@
 module Interface.Args (
         Options,
-            srcDir, clean, directiveStart,
+            srcDir, clean, directiveStart, noCleanOnErrors,
         optionParser
     ) where
 
@@ -12,11 +12,14 @@ data Options = Options {
         -- The source directory to preprocess or clean
         srcDir :: String,
         -- The string to start directives with
-        directiveStart :: String
+        directiveStart :: String,
+        -- Clean up on errors
+        noCleanOnErrors :: Bool
     }
 
 optionParser :: ParserSpec Options
 optionParser = Options `parsedBy`
     boolFlag "clean" `andBy`
     reqFlag "src" `andBy`
-    optFlag "" "directive-start"
+    optFlag "" "directive-start" `andBy`
+    boolFlag "no-clean-on-errors"
