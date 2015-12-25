@@ -5,7 +5,6 @@ module Main (main) where
 
 import Control.Monad
 import Control.Applicative hiding ((<|>))
-import Text.Regex.Posix
 
 import System.Console.ArgParser.Run
 import System.Exit
@@ -13,7 +12,7 @@ import System.Exit
 import FileHandler
 import ArgumentProcessor
 import CommandGenerator
-import Debug.Trace
+import Directive.Identifier
 
 main :: IO ()
 main = withParseResult optionParser doProcessing
@@ -64,32 +63,23 @@ Creates an IO instance for preprocessing a series of lines.
 -}
 process :: Options -> FilePath -> String -> IO (Either String String)
 process opts path str
-        = case performAll commands of
+        = case result of
             Left err -> return $ Left err
-            Right f -> f rest
+            Right res -> res
     where
-    (commandnames, rest) = collectDirectives (directiveStart opts) str
-    commands :: [Either String Action]
-    commands = map (toCommand path) commandnames
-
-collectDirectives :: String -> String -> ([String], String)
-collectDirectives start str
-        = trace (show (str, regex)) $ case str =~ regex of
-            [[_, values, rest, _]] -> (getDirectives values, rest)
-            _ -> ([], str)
-    where
-    getDirectives = map (dropWhile (`elem` "\t ")) . lines
-    regex = start ++ "preprocess:\r?\n(([ \t]+" ++ start ++ ".+\r?\n)+)((.|\r?\n)+)"
+        result :: Either String (IO (Either String String))
+        result = do
+            (header, commands, rest) <- parseDirectives path (directiveStart opts) str :: Either String (String, [Action], String)
+            return $ fmap (header ++) <$> performAll commands rest
 {-
     Perform all the actions in the given list of actions.
     If any of the values are `Left` errors, the entire result is an error.
     Otherwise, the result is considered to be all the other actions chained together
 -}
-performAll :: forall a err. [Either err (a -> IO (Either err a))] -> Either err (a -> IO (Either err a))
-performAll = foldr comp (Right $ return . Right)
+performAll :: (Monad m) => forall a err. [a -> m (Either err a)] -> a -> m (Either err a)
+performAll = foldr comp (return . return)
     where
-    comp :: Either err (a -> IO (Either err a)) -> Either err (a -> IO (Either err a)) -> Either err (a -> IO (Either err a))
-    comp = either (const . Left) feed
-    feed :: (a -> IO (Either err a)) -> Either err (a -> IO (Either err a)) -> Either err (a -> IO (Either err a))
-    feed _ (Left err) = Left err
-    feed f (Right g) = Right (f >=> either (return . Left) g)
+    comp f g x = bind2 (f x) g
+    bind2 val f = do
+        x <- val
+        either (return . Left) f x

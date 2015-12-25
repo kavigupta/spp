@@ -1,11 +1,13 @@
 {-# LANGUAGE TupleSections #-}
-module Directive.Identifier (identifyDirectives) where
+module Directive.Identifier (parseDirectives) where
 
-import Directive.Parser
+import CommandGenerator
+import Tools.Parser
 
-import Text.Parsec.Token
+import Text.Parsec
 
-import Control.Applicative
+import Control.Monad
+import Control.Applicative((<$>))
 
 -- | Represents the directives along with the rest of the file
 data Directives = Directives
@@ -13,11 +15,11 @@ data Directives = Directives
     [String] -- ^ The directives, in string form
     String -- ^ The rest of the file
 
-parseDirectives :: String -> String -> Either String ([Command], String)
-parseDirectives start input
-    = case doParse input directives of
+parseDirectives :: String -> String -> String -> Either String (String, [Action], String)
+parseDirectives path start input
+    = case doParse (directives start) input of
         (Left err) -> Left $ "Invalid Directive; error " ++ show err ++ " encountered when processing\n" ++ input
-        (Right (Directives dirs rest)) -> (,rest) <$> mapM parseCommand dirs
+        (Right (Directives header dirs rest)) -> (header,,rest) <$> mapM (toCommand path) dirs
 
 
 -- takes a string containing a beginning of line condition and outputs a parser that parses directives
@@ -25,19 +27,21 @@ directives :: String -> Parser Directives
 directives start = try (directivesIfExist start) <|> directivesIfNotExist
 
 directivesIfExist :: String -> Parser Directives
-directivesIfExist start = directivesIfStart start <|> (manyTill anyChar (try endOfLine)) >>= directivesIfStart start
+directivesIfExist start = directivesIfStart start "" <|> secondLine
+    where
+    secondLine = manyTill anyChar (try endOfLine) >>= directivesIfStart start
 
 directivesIfStart :: String -> String -> Parser Directives
 directivesIfStart start firstLine = do
     string "preprocess"
     try $ char ':'
     endOfLine
-    dirs <- many directive
+    dirs <- many (directive start)
     rest <- many anyChar
     return $ Directives firstLine dirs rest
 
-directivesIfNotExist :: String -> Parser Directives
-directivesIfNotExist start
+directivesIfNotExist :: Parser Directives
+directivesIfNotExist
     = liftM (Directives "" []) $ many anyChar
 
 directive :: String -> Parser String
