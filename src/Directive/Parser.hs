@@ -1,5 +1,5 @@
 module Directive.Parser (
-        doParse, parseCommand, Command(..), Parser, spacedString, haskellString
+        parseCommand, Command(..)
     ) where
 
 import Text.Parsec

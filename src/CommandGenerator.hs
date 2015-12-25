@@ -15,6 +15,7 @@ import Control.Monad
 import Control.Exception(catch)
 
 import Text.Parsec
+import Tools.Parser
 
 type Errored = Either String String
 
