@@ -1,4 +1,4 @@
-module ArgumentProcessor(
+module Interface.Args (
         Options,
             srcDir, clean, directiveStart,
         optionParser

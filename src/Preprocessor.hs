@@ -10,7 +10,7 @@ import System.Console.ArgParser.Run
 import System.Exit
 
 import FileHandler
-import ArgumentProcessor
+import Interface.Args
 import CommandGenerator
 import Directive.Identifier
 
