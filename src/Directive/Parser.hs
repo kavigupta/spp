@@ -17,9 +17,7 @@ data Command =
 
 parseCommand :: String -> Either SPPError Command
 parseCommand input
-    = case doParse command input of
-        Left err -> Left $ InvalidCommand input err
-        Right x -> Right x
+    = either (Left . InvalidCommand input) Right $ doParse command input
 
 command :: Parser Command
 command = do

@@ -23,7 +23,7 @@ data Directives a = Directives
 
 parseDirectives :: String -> String -> Either SPPError (Directives Command)
 parseDirectives start input
-    = case doParse (directives start) input  of
+    = case doParse (directives start) input of
         (Left err) -> Left $ DirectiveError input err
         (Right (Directives header dirs rest)) -> (\commands -> Directives header commands rest) <$> mapM parseCommand dirs
 
