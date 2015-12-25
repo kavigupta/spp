@@ -3,6 +3,7 @@ module Directive.Identifier (parseDirectives) where
 
 import CommandGenerator
 import Tools.Parser
+import Interface.Errors
 
 import Text.Parsec
 
@@ -16,10 +17,10 @@ data Directives = Directives
     String -- ^ The rest of the file
         deriving Show
 
-parseDirectives :: String -> String -> String -> Either String (String, [Action], String)
+parseDirectives :: String -> String -> String -> Either SPPError (String, [Action], String)
 parseDirectives path start input
     = case doParse (directives start) input  of
-        (Left err) -> Left $ "Invalid Directive; error " ++ show err ++ " encountered when processing\n" ++ input
+        (Left err) -> Left $ DirectiveError input err
         (Right (Directives header dirs rest)) -> (header,,rest) <$> mapM (toCommand path) dirs
 
 

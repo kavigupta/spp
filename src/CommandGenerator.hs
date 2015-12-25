@@ -5,6 +5,7 @@ module CommandGenerator(
 import Directive.Parser
 import Tools.Files
 import Tools.Shell
+import Interface.Errors
 
 import System.Process(readProcess, system)
 import System.FilePath
@@ -18,12 +19,12 @@ import Control.Exception(catch)
 import Text.Parsec
 import Tools.Parser
 
-type Errored = Either String String
+type Errored = Either SPPError String
 
 type Action = String -> IO Errored
 
 -- Converts a directive into a command, possibly producing an error.
-toCommand :: FilePath -> String -> Either String Action
+toCommand :: FilePath -> String -> Either SPPError Action
 toCommand path str = getCommand path <$> parseCommand str
 
 -- Applies the given command in
@@ -39,9 +40,9 @@ uscmd _ (Exec toExec) original
 uscmd path (PassThrough toPass) original
         = fmap Right (readProcess toPass [path] original) `catch` eitherHandler
 uscmd _ DoWrite original
-        = processParseResult writeChunk processOutput original
+        = processParseResult writeChunk processOutput WriteOutError original
 uscmd _ DoInclude original
-        = processParseResult includeChunk processInclude original
+        = processParseResult includeChunk processInclude IncludeError original
 
 -- Executes the given command and outputs the original text
 --  This should not throw errors, since it catches all of them in the either handler
@@ -52,10 +53,10 @@ executeAndOutputOriginal toExec original = do
 
 -- Processes the parse result.
 --  This should not throw errors, since it catches all of them and wraps them up in the internal Either.
-processParseResult :: Parser a -> (([String], [a]) -> IO String) -> Action
-processParseResult parser f input
+processParseResult :: Parser a -> (([String], [a]) -> IO String) -> (ParseError -> SPPError) -> Action
+processParseResult parser f handler input
     = case doParse (intersperse parser) input of
-        (Left err) -> return $ Left . show $ err
+        (Left err) -> return . Left . handler $ err
         (Right x) -> (Right <$> f x) `catch` eitherHandler
 
 -- dumps the given filepaths and strings to a file, then returns the original non-write chuncks concatenated

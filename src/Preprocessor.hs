@@ -1,53 +1,20 @@
 #!/usr/bin/runhaskell
 {-# LANGUAGE ExplicitForAll #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-module Main (main) where
+module Preprocessor (preprocess) where
 
-import Control.Monad
 import Control.Applicative hiding ((<|>))
-
-import System.Console.ArgParser.Run
-import System.Exit
 
 import FileHandler
 import Interface.Args
 import CommandGenerator
 import Directive.Identifier
-
-main :: IO ()
-main = withParseResult optionParser doProcessing
-
-doProcessing :: Options -> IO ()
-doProcessing opts
-    | clean opts = void $ removeBackups (srcDir opts)
-    | otherwise  = runPreprocessor opts
-
-{-
-Runs the preprocessor on the given options
--}
-runPreprocessor :: Options -> IO ()
-runPreprocessor opts = do
-    bufold <- createBackups $ srcDir opts
-    results <- forM (backups bufold) $ preprocess opts
-    let failure = concatErrors results
-    case failure of
-        (Just err) -> do
-            putStrLn err
-            removeBackups $ srcDir opts
-            exitFailure
-        Nothing -> forM_ (backups bufold) $ setWritable False . originalFile
-
-{-
-Collects all `Left` errors from the given list of Eithers
--}
-concatErrors :: [Either a b] -> Maybe a
-concatErrors [] = Nothing
-concatErrors (x:xs) = either Just (const $ concatErrors xs) x
+import Interface.Errors
 
 {-
 An IO Action for either processing a file or producing an error without doing anything
 -}
-preprocess :: Options -> BackedUpFile -> IO (Either String ())
+preprocess :: Options -> BackedUpFile -> IO (Either SPPError ())
 preprocess opts buFile =
         do
             -- Ignore the possibility of error at this line.
@@ -61,15 +28,15 @@ preprocess opts buFile =
 {-
 Creates an IO instance for preprocessing a series of lines.
 -}
-process :: Options -> FilePath -> String -> IO (Either String String)
+process :: Options -> FilePath -> String -> IO (Either SPPError String)
 process opts path str
         = case result of
             Left err -> return $ Left err
             Right res -> res
     where
-        result :: Either String (IO (Either String String))
+        result :: Either SPPError (IO (Either SPPError String))
         result = do
-            (header, commands, rest) <- parseDirectives path (directiveStart opts) str :: Either String (String, [Action], String)
+            (header, commands, rest) <- parseDirectives path (directiveStart opts) str :: Either SPPError (String, [Action], String)
             return $ fmap (header ++) <$> performAll commands rest
 {-
     Perform all the actions in the given list of actions.

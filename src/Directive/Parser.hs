@@ -4,6 +4,7 @@ module Directive.Parser (
 
 import Text.Parsec
 
+import Interface.Errors
 import Tools.Parser
 
 data Command =
@@ -14,10 +15,10 @@ data Command =
     DoInclude
         deriving Show
 
-parseCommand :: String -> Either String Command
+parseCommand :: String -> Either SPPError Command
 parseCommand input
     = case doParse command input of
-        Left err -> Left $ "Invalid command " ++ input ++ "\n" ++ show err
+        Left err -> Left $ InvalidCommand input err
         Right x -> Right x
 
 command :: Parser Command
