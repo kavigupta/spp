@@ -14,10 +14,11 @@ data Directives = Directives
     String -- ^ The first line, in string form
     [String] -- ^ The directives, in string form
     String -- ^ The rest of the file
+        deriving Show
 
 parseDirectives :: String -> String -> String -> Either String (String, [Action], String)
 parseDirectives path start input
-    = case doParse (directives start) input of
+    = case doParse (directives start) input  of
         (Left err) -> Left $ "Invalid Directive; error " ++ show err ++ " encountered when processing\n" ++ input
         (Right (Directives header dirs rest)) -> (header,,rest) <$> mapM (toCommand path) dirs
 
@@ -27,7 +28,7 @@ directives :: String -> Parser Directives
 directives start = try (directivesIfExist start) <|> directivesIfNotExist
 
 directivesIfExist :: String -> Parser Directives
-directivesIfExist start = directivesIfStart start "" <|> secondLine
+directivesIfExist start = try (directivesIfStart start "") <|> secondLine
     where
     secondLine = manyTill anyChar (try endOfLine) >>= directivesIfStart start
 
@@ -36,7 +37,7 @@ directivesIfStart start firstLine = do
     string "preprocess"
     try $ char ':'
     endOfLine
-    dirs <- many (directive start)
+    dirs <- many (try $ directive start)
     rest <- many anyChar
     return $ Directives firstLine dirs rest
 
@@ -46,6 +47,7 @@ directivesIfNotExist
 
 directive :: String -> Parser String
 directive start = do
+    space
     spaces
     string start
     manyTill anyChar (try endOfLine)

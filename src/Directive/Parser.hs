@@ -12,6 +12,7 @@ data Command =
     PassThrough String |
     DoWrite |
     DoInclude
+        deriving Show
 
 parseCommand :: String -> Either String Command
 parseCommand input
