@@ -1,7 +1,6 @@
 {-# LANGUAGE DoAndIfThenElse #-}
 module FileHandler(
         BackedUpFile(..),
-        BackedUpFolder(..),
         createBackups, removeBackups,
         setWritable
     ) where
@@ -24,12 +23,6 @@ data BackedUpFile = BackedUpFile {
     backupFile :: FilePath
 }
 
-data BackedUpFolder = BackedUpFolder {
-    originalRoot :: FilePath,
-    backedUpRoot :: FilePath,
-    backups :: [BackedUpFile]
-}
-
 copyDirectories :: IOExcHandler -> FilePath -> FilePath -> IO (Either SPPError ())
 copyDirectories handler src dst = unsafeCp `catch` eitherHandler handler
     where
@@ -40,10 +33,9 @@ setWritable b f = do
     p <- getPermissions f
     setPermissions f (p {writable = b})
 
-createBackups :: FilePath -> IO (Either SPPError BackedUpFolder)
+createBackups :: FilePath -> IO (Either SPPError [BackedUpFile])
 createBackups root = do
         backupExists <- liftM2 (||) (doesFileExist buRoot) (doesDirectoryExist buRoot)
-        print (buRoot, backupExists)
         if backupExists then
             return $ Left $ BackupExistsError root
         else do
@@ -52,14 +44,7 @@ createBackups root = do
             let backedUpFiles = zipWith BackedUpFile files newFiles
             renameDirectory root buRoot
             copySuccess <- copyDirectories (BackupError root) buRoot root
-            case copySuccess of
-                (Left err) -> return $ Left err
-                (Right ()) ->
-                    return $ Right BackedUpFolder {
-                            originalRoot = root,
-                            backedUpRoot = buRoot,
-                            backups = backedUpFiles
-                        }
+            return $ fmap (const backedUpFiles) copySuccess
     where
     buRoot = rootBackup root
 
