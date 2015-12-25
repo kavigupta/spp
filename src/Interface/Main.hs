@@ -29,9 +29,9 @@ runPreprocessor opts = do
     bufold <- createBackups $ srcDir opts
     results <- forM (backups bufold) $ preprocess opts
     let failure = concatErrors results
-    case failure of
-        (Just err) -> do
-            print err
+    if isError failure then do
+            print failure
             removeBackups $ srcDir opts
             exitFailure
-        Nothing -> forM_ (backups bufold) $ setWritable False . originalFile
+        else
+            forM_ (backups bufold) $ setWritable False . originalFile

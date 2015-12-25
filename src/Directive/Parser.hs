@@ -2,10 +2,10 @@ module Directive.Parser (
         parseCommand, Command(..)
     ) where
 
-import Text.Parsec
-
 import Interface.Errors
 import Tools.Parser
+
+import Text.Parsec
 
 data Command =
     Replace String String |
