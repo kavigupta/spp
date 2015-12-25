@@ -37,7 +37,7 @@ directivesIfStart start firstLine = do
     string "preprocess"
     try $ char ':'
     endOfLine
-    dirs <- many (try $ directive start)
+    dirs <- many (directive start)
     rest <- many anyChar
     return $ Directives firstLine dirs rest
 
@@ -47,7 +47,7 @@ directivesIfNotExist
 
 directive :: String -> Parser String
 directive start = do
-    space
-    spaces
+    nonNewlineSpace
+    many nonNewlineSpace
     string start
     manyTill anyChar (try endOfLine)

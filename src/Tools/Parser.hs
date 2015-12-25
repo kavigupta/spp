@@ -1,6 +1,6 @@
 module Tools.Parser(
     Parser,
-        haskellString, spacedString, doParse
+        haskellString, spacedString, doParse, nonNewlineSpace
 ) where
 
 import Text.Parsec.Language (haskellDef)
@@ -19,3 +19,6 @@ spacedString str = spaces >> string str >> spaces
 
 doParse :: Parser a -> String -> Either ParseError a
 doParse parser input = runIdentity $ runParserT parser "(unknown)" "" input
+
+nonNewlineSpace :: Parser Char
+nonNewlineSpace = oneOf " \t"
