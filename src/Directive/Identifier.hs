@@ -9,6 +9,7 @@ import Control.Applicative
 
 -- | Represents the directives along with the rest of the file
 data Directives = Directives
+    String -- ^ The first line, in string form
     [String] -- ^ The directives, in string form
     String -- ^ The rest of the file
 
@@ -24,16 +25,20 @@ directives :: String -> Parser Directives
 directives start = try (directivesIfExist start) <|> directivesIfNotExist
 
 directivesIfExist :: String -> Parser Directives
-directivesIfExist start = do
-    string "preprocess:"
+directivesIfExist start = directivesIfStart start <|> (manyTill anyChar (try endOfLine)) >>= directivesIfStart start
+
+directivesIfStart :: String -> String -> Parser Directives
+directivesIfStart start firstLine = do
+    string "preprocess"
+    try $ char ':'
     endOfLine
     dirs <- many directive
     rest <- many anyChar
-    return $ Directives dirs rest
+    return $ Directives firstLine dirs rest
 
 directivesIfNotExist :: String -> Parser Directives
 directivesIfNotExist start
-    = liftM (Directives []) $ many anyChar
+    = liftM (Directives "" []) $ many anyChar
 
 directive :: String -> Parser String
 directive start = do
