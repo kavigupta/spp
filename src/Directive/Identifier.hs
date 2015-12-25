@@ -1,13 +1,23 @@
+{-# LANGUAGE TupleSections #-}
 module Directive.Identifier (identifyDirectives) where
 
 import Directive.Parser
 
 import Text.Parsec.Token
 
+import Control.Applicative
+
 -- | Represents the directives along with the rest of the file
 data Directives = Directives
     [String] -- ^ The directives, in string form
     String -- ^ The rest of the file
+
+parseDirectives :: String -> String -> Either String ([Command], String)
+parseDirectives start input
+    = case doParse input directives of
+        (Left err) -> Left $ "Invalid Directive; error " ++ show err ++ " encountered when processing\n" ++ input
+        (Right (Directives dirs rest)) -> (,rest) <$> mapM parseCommand dirs
+
 
 -- takes a string containing a beginning of line condition and outputs a parser that parses directives
 directives :: String -> Parser Directives
