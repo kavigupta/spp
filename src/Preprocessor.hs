@@ -9,6 +9,7 @@ import FileHandler
 import Interface.Args
 import CommandGenerator
 import Directive.Identifier
+import Directive.Parser
 import Interface.Errors
 
 {-
@@ -25,20 +26,21 @@ preprocess opts buFile =
                 Left err -> return $ Left err
                 Right outputValue -> Right <$> writeFile (originalFile buFile) outputValue
 
+performCommands :: String -> Directives Command -> IO (Either SPPError String)
+performCommands path (Directives header commands rest) = do
+        result <- performAll actions rest
+        return $ (header ++) <$> result
+    where actions = map (getCommand path) commands
+
 {-
 Creates an IO instance for preprocessing a series of lines.
 -}
 process :: Options -> FilePath -> String -> IO (Either SPPError String)
 process opts path str
-        = case result of
-            Left err -> return $ Left err
-            Right (header, res) -> fmap (header ++) <$> res
+        = either (return . Left) id result
     where
-        result :: Either SPPError (String, IO (Either SPPError String))
-        result = do
-            (Directives header commands rest) <- parseDirectives (directiveStart opts) str
-            let actions = map (getCommand path) commands
-            return (header, performAll actions rest)
+        result :: Either SPPError (IO (Either SPPError String))
+        result = performCommands path <$> parseDirectives (directiveStart opts) str
 {-
     Perform all the actions in the given list of actions.
     If any of the values are `Left` errors, the entire result is an error.
