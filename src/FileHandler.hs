@@ -37,13 +37,13 @@ createBackups :: FilePath -> IO (Either SPPError [BackedUpFile])
 createBackups root = do
         backupExists <- liftM2 (||) (doesFileExist buRoot) (doesDirectoryExist buRoot)
         if backupExists then
-            return $ Left $ BackupExistsError root
+            return . Left $ SPPError BackupExistsError root Nothing Nothing
         else do
             files <- allFiles root
             let newFiles = map (makeBackup root) files
             let backedUpFiles = zipWith BackedUpFile files newFiles
             renameDirectory root buRoot
-            copySuccess <- copyDirectories (BackupError root) buRoot root
+            copySuccess <- copyDirectories (sppError BackupError root Nothing) buRoot root
             return $ fmap (const backedUpFiles) copySuccess
     where
     buRoot = rootBackup root

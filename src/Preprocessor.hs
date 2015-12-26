@@ -40,7 +40,7 @@ process opts path str
         = either (return . Left) id result
     where
         result :: Either SPPError (IO (Either SPPError String))
-        result = performCommands path <$> parseDirectives (directiveStart opts) str
+        result = performCommands path <$> parseDirectives (directiveStart opts) path str
 {-
     Perform all the actions in the given list of actions.
     If any of the values are `Left` errors, the entire result is an error.

@@ -1,32 +1,74 @@
 module Interface.Errors (
         IOExcHandler, ParseHandler,
-        SPPError(..),
-            concatErrors, isError
+        SPPError(..), ErrorType(..),
+            sppError, concatErrors, isError
     ) where
 
 import Text.Parsec
 import Control.Exception
 
 import Data.Monoid
+import Data.List
+import Data.String.Utils
 
 type Input = String
 
 type IOExcHandler = IOException -> SPPError
 type ParseHandler = ParseError -> SPPError
 
+sppError :: (Show err) => ErrorType -> FilePath -> Maybe Input -> err -> SPPError
+sppError ty pat inp = SPPError ty pat inp . Just . show
+
 data SPPError
-    = DirectiveError        Input ParseError
-    | InvalidCommand        Input ParseError
-    | IncludeIOError        Input IOException
-    | PassThroughError      Input String IOException
-    | WriteIOError          Input IOException
-    | IncludeParseError     Input ParseError
-    | WriteParseError       Input ParseError
-    | BackupExistsError     FilePath
-    | BackupError           FilePath IOException
-    | ExecError             String IOException
-    | ErrorSequence         [SPPError]
-        deriving (Show, Eq)
+    = SPPError ErrorType FilePath (Maybe Input) (Maybe String)
+    | ErrorSequence [SPPError]
+        deriving Eq
+
+data ErrorType
+    = BackupExistsError
+    | BackupError
+    | InvalidDirectiveList
+    | InvalidDirective
+    | IncludeIOError
+    | IncludeParseError
+    | WriteIOError
+    | WriteParseError
+    | PassThroughError String
+    | ExecError String
+        deriving Eq
+
+tabify :: String -> String
+tabify = ("\t"++) . replace "\n" "\n\t"
+
+instance Show SPPError where
+    show (SPPError errtype path input exc)
+            = "An error occured in processing " ++ path ++ "\n"
+                ++ "\t" ++ show errtype ++ "\n"
+                ++ excLine
+                ++ inLine
+        where
+        excLine = case exc of
+            Nothing -> ""
+            Just err -> "\t" ++ err ++ "\n"
+        inLine = case input of
+            Nothing -> ""
+            Just inp -> tabify inp
+    show (ErrorSequence errs)
+        = "Multiple errors occured\n"
+            ++ tabify (intercalate "\n" $ map show errs)
+
+instance Show ErrorType where
+    show InvalidDirectiveList = "Processing a list of directives failed due to invalid syntax"
+    show InvalidDirective = "Processing a directive failed due to invalid syntax"
+    show IncludeIOError = "Including a file failed due to an IO error"
+    show WriteIOError = "Writing a file failed due to an IO error"
+    show (PassThroughError cmd) = "Passing a file through " ++ show cmd ++ " failed"
+    show IncludeParseError = "Including a file failed due to invalid syntax"
+    show WriteParseError = "Writing to a file failed due to a parse error"
+    show BackupExistsError = "Backups exist; perhaps you forgot to run --clean last time"
+    show BackupError = "An error occured in creating backups"
+    show (ExecError cmd) = "Executing " ++ show cmd ++ " failed"
+
 
 instance Monoid SPPError where
     mempty = ErrorSequence []
@@ -49,4 +91,4 @@ concatErrors = mconcat . map getError
 isError :: SPPError -> Bool
 isError = (/= ErrorSequence [])
 
---backupExistsError = "A backup already exists. Perhaps you forgot to run spp --clean last time"
+--backupExistsError = Just err

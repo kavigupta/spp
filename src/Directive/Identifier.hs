@@ -21,11 +21,11 @@ data Directives a = Directives
     String -- ^ The rest of the file
         deriving Show
 
-parseDirectives :: String -> String -> Either SPPError (Directives Command)
-parseDirectives start input
+parseDirectives :: String -> FilePath -> String -> Either SPPError (Directives Command)
+parseDirectives start path input
     = case doParse (directives start) input of
-        (Left err) -> Left $ DirectiveError input err
-        (Right (Directives header dirs rest)) -> (\commands -> Directives header commands rest) <$> mapM parseCommand dirs
+        (Left err) -> Left $ sppError InvalidDirectiveList path (Just input) err
+        (Right (Directives header dirs rest)) -> (\commands -> Directives header commands rest) <$> mapM (parseCommand path) dirs
 
 
 -- takes a string containing a beginning of line condition and outputs a parser that parses directives

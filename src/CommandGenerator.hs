@@ -31,20 +31,32 @@ getCommand path cmd = inDir (takeDirectory path) . uscmd path cmd
 uscmd :: FilePath -> Command -> Action
 uscmd _ (Replace regex replacement) original
         = return . Right $ subRegex (mkRegex regex) original replacement
-uscmd _ (Exec toExec) original
-        = executeAndOutputOriginal toExec original
+uscmd path (Exec toExec) original
+        = executeAndOutputOriginal path toExec original
 uscmd path (PassThrough toPass) original
-        = fmap Right (readProcess toPass [path] original) `catch` eitherHandler (PassThroughError original toPass)
-uscmd _ DoWrite original
-        = processParseResult (WriteIOError original) writeChunk processOutput (WriteParseError original) original
-uscmd _ DoInclude original
-        = processParseResult (IncludeIOError original) includeChunk processInclude (IncludeParseError original) original
+        = fmap Right (readProcess toPass [path] original)
+            `catch` eitherHandler (sppError (PassThroughError toPass) path (Just original))
+uscmd path DoWrite original
+        = processParseResult
+            (sppError WriteIOError path (Just original))
+            writeChunk
+            processOutput
+            (sppError WriteParseError path (Just original))
+            original
+uscmd path DoInclude original
+        = processParseResult
+            (sppError IncludeIOError path (Just original))
+            includeChunk
+            processInclude
+            (sppError IncludeParseError path (Just original))
+            original
 
 -- Executes the given command and outputs the original text
 --  This should not throw errors, since it catches all of them in the either handler
-executeAndOutputOriginal :: String -> Action
-executeAndOutputOriginal toExec original = do
-    result <- fmap Right (system toExec) `catch` eitherHandler (ExecError toExec)
+executeAndOutputOriginal :: FilePath -> String -> Action
+executeAndOutputOriginal path toExec original = do
+    result <- fmap Right (system toExec)
+        `catch` eitherHandler (sppError (ExecError toExec) path (Just original))
     return $ result >>= const (Right original)
 
 -- Processes the parse result.

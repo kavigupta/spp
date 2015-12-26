@@ -15,9 +15,9 @@ data Command =
     DoInclude
         deriving Show
 
-parseCommand :: String -> Either SPPError Command
-parseCommand input
-    = either (Left . InvalidCommand input) Right $ doParse command input
+parseCommand :: FilePath -> String -> Either SPPError Command
+parseCommand path input
+    = either (Left . sppError InvalidDirective path (Just input)) Right $ doParse command input
 
 command :: Parser Command
 command = do
