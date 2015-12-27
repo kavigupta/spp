@@ -10,6 +10,7 @@ import Preprocessor
 import Interface.Args
 import FileHandler
 import Interface.Errors
+import Tools.String
 
 import Control.Monad
 
@@ -47,4 +48,11 @@ onErrorExit (Left err) handler = handler err >> exitFailure
 onErrorExit (Right x) _        = return x
 
 errorReporter :: SPPError -> IO ()
-errorReporter = print
+errorReporter err = do
+        width <- terminalWidth
+        let val = indentHangs width (show err)
+        putStrLn val
+
+
+terminalWidth :: IO Int
+terminalWidth = return 80
