@@ -1,7 +1,8 @@
 module Interface.Errors (
         IOExcHandler, ParseHandler,
         SPPError(..), ErrorType(..),
-            sppError, concatErrors, isError
+            sppError, concatErrors, isError,
+            RestoreSituation(..)
     ) where
 
 import Text.Parsec
@@ -27,6 +28,7 @@ data SPPError
 data ErrorType
     = BackupExistsError
     | BackupError
+    | RestoreError RestoreSituation
     | InvalidDirectiveList
     | InvalidDirective
     | IncludeIOError
@@ -36,6 +38,9 @@ data ErrorType
     | PassThroughError String
     | ExecError String
         deriving Eq
+
+data RestoreSituation = UponRequest | UponFailure
+    deriving Eq
 
 tabify :: String -> String
 tabify = ("\t"++) . replace "\n" "\n\t"
@@ -58,6 +63,13 @@ instance Show SPPError where
             ++ tabify (intercalate "\n" $ map show errs)
 
 instance Show ErrorType where
+    show BackupExistsError = "Backups exist; perhaps you forgot to run --clean last time"
+    show BackupError = "An error occured in creating backups"
+    show (RestoreError UponRequest) = "Backups do not exist or are irrecoverable; "
+        ++ "either you have already --clean or there is some other serious problem"
+    show (RestoreError UponFailure) = "Backups do not exist or are irrecoverable; "
+        ++ "Since this is supposed to be an error recovery step after that last error, "
+        ++ "I'm afraid I'm not entirely sure what to do at this point."
     show InvalidDirectiveList = "Processing a list of directives failed due to invalid syntax"
     show InvalidDirective = "Processing a directive failed due to invalid syntax"
     show IncludeIOError = "Including a file failed due to an IO error"
@@ -65,8 +77,6 @@ instance Show ErrorType where
     show (PassThroughError cmd) = "Passing a file through " ++ show cmd ++ " failed"
     show IncludeParseError = "Including a file failed due to invalid syntax"
     show WriteParseError = "Writing to a file failed due to a parse error"
-    show BackupExistsError = "Backups exist; perhaps you forgot to run --clean last time"
-    show BackupError = "An error occured in creating backups"
     show (ExecError cmd) = "Executing " ++ show cmd ++ " failed"
 
 

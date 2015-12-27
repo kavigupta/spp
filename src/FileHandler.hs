@@ -51,15 +51,19 @@ createBackups root = do
 {-
 Returns whether or not the backup was successfully removed
 -}
-removeBackups :: FilePath -> IO Bool
-removeBackups root = do
+removeBackups :: RestoreSituation -> FilePath -> IO (Either SPPError ())
+removeBackups situation root = do
         backupExists <- doesDirectoryExist buRoot
-        if not backupExists then return False
-        else do
-            removeDirectoryRecursive root
-            renameDirectory buRoot root
-            return True
-    where buRoot = rootBackup root
+        if not backupExists then
+            return . Left $ SPPError (RestoreError situation) buRoot Nothing Nothing
+        else
+            dorestore `catch` eitherHandler (sppError (RestoreError situation) buRoot Nothing)
+    where
+    buRoot = rootBackup root
+    dorestore = do
+        removeDirectoryRecursive root
+        renameDirectory buRoot root
+        return $ Right ()
 
 makeBackup :: FilePath -> FilePath -> FilePath
 makeBackup root file = rootBackup root ++ drop (length root) file

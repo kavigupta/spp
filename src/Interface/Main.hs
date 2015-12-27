@@ -18,7 +18,7 @@ main = withParseResult optionParser doProcessing
 
 doProcessing :: Options -> IO ()
 doProcessing opts
-    | clean opts = void $ removeBackups (srcDir opts)
+    | clean opts = runClean opts
     | otherwise  = runPreprocessor opts
 
 {-
@@ -30,12 +30,17 @@ runPreprocessor opts = do
     bks <- onErrorExit maybeBak errorReporter
     results <- forM bks $ preprocess opts
     let failure = concatErrors results
-    if isError failure && not (noCleanOnErrors opts) then do
+    when (isError failure && not (noCleanOnErrors opts)) $ do
             errorReporter failure
-            removeBackups $ srcDir opts
+            backfail <- removeBackups UponFailure $ srcDir opts
+            onErrorExit backfail errorReporter
             exitFailure
-        else
-            forM_ bks $ setWritable False . originalFile
+    forM_ bks $ setWritable False . originalFile
+
+runClean :: Options -> IO ()
+runClean opts = do
+    backfail <- removeBackups UponRequest (srcDir opts)
+    onErrorExit backfail errorReporter
 
 onErrorExit :: Either SPPError a -> (SPPError -> IO b) -> IO a
 onErrorExit (Left err) handler = handler err >> exitFailure
