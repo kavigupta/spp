@@ -17,7 +17,7 @@ cabal-version:       >=1.8
 
 executable spp
     hs-source-dirs:      src
-    ghc-options:         -static -optl-pthread -optl-static -Wall -Werror -fno-warn-unused-do-bind
+    ghc-options:         -static -optl-pthread -optl-static -Wall -Werror
     main-is: Interface/Main.hs
     -- other-modules:
     build-depends:
