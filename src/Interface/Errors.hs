@@ -1,7 +1,7 @@
 module Interface.Errors (
         IOExcHandler, ParseHandler,
         SPPError(..), ErrorType(..),
-            sppError, concatErrors, isError,
+            sppError, concatErrors, actualError,
             RestoreSituation(..)
     ) where
 
@@ -98,7 +98,8 @@ concatErrors = mconcat . map getError
     getError (Left err) = err
     getError (Right _) = mempty
 
-isError :: SPPError -> Bool
-isError = (/= ErrorSequence [])
+actualError :: SPPError -> Either SPPError ()
+actualError (ErrorSequence []) = Right ()
+actualError x = Left x
 
 --backupExistsError = Just err

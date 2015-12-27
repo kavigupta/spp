@@ -29,13 +29,13 @@ runPreprocessor opts = do
     maybeBak <- createBackups $ srcDir opts
     bks <- onErrorExit maybeBak errorReporter
     results <- forM bks $ preprocess opts
-    let failure = concatErrors results
-    when (isError failure && not (noCleanOnErrors opts)) $ do
-            errorReporter failure
-            backfail <- removeBackups UponFailure $ srcDir opts
-            onErrorExit backfail errorReporter
-            exitFailure
     forM_ bks $ setWritable False . originalFile
+    let perhapsfail = actualError $ concatErrors results
+    onErrorExit perhapsfail $ \failure -> do
+            errorReporter failure
+            unless (noCleanOnErrors opts) $ do
+                backfail <- removeBackups UponFailure $ srcDir opts
+                onErrorExit backfail errorReporter
 
 runClean :: Options -> IO ()
 runClean opts = do
