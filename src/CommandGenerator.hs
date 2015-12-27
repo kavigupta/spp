@@ -1,3 +1,4 @@
+{-# OPTIONS -fno-warn-unused-do-bind #-}
 module CommandGenerator(
         getCommand, Action
     ) where

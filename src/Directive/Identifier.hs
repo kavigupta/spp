@@ -1,4 +1,5 @@
 {-# LANGUAGE TupleSections #-}
+{-# OPTIONS -fno-warn-unused-do-bind #-}
 module Directive.Identifier (
         parseDirectives,
         Directives(..)
