@@ -1,6 +1,6 @@
 module Interface.Args (
         Options,
-            srcDir, outDir, clean, directiveStart, noCleanOnErrors,
+            srcDir, outDir, bakDir, clean, directiveStart, noCleanOnErrors,
         optionParser
     ) where
 
@@ -12,8 +12,10 @@ data Options = Options {
         clean :: Bool,
         -- The source directory to preprocess or clean
         srcDir :: String,
-        -- Where the output files should go. "" signifies to use default
+        -- Where the output files should go.
         outDir :: Maybe String,
+        -- Where the backup files should go.
+        bakDir :: Maybe String,
         -- The string to start directives with
         directiveStart :: String,
         -- Clean up on errors
@@ -29,7 +31,8 @@ optionParser :: ParserSpec Options
 optionParser = Options `parsedBy`
     boolFlag "clean" `andBy`
     reqFlag "src" `andMaybeBy`
-    optFlag nothingString "out" `andBy`
+    optFlag nothingString "out" `andMaybeBy`
+    optFlag nothingString "bak" `andBy`
     optFlag "" "directive-start" `andBy`
     boolFlag "no-clean-on-errors"
 
