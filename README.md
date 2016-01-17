@@ -34,6 +34,80 @@ But there is another way. Just have a generic program that simulates \*nix's `#!
 
 `spp` works in two phases: processing and cleanup. In processing, the given source directory is copied into a backup folder. `spp` then goes through each file in the original folder, processes it, and dumps the result back in the file. In cleaning, the original directory is removed and the backups are restored.
 
+## A typical use case
+
+Let's say you have some files:
+
+```txt
+{src}
+    information.md
+    _includes
+        example.py
+```
+
+The file `information.md` contains the following content:
+
+```markdown
+
+# A practical example
+
+Here is an example of some python code:
+
+\```python
+#!/usr/bin/python
+def f(g):
+    return g(h)
+
+h = 2
+
+print(f(f))
+
+\```
+
+See `example.py` for the code sample provided here.
+
+```
+
+and the file `example.py` contains the content
+
+```python
+#!/usr/bin/python
+def f(g):
+    return g(h)
+
+h = 2
+
+print(f(f))
+```
+
+The "Don't Repeat Yourself" principle is being completely violated here. The simple solution is to use `spp`.
+
+```markdown
+preprocess:
+    include
+# A practical example
+
+Here is an example of some python code:
+
+\```python
+include: "_includes/example.py"
+\```
+
+See `example.py` for the code sample provided here.
+
+```
+
+If you were using the command `markdown do magic {src}` to process the markdown files, you can now use
+
+```sh
+spp --src {src}
+markdown do magic {src}
+spp --clean --src {src}
+```
+
+And everything should just work. If you are, for example, using a service like `jekyll` or something that gives a live preview, this should work the same way, except that the files in `{src}` would have been replaced by postprocessed equivalents that would be write-protected. In this case, you can use `spp --update --src {src}` to update your current folder. You can even run an automatic update process every 5 seconds, `update` should simply be a fairly fast noop if none of the files have been modified since the last update.
+
+
 ## Command Line Interface
 
 `spp` is actually two programs, `spp` and `spp --clean`.

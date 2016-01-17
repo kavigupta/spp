@@ -17,6 +17,9 @@ data Options = Options {
         noCleanOnErrors :: Bool
     }
 
+--TODO Add support for specifying an output directory
+--TODO add update support
+
 optionParser :: ParserSpec Options
 optionParser = Options `parsedBy`
     boolFlag "clean" `andBy`
