@@ -15,13 +15,13 @@ import Interface.Errors
 {-
 An IO Action for either processing a file or producing an error without doing anything
 -}
-preprocess :: Options -> BackedUpFile -> IO (Either SPPError ())
-preprocess opts buFile =
+preprocess :: SPPOpts -> BackedUpFile -> IO (Either SPPError ())
+preprocess sppopts buFile =
         do
             -- Ignore the possibility of error at this line.
             contents <- readFile $ backupFile buFile
             -- There should be no error at this line given that process should throw no error
-            output <- process opts (originalFile buFile) contents
+            output <- process sppopts (originalFile buFile) contents
             case output of
                 Left err -> return $ Left err
                 Right outputValue -> Right <$> writeFile (originalFile buFile) outputValue
@@ -35,12 +35,12 @@ performCommands path (Directives header commands rest) = do
 {-
 Creates an IO instance for preprocessing a series of lines.
 -}
-process :: Options -> FilePath -> String -> IO (Either SPPError String)
-process opts path str
+process :: SPPOpts -> FilePath -> String -> IO (Either SPPError String)
+process sppopts path str
         = either (return . Left) id result
     where
-        result :: Either SPPError (IO (Either SPPError String))
-        result = performCommands path <$> parseDirectives (directiveStart opts) path str
+    result :: Either SPPError (IO (Either SPPError String))
+    result = performCommands path <$> parseDirectives (directiveStart sppopts) path str
 {-
     Perform all the actions in the given list of actions.
     If any of the values are `Left` errors, the entire result is an error.

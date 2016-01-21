@@ -7,8 +7,11 @@ module FileHandler(
 
 import Tools.Files
 import Interface.Errors
+import Interface.Args
 
 import System.Directory
+import System.FilePath
+
 import Control.Exception
 
 import Shelly.Lifted(cp_r, fromText, shelly)
@@ -20,7 +23,8 @@ import Control.Applicative((<$>))
 
 data BackedUpFile = BackedUpFile {
     originalFile :: FilePath,
-    backupFile :: FilePath
+    backupFile :: FilePath,
+    outputFile :: FilePath
 }
 
 copyDirectories :: IOExcHandler -> FilePath -> FilePath -> IO (Either SPPError ())
@@ -33,25 +37,37 @@ setWritable b f = do
     p <- getPermissions f
     setPermissions f (p {writable = b})
 
-createBackups :: FilePath -> IO (Either SPPError [BackedUpFile])
-createBackups root = do
-        backupExists <- liftM2 (||) (doesFileExist buRoot) (doesDirectoryExist buRoot)
-        if backupExists then
-            return . Left $ SPPError BackupExistsError root Nothing Nothing
-        else do
-            files <- allFiles root
-            let newFiles = map (makeBackup root) files
-            let backedUpFiles = zipWith BackedUpFile files newFiles
-            renameDirectory root buRoot
-            copySuccess <- copyDirectories (sppError BackupError root Nothing) buRoot root
-            return $ fmap (const backedUpFiles) copySuccess
+createBackups :: Dirs -> IO (Either SPPError [BackedUpFile])
+createBackups root@(Dirs {srcDir = src, bakDir = bak, outDir = out})
+        | src == bak = put src out OutputExistsError
+        | src == out = put src bak BackupExistsError
+        | otherwise = do
+            outResult <- put src out OutputExistsError
+            bakResult <- put src bak BackupExistsError
+            return . fmap head . sequence $ [outResult, bakResult]
     where
-    buRoot = rootBackup root
+    put :: FilePath -> FilePath -> ErrorType -> IO (Either SPPError [BackedUpFile])
+    put from to err = do
+        outputExists <- fileOrDirectoryExists to
+        if outputExists then
+            return . Left $ SPPError err to Nothing Nothing
+        else do
+            backedUpFiles <- getBkups
+            copySuccess <- copyDirectories (sppError BackupError from Nothing) from to
+            return $ fmap (const backedUpFiles) copySuccess
+    getBkups :: IO [BackedUpFile]
+    getBkups = do
+        files <- allFiles src
+        return $ map (makeBackup root) files
+
+
+fileOrDirectoryExists :: FilePath -> IO Bool
+fileOrDirectoryExists f = liftM2 (||) (doesFileExist f) (doesDirectoryExist f)
 
 {-
 Returns whether or not the backup was successfully removed
 -}
-removeBackups :: RestoreSituation -> FilePath -> IO (Either SPPError ())
+removeBackups :: RestoreSituation -> Dirs -> IO (Either SPPError ())
 removeBackups situation root = do
         backupExists <- doesDirectoryExist buRoot
         if not backupExists then
@@ -59,14 +75,33 @@ removeBackups situation root = do
         else
             dorestore `catch` eitherHandler (sppError (RestoreError situation) buRoot Nothing)
     where
-    buRoot = rootBackup root
-    dorestore = do
-        removeDirectoryRecursive root
-        renameDirectory buRoot root
-        return $ Right ()
+    buRoot = bakDir root
+    dorestore
+        | srcDir root == bakDir root
+            -- if the source directory is the same as the backup directory.
+                -- you only need to delete the outputs
+            = do
+                removeDirectoryRecursive (outDir root)
+                return $ Right ()
+        | srcDir root == outDir root
+            -- if the source is the output, then you need to delete the srcDir
+                -- and copy the backup to the source
+            = do
+                removeDirectoryRecursive (srcDir root)
+                renameDirectory buRoot (srcDir root)
+                return $ Right ()
+        | otherwise
+            = do
+                removeDirectoryRecursive (outDir root)
+                removeDirectoryRecursive (bakDir root)
+                return $ Right ()
 
-makeBackup :: FilePath -> FilePath -> FilePath
-makeBackup root file = rootBackup root ++ drop (length root) file
 
-rootBackup :: FilePath -> FilePath
-rootBackup = (++ ".bak")
+makeBackup :: Dirs -> FilePath -> BackedUpFile
+makeBackup root file = BackedUpFile {
+            originalFile = file,
+            backupFile = bakDir root </> relative,
+            outputFile = outDir root </> relative
+        }
+    where
+    relative = makeRelative (srcDir root) file

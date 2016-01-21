@@ -27,6 +27,7 @@ data SPPError
 
 data ErrorType
     = BackupExistsError
+    | OutputExistsError
     | BackupError
     | RestoreError RestoreSituation
     | InvalidDirectiveList
@@ -64,6 +65,7 @@ instance Show SPPError where
 
 instance Show ErrorType where
     show BackupExistsError = "Backups exist; perhaps you forgot to run --clean last time"
+    show OutputExistsError = "The given output folder would be overwritten by your changes. Perhaps you are running spp twice without clean"
     show BackupError = "An error occured in creating backups"
     show (RestoreError UponRequest) = "Backups do not exist or are irrecoverable; "
         ++ "either you have already --clean or there is some other serious problem"

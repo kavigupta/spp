@@ -20,6 +20,7 @@ library
     exposed-modules:    Interface.Args
     build-depends:
         base >=4.6,
+        directory >=1.2,
         argparser
 
 executable spp

@@ -2,8 +2,6 @@ module Main (
         main
     ) where
 
-import System.Console.ArgParser.Run
-
 import System.Exit
 
 import Preprocessor
@@ -15,32 +13,31 @@ import Tools.String
 import Control.Monad
 
 main :: IO ()
-main = withParseResult optionParser doProcessing
+main = processArguments doProcessing
 
-doProcessing :: Options -> IO ()
-doProcessing opts
-    | clean opts = runClean opts
-    | otherwise  = runPreprocessor opts
+doProcessing :: SPPOpts -> IO ()
+doProcessing (Clean directories) = runClean directories
+doProcessing opts@(Preprocess _ _ _) = runPreprocessor opts
 
 {-
 Runs the preprocessor on the given options
 -}
-runPreprocessor :: Options -> IO ()
-runPreprocessor opts = do
-    maybeBak <- createBackups $ srcDir opts
+runPreprocessor :: SPPOpts -> IO ()
+runPreprocessor sppopts = do
+    maybeBak <- createBackups $ dirs sppopts
     bks <- onErrorExit maybeBak errorReporter
-    results <- forM bks $ preprocess opts
+    results <- forM bks $ preprocess sppopts
     forM_ bks $ setWritable False . originalFile
     let perhapsfail = actualError $ concatErrors results
     onErrorExit perhapsfail $ \failure -> do
             errorReporter failure
-            unless (noCleanOnErrors opts) $ do
-                backfail <- removeBackups UponFailure $ srcDir opts
+            unless (noCleanOnErrors sppopts) $ do
+                backfail <- removeBackups UponFailure (dirs sppopts)
                 onErrorExit backfail errorReporter
 
-runClean :: Options -> IO ()
-runClean opts = do
-    backfail <- removeBackups UponRequest (srcDir opts)
+runClean :: Dirs -> IO ()
+runClean root = do
+    backfail <- removeBackups UponRequest root
     onErrorExit backfail errorReporter
 
 onErrorExit :: Either SPPError a -> (SPPError -> IO b) -> IO a
