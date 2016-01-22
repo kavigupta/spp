@@ -2,6 +2,8 @@
 module Interface.Args (
         Dirs (..),
         SPPOpts(..),
+        InPlaceBackup(..),
+        SeparateBackup(..),
         processArguments
     ) where
 
@@ -12,10 +14,22 @@ import Control.Applicative
 import System.Directory
 import System.Exit
 
-data Dirs = Dirs {
-    srcDir :: String,
-    outDir :: String,
-    bakDir :: String
+data InPlaceBackup = InPlaceBackup {
+    srcAndOut :: String,
+    onlyBak :: String
+}
+
+data SeparateBackup = SeparateBackup {
+    srcAndBak :: String,
+    onlyOut :: String
+}
+
+data Dirs = InPlace InPlaceBackup | Separate SeparateBackup
+
+data RawDirs = RawDirs {
+    rawSrc :: String,
+    rawBak :: String,
+    rawOut :: String
 }
 
 data SPPOpts = Clean {
@@ -28,10 +42,7 @@ data SPPOpts = Clean {
     }
 
 processArguments :: (SPPOpts -> IO ()) -> IO ()
-processArguments program = withParseResult optionParser $ \opts ->
-    case checkDirs <$> sanitizeOptions opts of
-        (Left err) -> putStrLn "Command line argument mismatch error" >> putStrLn err
-        (Right sppopts) -> sppopts >>= program
+processArguments program = withParseResult optionParser $ \opts -> sanitizeOptions opts >>= program
 
 data Options = Options {
     -- Whether or not this is a cleaning run
@@ -50,33 +61,47 @@ data Options = Options {
 
 --TODO add update support
 
-checkDirs :: SPPOpts -> IO SPPOpts
-checkDirs opts = case dirs opts of
-    Dirs src out bak -> do
+checkDirs :: RawDirs -> IO Dirs
+checkDirs (RawDirs src out bak) = do
         csrc <- canonicalizePath src
         cout <- canonicalizePath out
         cbak <- canonicalizePath bak
-        if cout == cbak then
+        fromCanonicalTriple csrc cout cbak
+    where
+    fromCanonicalTriple :: String -> String -> String -> IO Dirs
+    fromCanonicalTriple csrc cout cbak
+        | cout == cbak =
             putStrLn "The backup and output directories cannot be the same" >> exitFailure
-        else
-            return $ opts {dirs = Dirs csrc cout cbak}
+        | csrc == cout =
+            return $ InPlace $ InPlaceBackup {srcAndOut=csrc, onlyBak=cbak}
+        | csrc == cbak =
+            return $ Separate $ SeparateBackup{srcAndBak=csrc, onlyOut=cout}
+        | otherwise =
+            putStrLn "The source must be the same as the backup or the output. Otherwise, the backup is redundant" >> exitFailure
 
-sanitizeOptions :: Options -> Either String SPPOpts
+
+sanitizeOptions :: Options -> IO SPPOpts
 sanitizeOptions opts
         | clean opts    = case (rawDirectiveStart opts, rawNoCleanOnErrors opts) of
             (Nothing, False) -> Clean <$> extractDirs opts
-            (Just _, _) -> Left "--directive-start should not be used with --clean"
-            (_, True) -> Left "--no-clean-on-errors should not be used with --clean"
+            (Just _, _) -> errorDie "--directive-start should not be used with --clean"
+            (_, True) -> errorDie "--no-clean-on-errors should not be used with --clean"
         | otherwise     = do
-            dirse <- extractDirs opts
-            return $ Preprocess dirse (maybe "" id (rawDirectiveStart opts)) (rawNoCleanOnErrors opts)
+                    dirse <- extractDirs opts
+                    return $ Preprocess dirse (maybe "" id (rawDirectiveStart opts)) (rawNoCleanOnErrors opts)
 
-extractDirs :: Options -> Either String Dirs
-extractDirs opts = fromSrcOutBak (rawSrcDir opts) (rawOutDir opts) (rawBakDir opts)
+extractDirs :: Options -> IO Dirs
+extractDirs opts = extractRawDirs opts >>= checkDirs
+
+errorDie :: String -> IO a
+errorDie str = putStrLn str >> exitFailure >> return undefined
+
+extractRawDirs :: Options -> IO RawDirs
+extractRawDirs opts = fromSrcOutBak (rawSrcDir opts) (rawOutDir opts) (rawBakDir opts)
     where
     fromSrcOutBak src (Just out) (Just bak)
-        | out == bak    = Left $ "The backup and output directories cannot be the same"
-        | otherwise     = Right $ Dirs src out bak
+        | out == bak    = errorDie "The backup and output directories cannot be the same"
+        | otherwise     = return $ RawDirs {rawSrc=src, rawOut=out, rawBak=bak}
     fromSrcOutBak src Nothing (Just bak)
         = fromSrcOutBak src (Just src) (Just bak)
     fromSrcOutBak src (Just out) Nothing
