@@ -22,7 +22,7 @@ import Control.Monad(liftM2)
 import Control.Applicative((<$>))
 
 data BackedUpFile = BackedUpFile {
-    originalFile :: FilePath,
+    sourceLocated :: SourceLocation,
     backupFile :: FilePath,
     outputFile :: FilePath
 }
@@ -38,13 +38,12 @@ setWritable b f = do
     setPermissions f (p {writable = b})
 
 createBackups :: Dirs -> IO (Either SPPError [BackedUpFile])
-createBackups root@(Dirs {srcDir = src, bakDir = bak, outDir = out})
-        | src == bak = put src out OutputExistsError
-        | src == out = put src bak BackupExistsError
-        | otherwise = do
-            outResult <- put src out OutputExistsError
-            bakResult <- put src bak BackupExistsError
-            return . fmap head . sequence $ [outResult, bakResult]
+createBackups root@(Dirs {srcLoc=srcl, bakOf=bak, outOf=out})
+        = case srcl of
+            AtBak ->
+                put bak out OutputExistsError
+            AtOut ->
+                put out bak BackupExistsError
     where
     put :: FilePath -> FilePath -> ErrorType -> IO (Either SPPError [BackedUpFile])
     put from to err = do
@@ -55,6 +54,9 @@ createBackups root@(Dirs {srcDir = src, bakDir = bak, outDir = out})
             backedUpFiles <- getBkups
             copySuccess <- copyDirectories (sppError BackupError from Nothing) from to
             return $ fmap (const backedUpFiles) copySuccess
+    src = case srcl of
+        AtBak -> bak
+        AtOut -> out
     getBkups :: IO [BackedUpFile]
     getBkups = do
         files <- allFiles src
@@ -68,40 +70,35 @@ fileOrDirectoryExists f = liftM2 (||) (doesFileExist f) (doesDirectoryExist f)
 Returns whether or not the backup was successfully removed
 -}
 removeBackups :: RestoreSituation -> Dirs -> IO (Either SPPError ())
-removeBackups situation root = do
-        backupExists <- doesDirectoryExist buRoot
+removeBackups situation (Dirs {outOf=out, bakOf=bak, srcLoc=srclc}) = do
+        backupExists <- doesDirectoryExist bak
         if not backupExists then
-            return . Left $ SPPError (RestoreError situation) buRoot Nothing Nothing
+            return . Left $ SPPError (RestoreError situation) bak Nothing Nothing
         else
-            dorestore `catch` eitherHandler (sppError (RestoreError situation) buRoot Nothing)
+            dorestore >> return (Right ())
+                `catch` eitherHandler (sppError (RestoreError situation) bak Nothing)
     where
-    buRoot = bakDir root
-    dorestore
-        | srcDir root == bakDir root
+    dorestore = case srclc of
+        AtBak ->
             -- if the source directory is the same as the backup directory.
                 -- you only need to delete the outputs
-            = do
-                removeDirectoryRecursive (outDir root)
-                return $ Right ()
-        | srcDir root == outDir root
+            removeDirectoryRecursive out
+        AtOut ->
             -- if the source is the output, then you need to delete the srcDir
                 -- and copy the backup to the source
-            = do
-                removeDirectoryRecursive (srcDir root)
-                renameDirectory buRoot (srcDir root)
-                return $ Right ()
-        | otherwise
-            = do
-                removeDirectoryRecursive (outDir root)
-                removeDirectoryRecursive (bakDir root)
-                return $ Right ()
+            do
+                removeDirectoryRecursive out
+                renameDirectory          bak out
 
 
 makeBackup :: Dirs -> FilePath -> BackedUpFile
-makeBackup root file = BackedUpFile {
-            originalFile = file,
-            backupFile = bakDir root </> relative,
-            outputFile = outDir root </> relative
+makeBackup (Dirs {outOf=out, bakOf=bak,srcLoc=src}) file = BackedUpFile {
+            sourceLocated = src,
+            backupFile = bak </> relative,
+            outputFile = out </> relative
         }
     where
-    relative = makeRelative (srcDir root) file
+    srcDir = case src of
+        AtOut -> out
+        AtBak -> bak
+    relative = makeRelative srcDir file
