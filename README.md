@@ -1,4 +1,4 @@
-# GenericPreprocessor
+# Simple Preprocessor (spp)
 A preprocessor that is designed for simplicity and extensiblity, written in Haskell
 
 ## Motivation
