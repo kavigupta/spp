@@ -1,9 +1,8 @@
 {-# LANGUAGE DoAndIfThenElse #-}
 module Interface.Args (
         Dirs (..),
+        SourceLocation(..),
         SPPOpts(..),
-        InPlaceBackup(..),
-        SeparateBackup(..),
         processArguments
     ) where
 
@@ -14,17 +13,13 @@ import Control.Applicative
 import System.Directory
 import System.Exit
 
-data InPlaceBackup = InPlaceBackup {
-    srcAndOut :: String,
-    onlyBak :: String
-}
+data SourceLocation = AtBak | AtOut
 
-data SeparateBackup = SeparateBackup {
-    srcAndBak :: String,
-    onlyOut :: String
+data Dirs = Dirs {
+    bakOf :: FilePath,
+    outOf :: FilePath,
+    srcLoc :: SourceLocation
 }
-
-data Dirs = InPlace InPlaceBackup | Separate SeparateBackup
 
 data RawDirs = RawDirs {
     rawSrc :: String,
@@ -73,9 +68,9 @@ checkDirs (RawDirs src out bak) = do
         | cout == cbak =
             putStrLn "The backup and output directories cannot be the same" >> exitFailure
         | csrc == cout =
-            return $ InPlace $ InPlaceBackup {srcAndOut=csrc, onlyBak=cbak}
+            return $ Dirs {outOf=csrc, bakOf=cbak, srcLoc=AtOut}
         | csrc == cbak =
-            return $ Separate $ SeparateBackup{srcAndBak=csrc, onlyOut=cout}
+            return $ Dirs {bakOf=csrc, outOf=cout, srcLoc=AtBak}
         | otherwise =
             putStrLn "The source must be the same as the backup or the output. Otherwise, the backup is redundant" >> exitFailure
 
