@@ -21,10 +21,13 @@ preprocess sppopts buFile =
             -- Ignore the possibility of error at this line.
             contents <- readFile $ backupFile buFile
             -- There should be no error at this line given that process should throw no error
-            output <- process sppopts (originalFile buFile) contents
+            output <- process sppopts srcPath contents
             case output of
                 Left err -> return $ Left err
-                Right outputValue -> Right <$> writeFile (originalFile buFile) outputValue
+                Right outputValue -> Right <$> writeFile (outputFile buFile) outputValue
+    where srcPath = case sourceLocated buFile of
+            AtBak -> backupFile buFile
+            AtOut -> outputFile buFile
 
 performCommands :: String -> Directives Command -> IO (Either SPPError String)
 performCommands path (Directives header commands rest) = do

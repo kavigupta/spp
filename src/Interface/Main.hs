@@ -17,7 +17,7 @@ main = processArguments doProcessing
 
 doProcessing :: SPPOpts -> IO ()
 doProcessing (Clean directories) = runClean directories
-doProcessing opts@(Preprocess _ _ _) = runPreprocessor opts
+doProcessing opts@(Preprocess {}) = runPreprocessor opts
 
 {-
 Runs the preprocessor on the given options
@@ -27,7 +27,7 @@ runPreprocessor sppopts = do
     maybeBak <- createBackups $ dirs sppopts
     bks <- onErrorExit maybeBak errorReporter
     results <- forM bks $ preprocess sppopts
-    forM_ bks $ setWritable False . originalFile
+    forM_ bks $ setWritable False . backupFile
     let perhapsfail = actualError $ concatErrors results
     onErrorExit perhapsfail $ \failure -> do
             errorReporter failure

@@ -13,6 +13,9 @@ import Control.Applicative
 import System.Directory
 import System.Exit
 
+import Control.Monad
+import Data.Maybe
+
 data SourceLocation = AtBak | AtOut
 
 data Dirs = Dirs {
@@ -37,7 +40,7 @@ data SPPOpts = Clean {
     }
 
 processArguments :: (SPPOpts -> IO ()) -> IO ()
-processArguments program = withParseResult optionParser $ \opts -> sanitizeOptions opts >>= program
+processArguments program = withParseResult optionParser $ sanitizeOptions >=> program
 
 data Options = Options {
     -- Whether or not this is a cleaning run
@@ -68,9 +71,9 @@ checkDirs (RawDirs src out bak) = do
         | cout == cbak =
             putStrLn "The backup and output directories cannot be the same" >> exitFailure
         | csrc == cout =
-            return $ Dirs {outOf=csrc, bakOf=cbak, srcLoc=AtOut}
+            return Dirs {outOf=csrc, bakOf=cbak, srcLoc=AtOut}
         | csrc == cbak =
-            return $ Dirs {bakOf=csrc, outOf=cout, srcLoc=AtBak}
+            return Dirs {bakOf=csrc, outOf=cout, srcLoc=AtBak}
         | otherwise =
             putStrLn "The source must be the same as the backup or the output. Otherwise, the backup is redundant" >> exitFailure
 
@@ -83,7 +86,7 @@ sanitizeOptions opts
             (_, True) -> errorDie "--no-clean-on-errors should not be used with --clean"
         | otherwise     = do
                     dirse <- extractDirs opts
-                    return $ Preprocess dirse (maybe "" id (rawDirectiveStart opts)) (rawNoCleanOnErrors opts)
+                    return $ Preprocess dirse (fromMaybe "" (rawDirectiveStart opts)) (rawNoCleanOnErrors opts)
 
 extractDirs :: Options -> IO Dirs
 extractDirs opts = extractRawDirs opts >>= checkDirs
@@ -96,7 +99,7 @@ extractRawDirs opts = fromSrcOutBak (rawSrcDir opts) (rawOutDir opts) (rawBakDir
     where
     fromSrcOutBak src (Just out) (Just bak)
         | out == bak    = errorDie "The backup and output directories cannot be the same"
-        | otherwise     = return $ RawDirs {rawSrc=src, rawOut=out, rawBak=bak}
+        | otherwise     = return RawDirs {rawSrc=src, rawOut=out, rawBak=bak}
     fromSrcOutBak src Nothing (Just bak)
         = fromSrcOutBak src (Just src) (Just bak)
     fromSrcOutBak src (Just out) Nothing
@@ -105,23 +108,23 @@ extractRawDirs opts = fromSrcOutBak (rawSrcDir opts) (rawOutDir opts) (rawBakDir
         = fromSrcOutBak src (Just src) (Just $ src ++ ".bak")
 
 
-nothingString :: String
-nothingString = "\x01"
+magicallyNothing :: String
+magicallyNothing = "\x01"
 
 optionParser :: ParserSpec Options
 optionParser = Options `parsedBy`
         boolFlag "clean" `andBy`
         reqFlag "src" `andMaybeBy`
-        optFlag nothingString "out" `andMaybeBy`
-        optFlag nothingString "bak" `andMaybeBy`
-        optFlag nothingString "directive-start" `andBy`
+        optFlag magicallyNothing "out" `andMaybeBy`
+        optFlag magicallyNothing "bak" `andMaybeBy`
+        optFlag magicallyNothing "directive-start" `andBy`
         boolFlag "no-clean-on-errors"
 
 infixl 1 `andMaybeBy`
 
 andMaybeBy :: ParamSpec spec => ParserSpec (Maybe String -> b) -> spec String -> ParserSpec b
-andMaybeBy prev spec = fmap (.isNothing) prev `andBy` spec
+andMaybeBy prev spec = fmap (.isMagicallyNothing) prev `andBy` spec
     where
-    isNothing x
-        | x == nothingString    = Nothing
+    isMagicallyNothing x
+        | x == magicallyNothing    = Nothing
         | otherwise             = Just x
