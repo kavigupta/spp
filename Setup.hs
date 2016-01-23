@@ -13,9 +13,9 @@ main = do
     buildCode <- rawSystem "cabal" ["build"]
     when (buildCode /= ExitSuccess) $ die "Build failed"
     hlintRun
+    copyFile "dist/build/spp/spp" "spp"
     buildTest <- rawSystem "cabal" ["test"]
     when (buildTest /= ExitSuccess) $ die "Tests failed"
-    copyFile "dist/build/spp/spp" "spp"
 
 hlintRun :: IO ()
 hlintRun = do

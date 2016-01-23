@@ -1,6 +1,7 @@
 module Tools.Files(
         eitherHandler,
         allFiles,
+        realContents,
         actual
     ) where
 
@@ -23,11 +24,15 @@ allFiles path
     where
     subFiles :: IO [FilePath]
     subFiles = do
-        contents <- getDirectoryContents path
-        let nonup = filter actual contents
+        nonup <- realContents path
         let paths = map ((path ++ "/") ++) nonup
         allSubdrs <- forM paths allFiles
         return $ concat allSubdrs
 
 actual :: String -> Bool
 actual x = x /= "." && x /= ".."
+
+realContents :: FilePath -> IO [String]
+realContents path = do
+    contents <- getDirectoryContents path
+    return $ filter actual contents

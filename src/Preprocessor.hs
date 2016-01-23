@@ -5,6 +5,8 @@ module Preprocessor (preprocess) where
 
 import Control.Applicative hiding ((<|>))
 
+import Control.Exception(catch, evaluate)
+
 import FileHandler
 import Interface.Args
 import CommandGenerator
@@ -19,12 +21,16 @@ preprocess :: SPPOpts -> BackedUpFile -> IO (Either SPPError ())
 preprocess sppopts buFile =
         do
             -- Ignore the possibility of error at this line.
-            contents <- readFile $ backupFile buFile
-            -- There should be no error at this line given that process should throw no error
-            output <- process sppopts srcPath contents
-            case output of
-                Left err -> return $ Left err
-                Right outputValue -> Right <$> writeFile (outputFile buFile) outputValue
+            mcontents <- fmap Right (readFile (backupFile buFile) >>= evaluate)
+                    `catch` (return . Left . show :: IOError -> IO (Either String String))
+            case mcontents of
+                (Left _) -> return $ Right ()
+                (Right contents) -> do
+                    -- There should be no error at this line given that process should throw no error
+                    output <- process sppopts srcPath contents
+                    case output of
+                        Left err -> return $ Left err
+                        Right outputValue -> Right <$> writeFile (outputFile buFile) outputValue
     where srcPath = case sourceLocated buFile of
             AtBak -> backupFile buFile
             AtOut -> outputFile buFile

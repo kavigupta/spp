@@ -61,9 +61,11 @@ data Options = Options {
 
 checkDirs :: RawDirs -> IO Dirs
 checkDirs (RawDirs src out bak) = do
-        csrc <- canonicalizePath src
-        cout <- canonicalizePath out
-        cbak <- canonicalizePath bak
+
+        putStrLn $ "abcdef " ++ bak
+        csrc <- cleanCanon src
+        cout <- cleanCanon out
+        cbak <- cleanCanon bak
         fromCanonicalTriple csrc cout cbak
     where
     fromCanonicalTriple :: String -> String -> String -> IO Dirs
@@ -128,3 +130,11 @@ andMaybeBy prev spec = fmap (.isMagicallyNothing) prev `andBy` spec
     isMagicallyNothing x
         | x == magicallyNothing    = Nothing
         | otherwise             = Just x
+
+cleanCanon :: FilePath -> IO FilePath
+cleanCanon path = do
+    exists <- doesDirectoryExist path
+    unless exists $ createDirectoryIfMissing False path
+    canon <- canonicalizePath path
+    unless exists $ removeDirectory path
+    return canon
