@@ -16,13 +16,13 @@ import System.Exit
 import Control.Monad
 import Data.Maybe
 
-data SourceLocation = AtBak | AtOut
+data SourceLocation = AtBak | AtOut deriving Show
 
 data Dirs = Dirs {
     bakOf :: FilePath,
     outOf :: FilePath,
     srcLoc :: SourceLocation
-}
+} deriving Show
 
 data RawDirs = RawDirs {
     rawSrc :: String,
@@ -60,13 +60,15 @@ data Options = Options {
 --TODO add update support
 
 checkDirs :: RawDirs -> IO Dirs
-checkDirs (RawDirs src out bak) = do
-
+checkDirs (RawDirs {rawSrc=src,rawOut=out,rawBak=bak}) = do
         putStrLn $ "abcdef " ++ bak
         csrc <- cleanCanon src
         cout <- cleanCanon out
         cbak <- cleanCanon bak
-        fromCanonicalTriple csrc cout cbak
+        print (src, out, bak)
+        u <- fromCanonicalTriple csrc cout cbak
+        print u
+        return u
     where
     fromCanonicalTriple :: String -> String -> String -> IO Dirs
     fromCanonicalTriple csrc cout cbak

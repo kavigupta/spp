@@ -20,6 +20,7 @@ An IO Action for either processing a file or producing an error without doing an
 preprocess :: SPPOpts -> BackedUpFile -> IO (Either SPPError ())
 preprocess sppopts buFile =
         do
+            putStrLn $ "Output file = " ++ outputFile buFile
             -- Ignore the possibility of error at this line.
             mcontents <- fmap Right (readFile (backupFile buFile) >>= evaluate)
                     `catch` (return . Left . show :: IOError -> IO (Either String String))
