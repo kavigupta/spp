@@ -28,13 +28,10 @@ instance Monoid TestResult where
     Failure x `mappend` _ = Failure x
     Success `mappend` x   = x
 
-mkFilePath :: String -> Sh.FilePath
-mkFilePath = Sh.fromText . pack
-
 runTest :: String -> Int -> String -> IO TestResult
 runTest testName num cmd = do
         -- save backup
-        Sh.shelly $ (Sh.cp_r `on` mkFilePath) pathTest pathBak
+        system $ "cp -r " ++ pathTest ++ "/. " ++ pathBak
         startingdir <- getWorkingDirectory
         print startingdir
         let spploc = startingdir </> "spp "
@@ -53,11 +50,10 @@ runTest testName num cmd = do
             return sppworked
         else do
             changeWorkingDirectory startingdir
-            removeDirectoryRecursive pathBak
             return cleanworked
     where
     resultName = testName ++ "_result" ++ show num
-    backupName = testName ++ "_backup"
+    backupName = testName ++ "___backup"
     pathTest = "testsuite" </> testName ++ "_test"
     pathResult = "testsuite" </> resultName
     pathBak = "testsuite" </> backupName
