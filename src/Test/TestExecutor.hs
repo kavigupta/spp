@@ -19,8 +19,6 @@ import Data.ByteString(readFile)
 
 import Tools.Files
 
-import qualified Shelly as Sh
-
 data TestResult = Success | Failure String deriving Eq
 
 instance Monoid TestResult where
