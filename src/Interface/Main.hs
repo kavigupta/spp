@@ -27,7 +27,7 @@ runPreprocessor sppopts = do
     maybeBak <- createBackups $ dirs sppopts
     bks <- onErrorExit maybeBak errorReporter
     results <- forM bks $ preprocess sppopts
-    forM_ bks $ setWritable False . backupFile
+    forM_ bks $ setWritable False . outputFile
     let perhapsfail = actualError $ concatErrors results
     onErrorExit perhapsfail $ \failure -> do
             errorReporter failure
