@@ -44,14 +44,14 @@ runTest testName num cmd = do
         -- run spp
         system $ spploc ++ cmd
         -- check that the result is the same as the desired result
-        cmdworked <- checkSame "." $ ".." </> resultName
-        if cmdworked /= Success then
-            return cmdworked
+        sppworked <- checkSame "." $ ".." </> resultName
+        -- run spp --clean
+        system $ spploc ++ cmd ++ " --clean"
+        -- check that the resutl is the same as the original
+        cleanworked <- checkSame "." $ ".." </> backupName
+        if sppworked /= Success then
+            return sppworked
         else do
-            -- run spp --clean
-            system $ spploc ++ cmd ++ " --clean"
-            -- check that the resutl is the same as the original
-            cleanworked <- checkSame "." $ ".." </> backupName
             changeWorkingDirectory startingdir
             removeDirectoryRecursive pathBak
             return cleanworked
