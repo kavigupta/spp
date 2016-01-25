@@ -12,6 +12,7 @@ tests :: [Test]
 tests = [
         Test "basic" 1 "--src src",
         Test "basic" 2 "--src src --out out"
+        Test "tree" 1 "--src src"
     ]
 
 main :: IO ()
