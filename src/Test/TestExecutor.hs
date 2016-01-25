@@ -1,5 +1,5 @@
 {-# LANGUAGE DoAndIfThenElse #-}
-module Test.TestExecutor where
+module Test.TestExecutor(Test(..), TestResult(..), runTests, runTest) where
 
 import Prelude hiding (readFile)
 
@@ -19,15 +19,39 @@ import Data.ByteString(readFile)
 
 import Tools.Files
 
-data TestResult = Success | Failure String deriving Eq
+data TestResult = Success | Failure [String]
+    deriving Eq
+
+failure :: String -> TestResult
+failure = Failure . return
+
+data Test = Test {
+    testName :: String,
+    testNumber :: Int,
+    testCommand :: String
+}
 
 instance Monoid TestResult where
     mempty = Success
-    Failure x `mappend` _ = Failure x
     Success `mappend` x   = x
+    x `mappend` Success   = x
+    Failure x `mappend` Failure y = Failure (x ++ y)
 
-runTest :: String -> Int -> String -> IO TestResult
-runTest testName num cmd = do
+
+runTests :: [Test] -> IO TestResult
+runTests tests = do
+    results <- forM tests runTest
+    let ntrials = length tests
+    let nsuccess = length $ filter (==Success) results
+    let result = mconcat results
+    case result of
+        Success -> putStrLn $ show ntrials ++ " tests suceeded!"
+        Failure fs -> putStrLn $ show nsuccess ++ "/" ++ show ntrials ++ " succeeded. Rest failed."
+    putStrLn "asdf"
+    return result
+
+runTest :: Test -> IO TestResult
+runTest Test {testName=testName, testNumber=num, testCommand=cmd} = do
         -- save backup
         system $ "cp -r " ++ pathTest ++ "/. " ++ pathBak
         startingdir <- getWorkingDirectory
@@ -44,11 +68,11 @@ runTest testName num cmd = do
         system $ spploc ++ cmd ++ " --clean"
         -- check that the resutl is the same as the original
         cleanworked <- checkSame "." $ ".." </> backupName
-        if sppworked /= Success then
-            return sppworked
-        else do
-            changeWorkingDirectory startingdir
-            return cleanworked
+        changeWorkingDirectory startingdir
+        removeDirectoryRecursive pathTest
+        system $ "cp -r " ++ pathBak ++ "/. " ++ pathTest
+        let worked = sppworked `mappend` cleanworked
+        return worked
     where
     resultName = testName ++ "_result" ++ show num
     backupName = testName ++ "___backup"
@@ -66,14 +90,14 @@ checkSame a b = do
         if not adir && not bdir then
             checkFilesSame a b
         else
-            return $ Failure $ a ++ " and " ++ b ++ " are not the same file-directory type thingy"
+            return $ failure $ a ++ " and " ++ b ++ " are not the same file-directory type thingy"
 
 checkDirsSame :: FilePath -> FilePath -> IO TestResult
 checkDirsSame a b = do
     conta <- sort <$> realContents a
     contb <- sort <$> realContents b
     if conta /= contb then
-        return . Failure $
+        return . failure $
             a ++ " and " ++ b ++ " have different contents; "
                 ++ show conta ++ " /= " ++ show contb
     else do
@@ -88,4 +112,4 @@ checkFilesSame a b = do
     if areSame then
         return Success
     else
-        return . Failure $ a ++ " and " ++ b ++ " have different contents"
+        return . failure $ a ++ " and " ++ b ++ " have different contents"
