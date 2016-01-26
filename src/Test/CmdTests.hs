@@ -1,5 +1,5 @@
 {-# LANGUAGE DoAndIfThenElse #-}
-module Test.TestExecutor(CmdTest(..), runTests) where
+module Test.CmdTests(CmdTest(..), runTests) where
 
 import Prelude hiding (readFile)
 

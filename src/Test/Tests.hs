@@ -1,7 +1,7 @@
 {-# LANGUAGE DoAndIfThenElse #-}
 module Test.Tests(tests) where
 
-import Test.TestExecutor
+import Test.CmdTests
 
 import Distribution.TestSuite
 
