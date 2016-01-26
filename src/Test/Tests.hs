@@ -1,26 +1,16 @@
 {-# LANGUAGE DoAndIfThenElse #-}
-module Main where
+module Test.Tests(tests) where
 
 import Test.TestExecutor
 
-import System.Exit (exitFailure)
+import Distribution.TestSuite
 
-import Control.Monad
-import Data.List
-
-tests :: [Test]
-tests = [
-        Test "basic" 1 "--src src",
-        Test "basic" 2 "--src src --out out",
-        Test "tree" 1 "--src src"
+cmdTests :: [CmdTest]
+cmdTests = [
+        CmdTest "basic" 1 "--src src",
+        CmdTest "basic" 2 "--src src --out out",
+        CmdTest "tree" 1 "--src src"
     ]
 
-main :: IO ()
-main = do
-    result <- runTests tests
-    case result of
-        Failure str -> do
-            putStrLn "Failed Tests!"
-            putStrLn (intercalate "\n" str)
-            exitFailure
-        Success -> return ()
+tests :: IO [Test]
+tests = return $ runTests cmdTests

@@ -1,15 +1,12 @@
 {-# LANGUAGE DoAndIfThenElse #-}
-module Test.TestExecutor(Test(..), TestResult(..), runTests, runTest) where
+module Test.TestExecutor(CmdTest(..), runTests) where
 
 import Prelude hiding (readFile)
 
-import Data.List(sort)
+import Data.List(sort, intercalate)
 import Data.Monoid
-import Data.Function
 import Control.Monad
 import Control.Applicative
-
-import Data.Text(pack)
 
 import System.Directory
 import System.Posix.Directory
@@ -19,41 +16,50 @@ import Data.ByteString(readFile)
 
 import Tools.Files
 
-data TestResult = Success | Failure [String]
+import Distribution.TestSuite
+
+data CmdTestResult = Success | Failure [String]
     deriving Eq
 
-failure :: String -> TestResult
+failure :: String -> CmdTestResult
 failure = Failure . return
 
-data Test = Test {
+data CmdTest = CmdTest {
     testName :: String,
     testNumber :: Int,
     testCommand :: String
-}
+} deriving Show
 
-instance Monoid TestResult where
+instance Monoid CmdTestResult where
     mempty = Success
     Success `mappend` x   = x
     x `mappend` Success   = x
     Failure x `mappend` Failure y = Failure (x ++ y)
 
 
-runTests :: [Test] -> IO TestResult
-runTests tests = do
-    results <- forM tests runTest
-    let ntrials = length tests
-    let nsuccess = length $ filter (==Success) results
-    let result = mconcat results
-    case result of
-        Success -> putStrLn $ show ntrials ++ " tests suceeded!"
-        Failure fs -> putStrLn $ show nsuccess ++ "/" ++ show ntrials ++ " succeeded. Rest failed."
-    putStrLn "asdf"
-    return result
+runTests :: [CmdTest] -> [Test]
+runTests = map suiteify
 
-runTest :: Test -> IO TestResult
-runTest Test {testName=testName, testNumber=num, testCommand=cmd} = do
+suiteify :: CmdTest -> Test
+suiteify test = Test testinst
+    where
+    testinst :: TestInstance
+    testinst = TestInstance {
+            run = toProgress <$> runTest test,
+            name = show test,
+            tags = [],
+            options = [],
+            setOption = \_ _ -> Right testinst
+        }
+
+toProgress :: CmdTestResult -> Progress
+toProgress Success = Finished Pass
+toProgress (Failure x) = Finished (Fail (intercalate "\n" x))
+
+runTest :: CmdTest -> IO CmdTestResult
+runTest CmdTest {testName=tname, testNumber=num, testCommand=cmd} = do
         -- save backup
-        system $ "cp -r " ++ pathTest ++ "/. " ++ pathBak
+        _ <- system $ "cp -r " ++ pathTest ++ "/. " ++ pathBak
         startingdir <- getWorkingDirectory
         print startingdir
         let spploc = startingdir </> "spp "
@@ -61,26 +67,25 @@ runTest Test {testName=testName, testNumber=num, testCommand=cmd} = do
         getWorkingDirectory >>= print
         print $ spploc ++ cmd
         -- run spp
-        system $ spploc ++ cmd
+        _ <- system $ spploc ++ cmd
         -- check that the result is the same as the desired result
         sppworked <- checkSame "." $ ".." </> resultName
         -- run spp --clean
-        system $ spploc ++ cmd ++ " --clean"
+        _ <- system $ spploc ++ cmd ++ " --clean"
         -- check that the resutl is the same as the original
         cleanworked <- checkSame "." $ ".." </> backupName
         changeWorkingDirectory startingdir
         removeDirectoryRecursive pathTest
-        system $ "cp -r " ++ pathBak ++ "/. " ++ pathTest
+        _ <- system $ "cp -r " ++ pathBak ++ "/. " ++ pathTest
         let worked = sppworked `mappend` cleanworked
         return worked
     where
-    resultName = testName ++ "_result" ++ show num
-    backupName = testName ++ "___backup"
-    pathTest = "testsuite" </> testName ++ "_test"
-    pathResult = "testsuite" </> resultName
+    resultName = tname ++ "_result" ++ show num
+    backupName = tname ++ "___backup"
+    pathTest = "testsuite" </> tname ++ "_test"
     pathBak = "testsuite" </> backupName
 
-checkSame :: FilePath -> FilePath -> IO TestResult
+checkSame :: FilePath -> FilePath -> IO CmdTestResult
 checkSame a b = do
     adir <- doesDirectoryExist a
     bdir <- doesDirectoryExist b
@@ -92,7 +97,7 @@ checkSame a b = do
         else
             return $ failure $ a ++ " and " ++ b ++ " are not the same file-directory type thingy"
 
-checkDirsSame :: FilePath -> FilePath -> IO TestResult
+checkDirsSame :: FilePath -> FilePath -> IO CmdTestResult
 checkDirsSame a b = do
     conta <- sort <$> realContents a
     contb <- sort <$> realContents b
@@ -106,7 +111,7 @@ checkDirsSame a b = do
         results <- zipWithM checkSame conta' contb'
         return $ mconcat results
 
-checkFilesSame :: FilePath -> FilePath -> IO TestResult
+checkFilesSame :: FilePath -> FilePath -> IO CmdTestResult
 checkFilesSame a b = do
     areSame <- liftM2 (==) (readFile a) (readFile b)
     if areSame then
