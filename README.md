@@ -106,15 +106,3 @@ spp --clean --src {src}
 ```
 
 And everything should just work. If you are, for example, using a service like `jekyll` or something that gives a live preview, this should work the same way, except that the files in `{src}` would have been replaced by postprocessed equivalents that would be write-protected. In this case, you can use `spp --update --src {src}` to update your current folder. You can even run an automatic update process every 5 seconds, `update` should simply be a fairly fast noop if none of the files have been modified since the last update.
-
-
-## Command Line Interface
-
-`spp` is actually two programs, `spp` and `spp --clean`.
-
-In both cases, you provide a path to the directory to process as `spp --src path/to/dir`.
-
-Additional options
-
- - you can provide a string to be used as a requirement for a start-of-directive-statement, much like CPP uses `#`. This can be useful, e.g., if you are working in a syntax highlighting environment and want to use a comment character from your language to be the directive start. Do so by adding the option `--directive-start "start of line"`
- - you can tell `spp` to be permissive of parse errors and not automatically run `--clean` if an error occurs. Do so by adding the option `--no-clean-on-errors`
