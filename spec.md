@@ -51,3 +51,37 @@ cd $working_dir
 ```
 
 The `> $filename` is included for only `pass`, not for `exec`.
+
+### The DoWrite Directive
+
+This directive takes the simple, literal form
+
+```
+writeout
+```
+
+This directive enables the following commands in the text:
+
+```
+write <path> <- ~~~<text>~~~
+```
+
+where path is a [Haskell String](http://book.realworldhaskell.org/read/characters-strings-and-escaping-rules.html).
+
+The entire directive will be deleted and `<text>` will be written to the given file, which is a path relative to the parent directory of the current file.
+
+### The Include Directive
+
+This directive is similar to `DoWrite` in the way that it takes the form of a single word:
+
+```
+include
+```
+
+It enables C Preprocessor style includes of the form
+
+```
+include <path>
+```
+
+This statement is replaced by the contents of the file at that path.
