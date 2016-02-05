@@ -68,12 +68,15 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
         getWorkingDirectory >>= print
         -- run spp
         _ <- system $ spploc ++ toRun
+        changeWorkingDirectory startingdir
+        _ <- system $ "cp -r " ++ pathTest ++ "/. " ++ pathActual
+        changeWorkingDirectory pathTest
         -- check that the result is the same as the desired result
         sppworked <- checkSame "." $ ".." </> resultName
         -- run spp --clean
         _ <- system $ spploc ++ clean
         -- check that the resutl is the same as the original
-        cleanworked <- checkSame "." $ ".." </> backupName
+        cleanworked <- checkSame "." $ "../../testdump" </> backupName
         changeWorkingDirectory startingdir
         removeDirectoryRecursive pathTest
         _ <- system $ "cp -r " ++ pathBak ++ "/. " ++ pathTest
@@ -81,9 +84,10 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
         return worked
     where
     resultName = tname ++ "_result" ++ show num
+    pathActual = "testdump" </> resultName ++ "__actual"
     backupName = tname ++ "___backup"
     pathTest = "testsuite" </> tname ++ "_test"
-    pathBak = "testsuite" </> backupName
+    pathBak = "testdump" </> backupName
 
 checkSame :: FilePath -> FilePath -> IO CmdTestResult
 checkSame a b = do
