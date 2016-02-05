@@ -1,0 +1,7 @@
+preprocess:
+    replace "([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\.com" -> "{username : '\\1', hostname: '\\2'}"
+    give me an error!
+
+a@b.com
+c@defghi.com
+kavigupta@kavigupta.github.com
