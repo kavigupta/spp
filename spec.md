@@ -1,18 +1,39 @@
-## Command Line Interface
+# Command Line Interface
 
 `spp` is actually two programs, `spp` and `spp --clean`.
 
 In both cases, you provide a path to the directory to process as `spp --src path/to/dir`.
 
-Additional options
+## Output and Backup Directories
 
- - you can provide a string to be used as a requirement for a start-of-directive-statement, much like CPP uses `#`. This can be useful, e.g., if you are working in a syntax highlighting environment and want to use a comment character from your language to be the directive start. Do so by adding the option `--directive-start "start of line"`
- - you can tell `spp` to be permissive of parse errors and not automatically run `--clean` if an error occurs. Do so by adding the option `--no-clean-on-errors`
+You can optionally specify an output and backup directory.
+
+### Backup form
+```
+spp --src <src>
+spp --src <src> --bak <bak>
+```
+
+In this mode, `spp` copies files to a backup diirectory, then processes the files in place. By default, `spp` uses the backup form with backup directory `<src-directory>.bak`.
+
+### Output form
+```
+spp --src <src> --out <out>
+```
+
+In this mode, `spp` copies files to the output directory and then processes them there.
+
+## Start Of Directive statement
+`spp` allows a start-of-directive-statement, much like CPP's `#`. This can be useful, e.g., if you are working in a syntax highlighting environment and want to use a comment character from your language to be the directive start. Do so by passing the option `--directive-start <start-of-line>`
+
+## No Clean on Errors Statement
+
+You can tell `spp` to be permissive of parse errors and not automatically run `--clean` if an error occurs. Do so by adding the option `--no-clean-on-errors`.
 
 
-## Preprocessor directives
+# Preprocessor directives
 
-### Layout
+## Layout
 
 The basic layout of a preprocessor directive is:
 
@@ -23,7 +44,16 @@ The basic layout of a preprocessor directive is:
 <rest-of-document>
 ```
 
-### The Replace Directive
+The text to be preprocessed is:
+
+```
+<optional-line>
+<rest-of-document>
+```
+
+The optional line is a good idea in general.
+
+## The Replace Directive
 
 A replace directive is a statement that eanbles the replacement of some regex with some regex replacement. This has the format:
 
@@ -33,7 +63,7 @@ replace <regex> -> <replacement>
 
 where both regex and replacement are specified as [Haskell Strings](http://book.realworldhaskell.org/read/characters-strings-and-escaping-rules.html) whose values are posix regexes and replacements where "\\1", etc. refer to substrings.
 
-### The Execute and Pasthrough Directive
+## The Execute and Pasthrough Directive
 
 These directives both specify a program in the format
 
@@ -52,7 +82,7 @@ cd $working_dir
 
 The `> $filename` is included for only `pass`, not for `exec`.
 
-### The DoWrite Directive
+## The DoWrite Directive
 
 This directive takes the simple, literal form
 
@@ -70,7 +100,7 @@ where path is a [Haskell String](http://book.realworldhaskell.org/read/character
 
 The entire directive will be deleted and `<text>` will be written to the given file, which is a path relative to the parent directory of the current file.
 
-### The Include Directive
+## The Include Directive
 
 This directive is similar to `DoWrite` in the way that it takes the form of a single word:
 
