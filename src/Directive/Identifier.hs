@@ -40,8 +40,9 @@ directivesIfExist start = try (directivesIfStart start "") <|> secondLine
 
 directivesIfStart :: String -> String -> Parser (Directives String)
 directivesIfStart start firstLine = do
+    string start
     string "preprocess"
-    try $ char ':'
+    optionMaybe $ char ':'
     endOfLine
     dirs <- many (directive start)
     rest <- many anyChar
