@@ -69,7 +69,7 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
         -- run spp
         _ <- system $ spploc ++ toRun
         changeWorkingDirectory startingdir
-        _ <- system $ "cp -r " ++ pathTest ++ "/. " ++ pathActual
+        _ <- system $ "cp -r " ++ pathTest ++ " " ++ pathActual
         changeWorkingDirectory pathTest
         -- check that the result is the same as the desired result
         sppworked <- checkSame "." $ ".." </> resultName
