@@ -7,10 +7,11 @@ import Distribution.TestSuite
 
 cmdTests :: [CmdTest]
 cmdTests = [
-        CmdTest "basic" 1 "--src src",
-        CmdTest "basic" 2 "--src src --out out",
-        CmdTest "tree" 1 "--src src",
-        CmdTest "error" 1 "--src src"
+        CmdTest "basic" 1 "--src src" "--src src --clean",
+        CmdTest "basic" 2 "--src src --out out" "--src src --out out --clean",
+        CmdTest "tree" 1 "--src src" "--src src --clean",
+        CmdTest "error" 1 "--src src" "--src src --clean",
+        CmdTest "error" 2 "--src src --no-clean-on-errors" "--src src --clean"
     ]
 
 tests :: IO [Test]

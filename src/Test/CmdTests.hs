@@ -27,7 +27,8 @@ failure = Failure . return
 data CmdTest = CmdTest {
     testName :: String,
     testNumber :: Int,
-    testCommand :: String
+    testCommandRun :: String,
+    testCommandClean :: String
 } deriving Show
 
 instance Monoid CmdTestResult where
@@ -57,7 +58,7 @@ toProgress Success = Finished Pass
 toProgress (Failure x) = Finished (Fail (intercalate "\n" x))
 
 runTest :: CmdTest -> IO CmdTestResult
-runTest CmdTest {testName=tname, testNumber=num, testCommand=cmd} = do
+runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testCommandClean=clean} = do
         -- save backup
         _ <- system $ "cp -r " ++ pathTest ++ "/. " ++ pathBak
         startingdir <- getWorkingDirectory
@@ -65,13 +66,12 @@ runTest CmdTest {testName=tname, testNumber=num, testCommand=cmd} = do
         let spploc = startingdir </> "spp "
         changeWorkingDirectory pathTest
         getWorkingDirectory >>= print
-        print $ spploc ++ cmd
         -- run spp
-        _ <- system $ spploc ++ cmd
+        _ <- system $ spploc ++ toRun
         -- check that the result is the same as the desired result
         sppworked <- checkSame "." $ ".." </> resultName
         -- run spp --clean
-        _ <- system $ spploc ++ cmd ++ " --clean"
+        _ <- system $ spploc ++ clean
         -- check that the resutl is the same as the original
         cleanworked <- checkSame "." $ ".." </> backupName
         changeWorkingDirectory startingdir
