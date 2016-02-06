@@ -82,6 +82,8 @@ cd $working_dir
 
 The `> $filename` is included for only `pass`, not for `exec`.
 
+A known problem is that `program` must be a single executable. (see Issue 1).
+
 ## The DoWrite Directive
 
 This directive takes the simple, literal form
