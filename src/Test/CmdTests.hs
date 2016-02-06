@@ -60,6 +60,7 @@ toProgress (Failure x) = Finished (Fail (intercalate "\n" x))
 runTest :: CmdTest -> IO CmdTestResult
 runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testCommandClean=clean} = do
         -- save backup
+        createDirectoryIfMissing True "testdump"
         _ <- system $ "cp -r " ++ pathTest ++ "/. " ++ pathBak
         startingdir <- getWorkingDirectory
         print startingdir
@@ -69,7 +70,7 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
         -- run spp
         _ <- system $ spploc ++ toRun
         changeWorkingDirectory startingdir
-        _ <- system $ "cp -r " ++ pathTest ++ " " ++ pathActual
+        _ <- system $ "cp -r " ++ pathTest ++ "/. " ++ pathActual
         changeWorkingDirectory pathTest
         -- check that the result is the same as the desired result
         sppworked <- checkSame "." $ ".." </> resultName
@@ -91,6 +92,7 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
 
 checkSame :: FilePath -> FilePath -> IO CmdTestResult
 checkSame a b = do
+    putStrLn $ "checking that " ++ a ++ " and " ++ b ++ " are the same"
     adir <- doesDirectoryExist a
     bdir <- doesDirectoryExist b
     if adir && bdir then

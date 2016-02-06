@@ -10,7 +10,7 @@ import Control.Monad
 import Text.Regex.Posix((=~))
 
 main = do
-    configureCode <- rawSystem "cabal" ["configure"]
+    configureCode <- rawSystem "cabal" ["configure", "--enable-tests"]
     buildCode <- rawSystem "cabal" ["build"]
     when (buildCode /= ExitSuccess) $ die "Build failed"
     hlintRun
