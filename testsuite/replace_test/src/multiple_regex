@@ -1,0 +1,4 @@
+preprocess:
+    replace "a(.*)b" -> "c\\1d"
+    replace "cat(.*)" -> "\\1"
+aatasdfasdlky832 75 oiabaatafjhlakjdhlkajsdhflkjadshlkjfabdsfasdf
