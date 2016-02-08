@@ -61,6 +61,8 @@ runTest :: CmdTest -> IO CmdTestResult
 runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testCommandClean=clean} = do
         -- save backup
         createDirectoryIfMissing True "testdump"
+        removeDirectoryIfExists pathActual
+        removeDirectoryIfExists pathBak
         _ <- system $ "cp -r " ++ pathTest ++ "/. " ++ pathBak
         startingdir <- getWorkingDirectory
         print startingdir
@@ -77,7 +79,7 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
         -- run spp --clean
         _ <- system $ spploc ++ clean
         -- check that the resutl is the same as the original
-        cleanworked <- checkSame "." $ "../../testdump" </> backupName
+        cleanworked <- checkSame "." $ "../.." </> pathBak
         changeWorkingDirectory startingdir
         removeDirectoryRecursive pathTest
         _ <- system $ "cp -r " ++ pathBak ++ "/. " ++ pathTest
@@ -86,9 +88,8 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
     where
     resultName = tname ++ "_result" ++ show num
     pathActual = "testdump" </> resultName ++ "__actual"
-    backupName = tname ++ "___backup"
     pathTest = "testsuite" </> tname ++ "_test"
-    pathBak = "testdump" </> backupName
+    pathBak = "testdump" </> tname ++ "___backup"
 
 checkSame :: FilePath -> FilePath -> IO CmdTestResult
 checkSame a b = do

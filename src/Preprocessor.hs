@@ -24,6 +24,7 @@ preprocess sppopts buFile =
             -- Ignore the possibility of error at this line.
             mcontents <- fmap Right (readFile (backupFile buFile) >>= evaluate)
                     `catch` (return . Left . show :: IOError -> IO (Either String String))
+            putStrLn $ "Received output = "++ show mcontents
             case mcontents of
                 (Left _) -> return $ Right ()
                 (Right contents) -> do
