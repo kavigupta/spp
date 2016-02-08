@@ -39,7 +39,15 @@ preprocess sppopts buFile =
 
 performCommands :: String -> Directives Command -> IO (Either SPPError String)
 performCommands path (Directives header commands rest) = do
+        putStr "Directives ="
+        print (Directives header commands rest)
+        putStr "Header = "
+        print header
+        putStr "Rest = "
+        print rest
         result <- performAll actions rest
+        putStr "Result "
+        print result
         return $ (header ++) <$> result
     where actions = map (getCommand path) commands
 

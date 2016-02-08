@@ -2,4 +2,5 @@
 import fileinput
 
 for line in fileinput.input():
+    line = line[:-1]
     print(line)

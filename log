@@ -1,0 +1,958 @@
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src/regex_replace
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Directives =Directives "" [Replace "([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\.com" "{username : '\\1', hostname: '\\2'}"] "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Header = ""
+Rest = "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Result Right "\n{username : 'a', hostname: 'b'}\n{username : 'c', hostname: 'defghi'}\n{username : 'kavigupta', hostname: 'kavigupta.github'}\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src.bak/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src/simple_replace
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"d\" -> \"e\"\n    replace \"1\" -> \"def\"\n    replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test"
+checking that . and ../basic_result1 are the same
+checking that ./src and ../basic_result1/src are the same
+checking that ./src/binary.png and ../basic_result1/src/binary.png are the same
+checking that ./src/keep_same and ../basic_result1/src/keep_same are the same
+checking that ./src/regex_replace and ../basic_result1/src/regex_replace are the same
+checking that ./src/simple_replace and ../basic_result1/src/simple_replace are the same
+checking that ./src.bak and ../basic_result1/src.bak are the same
+checking that ./src.bak/binary.png and ../basic_result1/src.bak/binary.png are the same
+checking that ./src.bak/keep_same and ../basic_result1/src.bak/keep_same are the same
+checking that ./src.bak/regex_replace and ../basic_result1/src.bak/regex_replace are the same
+checking that ./src.bak/simple_replace and ../basic_result1/src.bak/simple_replace are the same
+checking that . and ../../testdump/basic___backup are the same
+checking that ./src and ../../testdump/basic___backup/src are the same
+checking that ./src/binary.png and ../../testdump/basic___backup/src/binary.png are the same
+checking that ./src/keep_same and ../../testdump/basic___backup/src/keep_same are the same
+checking that ./src/regex_replace and ../../testdump/basic___backup/src/regex_replace are the same
+checking that ./src/simple_replace and ../../testdump/basic___backup/src/simple_replace are the same
+Test case CmdTest {testName = "basic", testNumber = 1, testCommandRun = "--src
+src", testCommandClean = "--src src --clean"}: Pass
+abcdef src
+("src","out","src")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out", srcLoc = AtBak}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out/regex_replace
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Directives =Directives "" [Replace "([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\.com" "{username : '\\1', hostname: '\\2'}"] "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Header = ""
+Rest = "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Result Right "\n{username : 'a', hostname: 'b'}\n{username : 'c', hostname: 'defghi'}\n{username : 'kavigupta', hostname: 'kavigupta.github'}\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out/simple_replace
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"d\" -> \"e\"\n    replace \"1\" -> \"def\"\n    replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+abcdef src
+("src","out","src")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out", srcLoc = AtBak}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test"
+checking that . and ../basic_result2 are the same
+checking that ./out and ../basic_result2/out are the same
+checking that ./out/binary.png and ../basic_result2/out/binary.png are the same
+checking that ./out/keep_same and ../basic_result2/out/keep_same are the same
+checking that ./out/regex_replace and ../basic_result2/out/regex_replace are the same
+checking that ./out/simple_replace and ../basic_result2/out/simple_replace are the same
+checking that ./src and ../basic_result2/src are the same
+checking that ./src/binary.png and ../basic_result2/src/binary.png are the same
+checking that ./src/keep_same and ../basic_result2/src/keep_same are the same
+checking that ./src/regex_replace and ../basic_result2/src/regex_replace are the same
+checking that ./src/simple_replace and ../basic_result2/src/simple_replace are the same
+checking that . and ../../testdump/basic___backup are the same
+checking that ./src and ../../testdump/basic___backup/src are the same
+checking that ./src/binary.png and ../../testdump/basic___backup/src/binary.png are the same
+checking that ./src/keep_same and ../../testdump/basic___backup/src/keep_same are the same
+checking that ./src/regex_replace and ../../testdump/basic___backup/src/regex_replace are the same
+checking that ./src/simple_replace and ../../testdump/basic___backup/src/simple_replace are the same
+Test case CmdTest {testName = "basic", testNumber = 2, testCommandRun = "--src
+src --out out", testCommandClean = "--src src --out out --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src/folder1/nested folder/regex_replace
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Directives =Directives "" [Replace "([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\.com" "{username : '\\1', hostname: '\\2'}"] "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Header = ""
+Rest = "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Result Right "\n{username : 'a', hostname: 'b'}\n{username : 'c', hostname: 'defghi'}\n{username : 'kavigupta', hostname: 'kavigupta.github'}\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src/folder2/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src.bak/folder2/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src/folder2/simple_replace
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"d\" -> \"e\"\n    replace \"1\" -> \"def\"\n    replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test"
+checking that . and ../tree_result1 are the same
+checking that ./src and ../tree_result1/src are the same
+checking that ./src/folder1 and ../tree_result1/src/folder1 are the same
+checking that ./src/folder1/nested folder and ../tree_result1/src/folder1/nested folder are the same
+checking that ./src/folder1/nested folder/regex_replace and ../tree_result1/src/folder1/nested folder/regex_replace are the same
+checking that ./src/folder2 and ../tree_result1/src/folder2 are the same
+checking that ./src/folder2/binary.png and ../tree_result1/src/folder2/binary.png are the same
+checking that ./src/folder2/simple_replace and ../tree_result1/src/folder2/simple_replace are the same
+checking that ./src/keep_same and ../tree_result1/src/keep_same are the same
+checking that ./src.bak and ../tree_result1/src.bak are the same
+checking that ./src.bak/folder1 and ../tree_result1/src.bak/folder1 are the same
+checking that ./src.bak/folder1/nested folder and ../tree_result1/src.bak/folder1/nested folder are the same
+checking that ./src.bak/folder1/nested folder/regex_replace and ../tree_result1/src.bak/folder1/nested folder/regex_replace are the same
+checking that ./src.bak/folder2 and ../tree_result1/src.bak/folder2 are the same
+checking that ./src.bak/folder2/binary.png and ../tree_result1/src.bak/folder2/binary.png are the same
+checking that ./src.bak/folder2/simple_replace and ../tree_result1/src.bak/folder2/simple_replace are the same
+checking that ./src.bak/keep_same and ../tree_result1/src.bak/keep_same are the same
+checking that . and ../../testdump/tree___backup are the same
+checking that ./src and ../../testdump/tree___backup/src are the same
+checking that ./src/folder1 and ../../testdump/tree___backup/src/folder1 are the same
+checking that ./src/folder1/nested folder and ../../testdump/tree___backup/src/folder1/nested folder are the same
+checking that ./src/folder1/nested folder/regex_replace and ../../testdump/tree___backup/src/folder1/nested folder/regex_replace are the same
+checking that ./src/folder2 and ../../testdump/tree___backup/src/folder2 are the same
+checking that ./src/folder2/binary.png and ../../testdump/tree___backup/src/folder2/binary.png are the same
+checking that ./src/folder2/simple_replace and ../../testdump/tree___backup/src/folder2/simple_replace are the same
+checking that ./src/keep_same and ../../testdump/tree___backup/src/keep_same are the same
+Test case CmdTest {testName = "tree", testNumber = 1, testCommandRun = "--src
+src", testCommandClean = "--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/regex_replace
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n    give me an error!\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/simple_replace
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"d\" -> \"e\"\n    replace \"1\" -> \"def\"\n    replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+Multiple errors occured
+    An error occured in processing /home/kavi/Dropbox/workspaces/Haskell/spp/tes
+        tsuite/error_test/src/regex_replace
+        Processing a directive failed due to invalid syntax
+        (line 1, column 1):
+    unexpected "g"
+    expecting white space, "replace", "exec", "pass", "writeout" or "include"
+        give me an error!
+
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src", srcLoc = AtOut}
+An error occured in processing /home/kavi/Dropbox/workspaces/Haskell/spp/testsui
+    te/error_test/src.bak
+    Backups do not exist or are irrecoverable; either you have already --clean o
+        r there is some other serious problem
+
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test"
+checking that . and ../error_result1 are the same
+checking that ./src and ../error_result1/src are the same
+checking that ./src/binary.png and ../error_result1/src/binary.png are the same
+checking that ./src/keep_same and ../error_result1/src/keep_same are the same
+checking that ./src/regex_replace and ../error_result1/src/regex_replace are the same
+checking that ./src/simple_replace and ../error_result1/src/simple_replace are the same
+checking that . and ../../testdump/error___backup are the same
+checking that ./src and ../../testdump/error___backup/src are the same
+checking that ./src/binary.png and ../../testdump/error___backup/src/binary.png are the same
+checking that ./src/keep_same and ../../testdump/error___backup/src/keep_same are the same
+checking that ./src/regex_replace and ../../testdump/error___backup/src/regex_replace are the same
+checking that ./src/simple_replace and ../../testdump/error___backup/src/simple_replace are the same
+Test case CmdTest {testName = "error", testNumber = 1, testCommandRun = "--src
+src", testCommandClean = "--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/regex_replace
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n    give me an error!\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/simple_replace
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"d\" -> \"e\"\n    replace \"1\" -> \"def\"\n    replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+Multiple errors occured
+    An error occured in processing /home/kavi/Dropbox/workspaces/Haskell/spp/tes
+        tsuite/error_test/src/regex_replace
+        Processing a directive failed due to invalid syntax
+        (line 1, column 1):
+    unexpected "g"
+    expecting white space, "replace", "exec", "pass", "writeout" or "include"
+        give me an error!
+
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test"
+checking that . and ../error_result2 are the same
+checking that ./src and ../error_result2/src are the same
+checking that ./src/binary.png and ../error_result2/src/binary.png are the same
+checking that ./src/keep_same and ../error_result2/src/keep_same are the same
+checking that ./src/regex_replace and ../error_result2/src/regex_replace are the same
+checking that ./src/simple_replace and ../error_result2/src/simple_replace are the same
+checking that ./src.bak and ../error_result2/src.bak are the same
+checking that ./src.bak/binary.png and ../error_result2/src.bak/binary.png are the same
+checking that ./src.bak/keep_same and ../error_result2/src.bak/keep_same are the same
+checking that ./src.bak/regex_replace and ../error_result2/src.bak/regex_replace are the same
+checking that ./src.bak/simple_replace and ../error_result2/src.bak/simple_replace are the same
+checking that . and ../../testdump/error___backup are the same
+checking that ./src and ../../testdump/error___backup/src are the same
+checking that ./src/binary.png and ../../testdump/error___backup/src/binary.png are the same
+checking that ./src/keep_same and ../../testdump/error___backup/src/keep_same are the same
+checking that ./src/regex_replace and ../../testdump/error___backup/src/regex_replace are the same
+checking that ./src/simple_replace and ../../testdump/error___backup/src/simple_replace are the same
+Test case CmdTest {testName = "error", testNumber = 2, testCommandRun = "--src
+src --no-clean-on-errors", testCommandClean = "--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src/regex_replace
+Received output = Right "#preprocess:\n    #replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Directives =Directives "" [Replace "([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\.com" "{username : '\\1', hostname: '\\2'}"] "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Header = ""
+Rest = "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Result Right "\n{username : 'a', hostname: 'b'}\n{username : 'c', hostname: 'defghi'}\n{username : 'kavigupta', hostname: 'kavigupta.github'}\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src.bak/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src/simple_replace
+Received output = Right "#preprocess:\n    #replace \"abc\" -> \"def\"\n    #replace \"d\" -> \"e\"\n    #replace \"1\" -> \"def\"\n    #replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test"
+checking that . and ../dirst_simp_result1 are the same
+checking that ./src and ../dirst_simp_result1/src are the same
+checking that ./src/binary.png and ../dirst_simp_result1/src/binary.png are the same
+checking that ./src/keep_same and ../dirst_simp_result1/src/keep_same are the same
+checking that ./src/regex_replace and ../dirst_simp_result1/src/regex_replace are the same
+checking that ./src/simple_replace and ../dirst_simp_result1/src/simple_replace are the same
+checking that ./src.bak and ../dirst_simp_result1/src.bak are the same
+checking that ./src.bak/binary.png and ../dirst_simp_result1/src.bak/binary.png are the same
+checking that ./src.bak/keep_same and ../dirst_simp_result1/src.bak/keep_same are the same
+checking that ./src.bak/regex_replace and ../dirst_simp_result1/src.bak/regex_replace are the same
+checking that ./src.bak/simple_replace and ../dirst_simp_result1/src.bak/simple_replace are the same
+checking that . and ../../testdump/dirst_simp___backup are the same
+checking that ./src and ../../testdump/dirst_simp___backup/src are the same
+checking that ./src/binary.png and ../../testdump/dirst_simp___backup/src/binary.png are the same
+checking that ./src/keep_same and ../../testdump/dirst_simp___backup/src/keep_same are the same
+checking that ./src/regex_replace and ../../testdump/dirst_simp___backup/src/regex_replace are the same
+checking that ./src/simple_replace and ../../testdump/dirst_simp___backup/src/simple_replace are the same
+Test case CmdTest {testName = "dirst_simp", testNumber = 1, testCommandRun =
+"--src src --directive-start '#' --no-clean-on-errors", testCommandClean =
+"--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src/ignore_this
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Directives =Directives "" [] "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Header = ""
+Rest = "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Result Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src.bak/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src/simple_replace
+Received output = Right "#preprocess:\n    #replace \"abc\" -> \"def\"\n    #replace \"d\" -> \"e\"\n    #replace \"1\" -> \"def\"\n    #replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test"
+checking that . and ../dirst_ignore_result1 are the same
+checking that ./src and ../dirst_ignore_result1/src are the same
+checking that ./src/binary.png and ../dirst_ignore_result1/src/binary.png are the same
+checking that ./src/ignore_this and ../dirst_ignore_result1/src/ignore_this are the same
+checking that ./src/keep_same and ../dirst_ignore_result1/src/keep_same are the same
+checking that ./src/simple_replace and ../dirst_ignore_result1/src/simple_replace are the same
+checking that ./src.bak and ../dirst_ignore_result1/src.bak are the same
+checking that ./src.bak/binary.png and ../dirst_ignore_result1/src.bak/binary.png are the same
+checking that ./src.bak/ignore_this and ../dirst_ignore_result1/src.bak/ignore_this are the same
+checking that ./src.bak/keep_same and ../dirst_ignore_result1/src.bak/keep_same are the same
+checking that ./src.bak/simple_replace and ../dirst_ignore_result1/src.bak/simple_replace are the same
+checking that . and ../../testdump/dirst_ignore___backup are the same
+checking that ./src and ../../testdump/dirst_ignore___backup/src are the same
+checking that ./src/binary.png and ../../testdump/dirst_ignore___backup/src/binary.png are the same
+checking that ./src/ignore_this and ../../testdump/dirst_ignore___backup/src/ignore_this are the same
+checking that ./src/keep_same and ../../testdump/dirst_ignore___backup/src/keep_same are the same
+checking that ./src/simple_replace and ../../testdump/dirst_ignore___backup/src/simple_replace are the same
+Test case CmdTest {testName = "dirst_ignore", testNumber = 1, testCommandRun =
+"--src src --directive-start '#' --no-clean-on-errors", testCommandClean =
+"--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/overlapping
+Received output = Right "preprocess:\n    replace \"aaaa\" -> \"b\"\n\n\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaa\na\n\n\n\n\n\n\naaaaaaaa\n"
+Directives =Directives "" [Replace "aaaa" "b"] "\n\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaa\na\n\n\n\n\n\n\naaaaaaaa\n"
+Header = ""
+Rest = "\n\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaa\na\n\n\n\n\n\n\naaaaaaaa\n"
+Result Right "\n\nbbbbbbbbbbbbbbbbbbbaa\nbbba\nbbbbaa\nbbbaaa\nbbbba\nbbbbbbaa\nbbaa\na\n\n\n\n\n\n\nbb\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/order
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"def\" -> \"abc\"\n\nabcabcabcabcabcabc\n\n\ndefdefdefdefdefdefdefabcdefabcdef\n"
+Directives =Directives "" [Replace "abc" "def",Replace "def" "abc"] "\nabcabcabcabcabcabc\n\n\ndefdefdefdefdefdefdefabcdefabcdef\n"
+Header = ""
+Rest = "\nabcabcabcabcabcabc\n\n\ndefdefdefdefdefdefdefabcdefabcdef\n"
+Result Right "\nabcabcabcabcabcabc\n\n\nabcabcabcabcabcabcabcabcabcabcabc\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/non_overlapping
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"123\" -> \"456\"\n\n\nabc ase;iryhdslkjhabca;lsdkfjla;weiu5y38927`1234245rthbdvjhsldkjfhalksdb;kjcacbacbabacabcabacbabc\n"
+Directives =Directives "" [Replace "abc" "def",Replace "123" "456"] "\n\nabc ase;iryhdslkjhabca;lsdkfjla;weiu5y38927`1234245rthbdvjhsldkjfhalksdb;kjcacbacbabacabcabacbabc\n"
+Header = ""
+Rest = "\n\nabc ase;iryhdslkjhabca;lsdkfjla;weiu5y38927`1234245rthbdvjhsldkjfhalksdb;kjcacbacbabacabcabacbabc\n"
+Result Right "\n\ndef ase;iryhdslkjhdefa;lsdkfjla;weiu5y38927`4564245rthbdvjhsldkjfhalksdb;kjcacbacbabacdefabacbdef\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/multiple_regex
+Received output = Right "preprocess:\n    replace \"a(.*)b\" -> \"c\\\\1d\"\n    replace \"cat(.*)\" -> \"\\\\1\"\naatasdfasdlky832 75 oiabaatafjhlakjdhlkajsdhflkjadshlkjfabdsfasdf\n"
+Directives =Directives "" [Replace "a(.*)b" "c\\1d",Replace "cat(.*)" "\\1"] "aatasdfasdlky832 75 oiabaatafjhlakjdhlkajsdhflkjadshlkjfabdsfasdf\n"
+Header = ""
+Rest = "aatasdfasdlky832 75 oiabaatafjhlakjdhlkajsdhflkjadshlkjfabdsfasdf\n"
+Result Right "asdfasdlky832 75 oiabaatafjhlakjdhlkajsdhflkjadshlkjfaddsfasdf\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/regex
+Received output = Right "preprocess:\n    replace \"max\\\\(([^,]+),([^,]+)\\\\)\" -> \"(\\\\1 > \\\\2 ? \\\\1 : \\\\2)\"\n\nmax(1, 2)\nmax(1 + 2 + 3 + 4 + 5 + 6, 24567652 * 'a')\n"
+Directives =Directives "" [Replace "max\\(([^,]+),([^,]+)\\)" "(\\1 > \\2 ? \\1 : \\2)"] "\nmax(1, 2)\nmax(1 + 2 + 3 + 4 + 5 + 6, 24567652 * 'a')\n"
+Header = ""
+Rest = "\nmax(1, 2)\nmax(1 + 2 + 3 + 4 + 5 + 6, 24567652 * 'a')\n"
+Result Right "\n(1 >  2 ? 1 :  2)\n(1 + 2 + 3 + 4 + 5 + 6 >  24567652 * 'a' ? 1 + 2 + 3 + 4 + 5 + 6 :  24567652 * 'a')\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/simple
+Received output = Right "preprocess:\n    replace \"abc\" -> \"bcd\"\n\nabcdefasdf asdfasdfaacbc asdfabcabcabc\n\nasdfabcabcabacabc  sdgj456ytgfbc 6li36fg8xoc viklm,\n39eadfkglsfjfaklbcabc\nabacabcasdo83re9asd0uoj kljhslkjdfgh    j   l;sglkjabc;lkjsd;flawwe9rsfdkvxc m,.\n"
+Directives =Directives "" [Replace "abc" "bcd"] "\nabcdefasdf asdfasdfaacbc asdfabcabcabc\n\nasdfabcabcabacabc  sdgj456ytgfbc 6li36fg8xoc viklm,\n39eadfkglsfjfaklbcabc\nabacabcasdo83re9asd0uoj kljhslkjdfgh    j   l;sglkjabc;lkjsd;flawwe9rsfdkvxc m,.\n"
+Header = ""
+Rest = "\nabcdefasdf asdfasdfaacbc asdfabcabcabc\n\nasdfabcabcabacabc  sdgj456ytgfbc 6li36fg8xoc viklm,\n39eadfkglsfjfaklbcabc\nabacabcasdo83re9asd0uoj kljhslkjdfgh    j   l;sglkjabc;lkjsd;flawwe9rsfdkvxc m,.\n"
+Result Right "\nbcddefasdf asdfasdfaacbc asdfbcdbcdbcd\n\nasdfbcdbcdabacbcd  sdgj456ytgfbc 6li36fg8xoc viklm,\n39eadfkglsfjfaklbcbcd\nabacbcdasdo83re9asd0uoj kljhslkjdfgh    j   l;sglkjbcd;lkjsd;flawwe9rsfdkvxc m,.\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test"
+checking that . and ../replace_result1 are the same
+checking that ./src and ../replace_result1/src are the same
+checking that ./src/multiple_regex and ../replace_result1/src/multiple_regex are the same
+checking that ./src/non_overlapping and ../replace_result1/src/non_overlapping are the same
+checking that ./src/order and ../replace_result1/src/order are the same
+checking that ./src/overlapping and ../replace_result1/src/overlapping are the same
+checking that ./src/regex and ../replace_result1/src/regex are the same
+checking that ./src/simple and ../replace_result1/src/simple are the same
+checking that ./src.bak and ../replace_result1/src.bak are the same
+checking that ./src.bak/multiple_regex and ../replace_result1/src.bak/multiple_regex are the same
+checking that ./src.bak/non_overlapping and ../replace_result1/src.bak/non_overlapping are the same
+checking that ./src.bak/order and ../replace_result1/src.bak/order are the same
+checking that ./src.bak/overlapping and ../replace_result1/src.bak/overlapping are the same
+checking that ./src.bak/regex and ../replace_result1/src.bak/regex are the same
+checking that ./src.bak/simple and ../replace_result1/src.bak/simple are the same
+checking that . and ../../testdump/replace___backup are the same
+checking that ./src and ../../testdump/replace___backup/src are the same
+checking that ./src/multiple_regex and ../../testdump/replace___backup/src/multiple_regex are the same
+checking that ./src/non_overlapping and ../../testdump/replace___backup/src/non_overlapping are the same
+checking that ./src/order and ../../testdump/replace___backup/src/order are the same
+checking that ./src/overlapping and ../../testdump/replace___backup/src/overlapping are the same
+checking that ./src/regex and ../../testdump/replace___backup/src/regex are the same
+checking that ./src/simple and ../../testdump/replace___backup/src/simple are the same
+Test case CmdTest {testName = "replace", testNumber = 1, testCommandRun =
+"--src src", testCommandClean = "--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src/reverse
+Received output = Right "preprocess:\n    pass ../../scripts/reverse.py\n\nqwertyuiop\nasdfghjkl\nzxcvbnm\n\n1qaz2wsx\n\n3edc4rfv\n\n5tgb6yhn\n\n1234567890\n"
+Directives =Directives "" [PassThrough "../../scripts/reverse.py"] "\nqwertyuiop\nasdfghjkl\nzxcvbnm\n\n1qaz2wsx\n\n3edc4rfv\n\n5tgb6yhn\n\n1234567890\n"
+Header = ""
+Rest = "\nqwertyuiop\nasdfghjkl\nzxcvbnm\n\n1qaz2wsx\n\n3edc4rfv\n\n5tgb6yhn\n\n1234567890\n"
+Result Right "\npoiuytrewq\nlkjhgfdsa\nmnbvcxz\n\nxsw2zaq1\n\nvfr4cde3\n\nnhy6bgt5\n\n0987654321\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src/cut
+Received output = Right "preprocess:\n    pass ../../scripts/cut.py\n\nArticle VI - The law is the expression of the general will. All the citizens have the right of contributing personally or through their representatives to its formation. It must be the same for all, either that it protects, or that it punishes. All the citizens, being equal in its eyes, are equally admissible to all public dignities, places and employments, according to their capacity and without distinction other than that of their virtues and of their talents.\n\nArticle VII - No man can be accused, arrested nor detained but in the cases determined by the law, and according to the forms which it has prescribed. Those who solicit, dispatch, carry out or cause to be carried out arbitrary orders, must be punished; but any citizen called or seized under the terms of the law must obey at once; he renders himself culpable by resistance.\n\nArticle VIII - The law should establish only penalties that are strictly and evidently necessary, and no one can be punished but under a law established and promulgated before the offense and legally applied.\n\nArticle IX - Any man being presumed innocent until he is declared culpable, if it is judged indispensable to arrest him, any rigor which would not be necessary for the securing of his person must be severely reprimanded by the law.\n\nArticle X - No one may be disturbed for his opinions, even religious ones, provided that their manifestation does not trouble the public order established by the law.\n"
+Directives =Directives "" [PassThrough "../../scripts/cut.py"] "\nArticle VI - The law is the expression of the general will. All the citizens have the right of contributing personally or through their representatives to its formation. It must be the same for all, either that it protects, or that it punishes. All the citizens, being equal in its eyes, are equally admissible to all public dignities, places and employments, according to their capacity and without distinction other than that of their virtues and of their talents.\n\nArticle VII - No man can be accused, arrested nor detained but in the cases determined by the law, and according to the forms which it has prescribed. Those who solicit, dispatch, carry out or cause to be carried out arbitrary orders, must be punished; but any citizen called or seized under the terms of the law must obey at once; he renders himself culpable by resistance.\n\nArticle VIII - The law should establish only penalties that are strictly and evidently necessary, and no one can be punished but under a law established and promulgated before the offense and legally applied.\n\nArticle IX - Any man being presumed innocent until he is declared culpable, if it is judged indispensable to arrest him, any rigor which would not be necessary for the securing of his person must be severely reprimanded by the law.\n\nArticle X - No one may be disturbed for his opinions, even religious ones, provided that their manifestation does not trouble the public order established by the law.\n"
+Header = ""
+Rest = "\nArticle VI - The law is the expression of the general will. All the citizens have the right of contributing personally or through their representatives to its formation. It must be the same for all, either that it protects, or that it punishes. All the citizens, being equal in its eyes, are equally admissible to all public dignities, places and employments, according to their capacity and without distinction other than that of their virtues and of their talents.\n\nArticle VII - No man can be accused, arrested nor detained but in the cases determined by the law, and according to the forms which it has prescribed. Those who solicit, dispatch, carry out or cause to be carried out arbitrary orders, must be punished; but any citizen called or seized under the terms of the law must obey at once; he renders himself culpable by resistance.\n\nArticle VIII - The law should establish only penalties that are strictly and evidently necessary, and no one can be punished but under a law established and promulgated before the offense and legally applied.\n\nArticle IX - Any man being presumed innocent until he is declared culpable, if it is judged indispensable to arrest him, any rigor which would not be necessary for the securing of his person must be severely reprimanded by the law.\n\nArticle X - No one may be disturbed for his opinions, even religious ones, provided that their manifestation does not trouble the public order established by the law.\n"
+Result Right "\ncle VI - The law is the expression of the general will. All the citizens have the right of contributing personally or through their representatives to its formation. It must be the same for all, either that it protects, or that it punishes. All the citizens, being equal in its eyes, are equally admissible to all public dignities, places and employments, according to their capacity and without distinction other than that of their virtues and of their talents.\n\ncle VII - No man can be accused, arrested nor detained but in the cases determined by the law, and according to the forms which it has prescribed. Those who solicit, dispatch, carry out or cause to be carried out arbitrary orders, must be punished; but any citizen called or seized under the terms of the law must obey at once; he renders himself culpable by resistance.\n\ncle VIII - The law should establish only penalties that are strictly and evidently necessary, and no one can be punished but under a law established and promulgated before the offense and legally applied.\n\ncle IX - Any man being presumed innocent until he is declared culpable, if it is judged indispensable to arrest him, any rigor which would not be necessary for the securing of his person must be severely reprimanded by the law.\n\ncle X - No one may be disturbed for his opinions, even religious ones, provided that their manifestation does not trouble the public order established by the law.\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src/cutend
+Received output = Right "preprocess:\n    pass ../../scripts/reverse.py\n    pass ../../scripts/cut.py\n    pass ../../scripts/reverse.py\n\nWe the People of the United St\nates, in Order to form a more\nperfect Union, establish Justi\nce, insure domestic Tranquilit\ny, provide for the common defe\nnce, promote the general Welfa\nre, and secure the Blessings o\nf Liberty to ourselves and our\n Posterity, do ordain and esta\nblish this Constitution for th\ne United States of America.\n"
+Directives =Directives "" [PassThrough "../../scripts/reverse.py",PassThrough "../../scripts/cut.py",PassThrough "../../scripts/reverse.py"] "\nWe the People of the United St\nates, in Order to form a more\nperfect Union, establish Justi\nce, insure domestic Tranquilit\ny, provide for the common defe\nnce, promote the general Welfa\nre, and secure the Blessings o\nf Liberty to ourselves and our\n Posterity, do ordain and esta\nblish this Constitution for th\ne United States of America.\n"
+Header = ""
+Rest = "\nWe the People of the United St\nates, in Order to form a more\nperfect Union, establish Justi\nce, insure domestic Tranquilit\ny, provide for the common defe\nnce, promote the general Welfa\nre, and secure the Blessings o\nf Liberty to ourselves and our\n Posterity, do ordain and esta\nblish this Constitution for th\ne United States of America.\n"
+Result Right "\nWe the People of the Unite\nates, in Order to form a \nperfect Union, establish J\nce, insure domestic Tranqu\ny, provide for the common \nnce, promote the general W\nre, and secure the Blessin\nf Liberty to ourselves and\n Posterity, do ordain and \nblish this Constitution fo\ne United States of Amer\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src/id
+Received output = Right "preprocess:\n    pass ../../scripts/id.py\n\nArticle I - Men are born and remain free and equal in rights. Social distinctions can be founded only on the common good.\n\nArticle II - The goal of any political association is the conservation of the natural and imprescriptible rights of man. These rights are liberty, property, safety and resistance against oppression.\n\nArticle III - The principle of any sovereignty resides essentially in the Nation. No body, no individual can exert authority which does not emanate expressly from it.\n\nArticle IV - Liberty consists of doing anything which does not harm others: thus, the exercise of the natural rights of each man has only those borders which assure other members of the society the enjoyment of these same rights. These borders can be determined only by the law.\n\nArticle V - The law has the right to forbid only actions harmful to society. Anything which is not forbidden by the law cannot be impeded, and no one can be constrained to do what it does not order.\n"
+Directives =Directives "" [PassThrough "../../scripts/id.py"] "\nArticle I - Men are born and remain free and equal in rights. Social distinctions can be founded only on the common good.\n\nArticle II - The goal of any political association is the conservation of the natural and imprescriptible rights of man. These rights are liberty, property, safety and resistance against oppression.\n\nArticle III - The principle of any sovereignty resides essentially in the Nation. No body, no individual can exert authority which does not emanate expressly from it.\n\nArticle IV - Liberty consists of doing anything which does not harm others: thus, the exercise of the natural rights of each man has only those borders which assure other members of the society the enjoyment of these same rights. These borders can be determined only by the law.\n\nArticle V - The law has the right to forbid only actions harmful to society. Anything which is not forbidden by the law cannot be impeded, and no one can be constrained to do what it does not order.\n"
+Header = ""
+Rest = "\nArticle I - Men are born and remain free and equal in rights. Social distinctions can be founded only on the common good.\n\nArticle II - The goal of any political association is the conservation of the natural and imprescriptible rights of man. These rights are liberty, property, safety and resistance against oppression.\n\nArticle III - The principle of any sovereignty resides essentially in the Nation. No body, no individual can exert authority which does not emanate expressly from it.\n\nArticle IV - Liberty consists of doing anything which does not harm others: thus, the exercise of the natural rights of each man has only those borders which assure other members of the society the enjoyment of these same rights. These borders can be determined only by the law.\n\nArticle V - The law has the right to forbid only actions harmful to society. Anything which is not forbidden by the law cannot be impeded, and no one can be constrained to do what it does not order.\n"
+Result Right "\nArticle I - Men are born and remain free and equal in rights. Social distinctions can be founded only on the common good.\n\nArticle II - The goal of any political association is the conservation of the natural and imprescriptible rights of man. These rights are liberty, property, safety and resistance against oppression.\n\nArticle III - The principle of any sovereignty resides essentially in the Nation. No body, no individual can exert authority which does not emanate expressly from it.\n\nArticle IV - Liberty consists of doing anything which does not harm others: thus, the exercise of the natural rights of each man has only those borders which assure other members of the society the enjoyment of these same rights. These borders can be determined only by the law.\n\nArticle V - The law has the right to forbid only actions harmful to society. Anything which is not forbidden by the law cannot be impeded, and no one can be constrained to do what it does not order.\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src/compose
+Received output = Right "preprocess:\n    pass ../../scripts/reverse.py\n    pass ../../scripts/reverse.py\n\nArticle XI - The free communication of thoughts and of opinions is one of the most precious rights of man: any citizen thus may speak, write, print freely, except to respond to the abuse of this liberty, in the cases determined by the law.\n\nArticle XII - The guarantee of the rights of man and of the citizen necessitates a public force: this force is thus instituted for the advantage of all and not for the particular utility of those in whom it is trusted.\n\nArticle XIII - For the maintenance of the public force and for the expenditures of administration, a common contribution is indispensable; it must be equally distributed between all the citizens, according to their ability to pay.\n\nArticle XIV - Each citizen has the right to ascertain, by himself or through his representatives, the need for a public tax, to consent to it freely, to know the uses to which it is put, and of determining the proportion, basis, collection, and duration.\n\nArticle XV - The society has the right of requesting account from any public agent of its administration.\n"
+Directives =Directives "" [PassThrough "../../scripts/reverse.py",PassThrough "../../scripts/reverse.py"] "\nArticle XI - The free communication of thoughts and of opinions is one of the most precious rights of man: any citizen thus may speak, write, print freely, except to respond to the abuse of this liberty, in the cases determined by the law.\n\nArticle XII - The guarantee of the rights of man and of the citizen necessitates a public force: this force is thus instituted for the advantage of all and not for the particular utility of those in whom it is trusted.\n\nArticle XIII - For the maintenance of the public force and for the expenditures of administration, a common contribution is indispensable; it must be equally distributed between all the citizens, according to their ability to pay.\n\nArticle XIV - Each citizen has the right to ascertain, by himself or through his representatives, the need for a public tax, to consent to it freely, to know the uses to which it is put, and of determining the proportion, basis, collection, and duration.\n\nArticle XV - The society has the right of requesting account from any public agent of its administration.\n"
+Header = ""
+Rest = "\nArticle XI - The free communication of thoughts and of opinions is one of the most precious rights of man: any citizen thus may speak, write, print freely, except to respond to the abuse of this liberty, in the cases determined by the law.\n\nArticle XII - The guarantee of the rights of man and of the citizen necessitates a public force: this force is thus instituted for the advantage of all and not for the particular utility of those in whom it is trusted.\n\nArticle XIII - For the maintenance of the public force and for the expenditures of administration, a common contribution is indispensable; it must be equally distributed between all the citizens, according to their ability to pay.\n\nArticle XIV - Each citizen has the right to ascertain, by himself or through his representatives, the need for a public tax, to consent to it freely, to know the uses to which it is put, and of determining the proportion, basis, collection, and duration.\n\nArticle XV - The society has the right of requesting account from any public agent of its administration.\n"
+Result Right "\nArticle XI - The free communication of thoughts and of opinions is one of the most precious rights of man: any citizen thus may speak, write, print freely, except to respond to the abuse of this liberty, in the cases determined by the law.\n\nArticle XII - The guarantee of the rights of man and of the citizen necessitates a public force: this force is thus instituted for the advantage of all and not for the particular utility of those in whom it is trusted.\n\nArticle XIII - For the maintenance of the public force and for the expenditures of administration, a common contribution is indispensable; it must be equally distributed between all the citizens, according to their ability to pay.\n\nArticle XIV - Each citizen has the right to ascertain, by himself or through his representatives, the need for a public tax, to consent to it freely, to know the uses to which it is put, and of determining the proportion, basis, collection, and duration.\n\nArticle XV - The society has the right of requesting account from any public agent of its administration.\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test"
+checking that . and ../pass_result1 are the same
+checking that ./src and ../pass_result1/src are the same
+checking that ./src/compose and ../pass_result1/src/compose are the same
+checking that ./src/cut and ../pass_result1/src/cut are the same
+checking that ./src/cutend and ../pass_result1/src/cutend are the same
+checking that ./src/id and ../pass_result1/src/id are the same
+checking that ./src/reverse and ../pass_result1/src/reverse are the same
+checking that ./src.bak and ../pass_result1/src.bak are the same
+checking that ./src.bak/compose and ../pass_result1/src.bak/compose are the same
+checking that ./src.bak/cut and ../pass_result1/src.bak/cut are the same
+checking that ./src.bak/cutend and ../pass_result1/src.bak/cutend are the same
+checking that ./src.bak/id and ../pass_result1/src.bak/id are the same
+checking that ./src.bak/reverse and ../pass_result1/src.bak/reverse are the same
+checking that . and ../../testdump/pass___backup are the same
+checking that ./src and ../../testdump/pass___backup/src are the same
+checking that ./src/compose and ../../testdump/pass___backup/src/compose are the same
+checking that ./src/cut and ../../testdump/pass___backup/src/cut are the same
+checking that ./src/cutend and ../../testdump/pass___backup/src/cutend are the same
+checking that ./src/id and ../../testdump/pass___backup/src/id are the same
+checking that ./src/reverse and ../../testdump/pass___backup/src/reverse are the same
+Test case CmdTest {testName = "pass", testNumber = 1, testCommandRun = "--src
+src --no-clean-on-errors", testCommandClean = "--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src/regex_replace
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Directives =Directives "" [Replace "([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\.com" "{username : '\\1', hostname: '\\2'}"] "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Header = ""
+Rest = "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Result Right "\n{username : 'a', hostname: 'b'}\n{username : 'c', hostname: 'defghi'}\n{username : 'kavigupta', hostname: 'kavigupta.github'}\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src.bak/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src/simple_replace
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"d\" -> \"e\"\n    replace \"1\" -> \"def\"\n    replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test"
+checking that . and ../basic_result1 are the same
+checking that ./src and ../basic_result1/src are the same
+checking that ./src/binary.png and ../basic_result1/src/binary.png are the same
+checking that ./src/keep_same and ../basic_result1/src/keep_same are the same
+checking that ./src/regex_replace and ../basic_result1/src/regex_replace are the same
+checking that ./src/simple_replace and ../basic_result1/src/simple_replace are the same
+checking that ./src.bak and ../basic_result1/src.bak are the same
+checking that ./src.bak/binary.png and ../basic_result1/src.bak/binary.png are the same
+checking that ./src.bak/keep_same and ../basic_result1/src.bak/keep_same are the same
+checking that ./src.bak/regex_replace and ../basic_result1/src.bak/regex_replace are the same
+checking that ./src.bak/simple_replace and ../basic_result1/src.bak/simple_replace are the same
+checking that . and ../../testdump/basic___backup are the same
+checking that ./src and ../../testdump/basic___backup/src are the same
+checking that ./src/binary.png and ../../testdump/basic___backup/src/binary.png are the same
+checking that ./src/keep_same and ../../testdump/basic___backup/src/keep_same are the same
+checking that ./src/regex_replace and ../../testdump/basic___backup/src/regex_replace are the same
+checking that ./src/simple_replace and ../../testdump/basic___backup/src/simple_replace are the same
+Test case CmdTest {testName = "basic", testNumber = 1, testCommandRun = "--src
+src", testCommandClean = "--src src --clean"}: Pass
+abcdef src
+("src","out","src")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out", srcLoc = AtBak}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out/regex_replace
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Directives =Directives "" [Replace "([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\.com" "{username : '\\1', hostname: '\\2'}"] "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Header = ""
+Rest = "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Result Right "\n{username : 'a', hostname: 'b'}\n{username : 'c', hostname: 'defghi'}\n{username : 'kavigupta', hostname: 'kavigupta.github'}\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out/simple_replace
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"d\" -> \"e\"\n    replace \"1\" -> \"def\"\n    replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+abcdef src
+("src","out","src")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/src", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test/out", srcLoc = AtBak}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/basic_test"
+checking that . and ../basic_result2 are the same
+checking that ./out and ../basic_result2/out are the same
+checking that ./out/binary.png and ../basic_result2/out/binary.png are the same
+checking that ./out/keep_same and ../basic_result2/out/keep_same are the same
+checking that ./out/regex_replace and ../basic_result2/out/regex_replace are the same
+checking that ./out/simple_replace and ../basic_result2/out/simple_replace are the same
+checking that ./src and ../basic_result2/src are the same
+checking that ./src/binary.png and ../basic_result2/src/binary.png are the same
+checking that ./src/keep_same and ../basic_result2/src/keep_same are the same
+checking that ./src/regex_replace and ../basic_result2/src/regex_replace are the same
+checking that ./src/simple_replace and ../basic_result2/src/simple_replace are the same
+checking that . and ../../testdump/basic___backup are the same
+checking that ./src and ../../testdump/basic___backup/src are the same
+checking that ./src/binary.png and ../../testdump/basic___backup/src/binary.png are the same
+checking that ./src/keep_same and ../../testdump/basic___backup/src/keep_same are the same
+checking that ./src/regex_replace and ../../testdump/basic___backup/src/regex_replace are the same
+checking that ./src/simple_replace and ../../testdump/basic___backup/src/simple_replace are the same
+Test case CmdTest {testName = "basic", testNumber = 2, testCommandRun = "--src
+src --out out", testCommandClean = "--src src --out out --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src/folder1/nested folder/regex_replace
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Directives =Directives "" [Replace "([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\.com" "{username : '\\1', hostname: '\\2'}"] "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Header = ""
+Rest = "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Result Right "\n{username : 'a', hostname: 'b'}\n{username : 'c', hostname: 'defghi'}\n{username : 'kavigupta', hostname: 'kavigupta.github'}\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src/folder2/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src.bak/folder2/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src/folder2/simple_replace
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"d\" -> \"e\"\n    replace \"1\" -> \"def\"\n    replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/tree_test"
+checking that . and ../tree_result1 are the same
+checking that ./src and ../tree_result1/src are the same
+checking that ./src/folder1 and ../tree_result1/src/folder1 are the same
+checking that ./src/folder1/nested folder and ../tree_result1/src/folder1/nested folder are the same
+checking that ./src/folder1/nested folder/regex_replace and ../tree_result1/src/folder1/nested folder/regex_replace are the same
+checking that ./src/folder2 and ../tree_result1/src/folder2 are the same
+checking that ./src/folder2/binary.png and ../tree_result1/src/folder2/binary.png are the same
+checking that ./src/folder2/simple_replace and ../tree_result1/src/folder2/simple_replace are the same
+checking that ./src/keep_same and ../tree_result1/src/keep_same are the same
+checking that ./src.bak and ../tree_result1/src.bak are the same
+checking that ./src.bak/folder1 and ../tree_result1/src.bak/folder1 are the same
+checking that ./src.bak/folder1/nested folder and ../tree_result1/src.bak/folder1/nested folder are the same
+checking that ./src.bak/folder1/nested folder/regex_replace and ../tree_result1/src.bak/folder1/nested folder/regex_replace are the same
+checking that ./src.bak/folder2 and ../tree_result1/src.bak/folder2 are the same
+checking that ./src.bak/folder2/binary.png and ../tree_result1/src.bak/folder2/binary.png are the same
+checking that ./src.bak/folder2/simple_replace and ../tree_result1/src.bak/folder2/simple_replace are the same
+checking that ./src.bak/keep_same and ../tree_result1/src.bak/keep_same are the same
+checking that . and ../../testdump/tree___backup are the same
+checking that ./src and ../../testdump/tree___backup/src are the same
+checking that ./src/folder1 and ../../testdump/tree___backup/src/folder1 are the same
+checking that ./src/folder1/nested folder and ../../testdump/tree___backup/src/folder1/nested folder are the same
+checking that ./src/folder1/nested folder/regex_replace and ../../testdump/tree___backup/src/folder1/nested folder/regex_replace are the same
+checking that ./src/folder2 and ../../testdump/tree___backup/src/folder2 are the same
+checking that ./src/folder2/binary.png and ../../testdump/tree___backup/src/folder2/binary.png are the same
+checking that ./src/folder2/simple_replace and ../../testdump/tree___backup/src/folder2/simple_replace are the same
+checking that ./src/keep_same and ../../testdump/tree___backup/src/keep_same are the same
+Test case CmdTest {testName = "tree", testNumber = 1, testCommandRun = "--src
+src", testCommandClean = "--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/regex_replace
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n    give me an error!\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/simple_replace
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"d\" -> \"e\"\n    replace \"1\" -> \"def\"\n    replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+Multiple errors occured
+    An error occured in processing /home/kavi/Dropbox/workspaces/Haskell/spp/tes
+        tsuite/error_test/src/regex_replace
+        Processing a directive failed due to invalid syntax
+        (line 1, column 1):
+    unexpected "g"
+    expecting white space, "replace", "exec", "pass", "writeout" or "include"
+        give me an error!
+
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src", srcLoc = AtOut}
+An error occured in processing /home/kavi/Dropbox/workspaces/Haskell/spp/testsui
+    te/error_test/src.bak
+    Backups do not exist or are irrecoverable; either you have already --clean o
+        r there is some other serious problem
+
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test"
+checking that . and ../error_result1 are the same
+checking that ./src and ../error_result1/src are the same
+checking that ./src/binary.png and ../error_result1/src/binary.png are the same
+checking that ./src/keep_same and ../error_result1/src/keep_same are the same
+checking that ./src/regex_replace and ../error_result1/src/regex_replace are the same
+checking that ./src/simple_replace and ../error_result1/src/simple_replace are the same
+checking that . and ../../testdump/error___backup are the same
+checking that ./src and ../../testdump/error___backup/src are the same
+checking that ./src/binary.png and ../../testdump/error___backup/src/binary.png are the same
+checking that ./src/keep_same and ../../testdump/error___backup/src/keep_same are the same
+checking that ./src/regex_replace and ../../testdump/error___backup/src/regex_replace are the same
+checking that ./src/simple_replace and ../../testdump/error___backup/src/simple_replace are the same
+Test case CmdTest {testName = "error", testNumber = 1, testCommandRun = "--src
+src", testCommandClean = "--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/regex_replace
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n    give me an error!\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/simple_replace
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"d\" -> \"e\"\n    replace \"1\" -> \"def\"\n    replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+Multiple errors occured
+    An error occured in processing /home/kavi/Dropbox/workspaces/Haskell/spp/tes
+        tsuite/error_test/src/regex_replace
+        Processing a directive failed due to invalid syntax
+        (line 1, column 1):
+    unexpected "g"
+    expecting white space, "replace", "exec", "pass", "writeout" or "include"
+        give me an error!
+
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/error_test"
+checking that . and ../error_result2 are the same
+checking that ./src and ../error_result2/src are the same
+checking that ./src/binary.png and ../error_result2/src/binary.png are the same
+checking that ./src/keep_same and ../error_result2/src/keep_same are the same
+checking that ./src/regex_replace and ../error_result2/src/regex_replace are the same
+checking that ./src/simple_replace and ../error_result2/src/simple_replace are the same
+checking that ./src.bak and ../error_result2/src.bak are the same
+checking that ./src.bak/binary.png and ../error_result2/src.bak/binary.png are the same
+checking that ./src.bak/keep_same and ../error_result2/src.bak/keep_same are the same
+checking that ./src.bak/regex_replace and ../error_result2/src.bak/regex_replace are the same
+checking that ./src.bak/simple_replace and ../error_result2/src.bak/simple_replace are the same
+checking that . and ../../testdump/error___backup are the same
+checking that ./src and ../../testdump/error___backup/src are the same
+checking that ./src/binary.png and ../../testdump/error___backup/src/binary.png are the same
+checking that ./src/keep_same and ../../testdump/error___backup/src/keep_same are the same
+checking that ./src/regex_replace and ../../testdump/error___backup/src/regex_replace are the same
+checking that ./src/simple_replace and ../../testdump/error___backup/src/simple_replace are the same
+Test case CmdTest {testName = "error", testNumber = 2, testCommandRun = "--src
+src --no-clean-on-errors", testCommandClean = "--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src/regex_replace
+Received output = Right "#preprocess:\n    #replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Directives =Directives "" [Replace "([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\.com" "{username : '\\1', hostname: '\\2'}"] "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Header = ""
+Rest = "\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Result Right "\n{username : 'a', hostname: 'b'}\n{username : 'c', hostname: 'defghi'}\n{username : 'kavigupta', hostname: 'kavigupta.github'}\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src.bak/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src/simple_replace
+Received output = Right "#preprocess:\n    #replace \"abc\" -> \"def\"\n    #replace \"d\" -> \"e\"\n    #replace \"1\" -> \"def\"\n    #replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_simp_test"
+checking that . and ../dirst_simp_result1 are the same
+checking that ./src and ../dirst_simp_result1/src are the same
+checking that ./src/binary.png and ../dirst_simp_result1/src/binary.png are the same
+checking that ./src/keep_same and ../dirst_simp_result1/src/keep_same are the same
+checking that ./src/regex_replace and ../dirst_simp_result1/src/regex_replace are the same
+checking that ./src/simple_replace and ../dirst_simp_result1/src/simple_replace are the same
+checking that ./src.bak and ../dirst_simp_result1/src.bak are the same
+checking that ./src.bak/binary.png and ../dirst_simp_result1/src.bak/binary.png are the same
+checking that ./src.bak/keep_same and ../dirst_simp_result1/src.bak/keep_same are the same
+checking that ./src.bak/regex_replace and ../dirst_simp_result1/src.bak/regex_replace are the same
+checking that ./src.bak/simple_replace and ../dirst_simp_result1/src.bak/simple_replace are the same
+checking that . and ../../testdump/dirst_simp___backup are the same
+checking that ./src and ../../testdump/dirst_simp___backup/src are the same
+checking that ./src/binary.png and ../../testdump/dirst_simp___backup/src/binary.png are the same
+checking that ./src/keep_same and ../../testdump/dirst_simp___backup/src/keep_same are the same
+checking that ./src/regex_replace and ../../testdump/dirst_simp___backup/src/regex_replace are the same
+checking that ./src/simple_replace and ../../testdump/dirst_simp___backup/src/simple_replace are the same
+Test case CmdTest {testName = "dirst_simp", testNumber = 1, testCommandRun =
+"--src src --directive-start '#' --no-clean-on-errors", testCommandClean =
+"--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src/ignore_this
+Received output = Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Directives =Directives "" [] "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Header = ""
+Rest = "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Result Right "preprocess:\n    replace \"([a-zA-Z0-9.+-_]+)@([a-zA-Z0-9.]+)\\\\.com\" -> \"{username : '\\\\1', hostname: '\\\\2'}\"\n\na@b.com\nc@defghi.com\nkavigupta@kavigupta.github.com\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src/binary.png
+Received output = Left "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src.bak/binary.png: hGetContents: invalid argument (invalid byte sequence)"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src/simple_replace
+Received output = Right "#preprocess:\n    #replace \"abc\" -> \"def\"\n    #replace \"d\" -> \"e\"\n    #replace \"1\" -> \"def\"\n    #replace \"def\" -> \"ghi\"\n\nabc abcabc def 111\n"
+Directives =Directives "" [Replace "abc" "def",Replace "d" "e",Replace "1" "def",Replace "def" "ghi"] "\nabc abcabc def 111\n"
+Header = ""
+Rest = "\nabc abcabc def 111\n"
+Result Right "\neef eefeef eef ghighighi\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src/keep_same
+Received output = Right "should not be modified\n"
+Directives =Directives "" [] "should not be modified\n"
+Header = ""
+Rest = "should not be modified\n"
+Result Right "should not be modified\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/dirst_ignore_test"
+checking that . and ../dirst_ignore_result1 are the same
+checking that ./src and ../dirst_ignore_result1/src are the same
+checking that ./src/binary.png and ../dirst_ignore_result1/src/binary.png are the same
+checking that ./src/ignore_this and ../dirst_ignore_result1/src/ignore_this are the same
+checking that ./src/keep_same and ../dirst_ignore_result1/src/keep_same are the same
+checking that ./src/simple_replace and ../dirst_ignore_result1/src/simple_replace are the same
+checking that ./src.bak and ../dirst_ignore_result1/src.bak are the same
+checking that ./src.bak/binary.png and ../dirst_ignore_result1/src.bak/binary.png are the same
+checking that ./src.bak/ignore_this and ../dirst_ignore_result1/src.bak/ignore_this are the same
+checking that ./src.bak/keep_same and ../dirst_ignore_result1/src.bak/keep_same are the same
+checking that ./src.bak/simple_replace and ../dirst_ignore_result1/src.bak/simple_replace are the same
+checking that . and ../../testdump/dirst_ignore___backup are the same
+checking that ./src and ../../testdump/dirst_ignore___backup/src are the same
+checking that ./src/binary.png and ../../testdump/dirst_ignore___backup/src/binary.png are the same
+checking that ./src/ignore_this and ../../testdump/dirst_ignore___backup/src/ignore_this are the same
+checking that ./src/keep_same and ../../testdump/dirst_ignore___backup/src/keep_same are the same
+checking that ./src/simple_replace and ../../testdump/dirst_ignore___backup/src/simple_replace are the same
+Test case CmdTest {testName = "dirst_ignore", testNumber = 1, testCommandRun =
+"--src src --directive-start '#' --no-clean-on-errors", testCommandClean =
+"--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/overlapping
+Received output = Right "preprocess:\n    replace \"aaaa\" -> \"b\"\n\n\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaa\na\n\n\n\n\n\n\naaaaaaaa\n"
+Directives =Directives "" [Replace "aaaa" "b"] "\n\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaa\na\n\n\n\n\n\n\naaaaaaaa\n"
+Header = ""
+Rest = "\n\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaa\na\n\n\n\n\n\n\naaaaaaaa\n"
+Result Right "\n\nbbbbbbbbbbbbbbbbbbbaa\nbbba\nbbbbaa\nbbbaaa\nbbbba\nbbbbbbaa\nbbaa\na\n\n\n\n\n\n\nbb\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/order
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"def\" -> \"abc\"\n\nabcabcabcabcabcabc\n\n\ndefdefdefdefdefdefdefabcdefabcdef\n"
+Directives =Directives "" [Replace "abc" "def",Replace "def" "abc"] "\nabcabcabcabcabcabc\n\n\ndefdefdefdefdefdefdefabcdefabcdef\n"
+Header = ""
+Rest = "\nabcabcabcabcabcabc\n\n\ndefdefdefdefdefdefdefabcdefabcdef\n"
+Result Right "\nabcabcabcabcabcabc\n\n\nabcabcabcabcabcabcabcabcabcabcabc\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/non_overlapping
+Received output = Right "preprocess:\n    replace \"abc\" -> \"def\"\n    replace \"123\" -> \"456\"\n\n\nabc ase;iryhdslkjhabca;lsdkfjla;weiu5y38927`1234245rthbdvjhsldkjfhalksdb;kjcacbacbabacabcabacbabc\n"
+Directives =Directives "" [Replace "abc" "def",Replace "123" "456"] "\n\nabc ase;iryhdslkjhabca;lsdkfjla;weiu5y38927`1234245rthbdvjhsldkjfhalksdb;kjcacbacbabacabcabacbabc\n"
+Header = ""
+Rest = "\n\nabc ase;iryhdslkjhabca;lsdkfjla;weiu5y38927`1234245rthbdvjhsldkjfhalksdb;kjcacbacbabacabcabacbabc\n"
+Result Right "\n\ndef ase;iryhdslkjhdefa;lsdkfjla;weiu5y38927`4564245rthbdvjhsldkjfhalksdb;kjcacbacbabacdefabacbdef\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/multiple_regex
+Received output = Right "preprocess:\n    replace \"a(.*)b\" -> \"c\\\\1d\"\n    replace \"cat(.*)\" -> \"\\\\1\"\naatasdfasdlky832 75 oiabaatafjhlakjdhlkajsdhflkjadshlkjfabdsfasdf\n"
+Directives =Directives "" [Replace "a(.*)b" "c\\1d",Replace "cat(.*)" "\\1"] "aatasdfasdlky832 75 oiabaatafjhlakjdhlkajsdhflkjadshlkjfabdsfasdf\n"
+Header = ""
+Rest = "aatasdfasdlky832 75 oiabaatafjhlakjdhlkajsdhflkjadshlkjfabdsfasdf\n"
+Result Right "asdfasdlky832 75 oiabaatafjhlakjdhlkajsdhflkjadshlkjfaddsfasdf\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/regex
+Received output = Right "preprocess:\n    replace \"max\\\\(([^,]+),([^,]+)\\\\)\" -> \"(\\\\1 > \\\\2 ? \\\\1 : \\\\2)\"\n\nmax(1, 2)\nmax(1 + 2 + 3 + 4 + 5 + 6, 24567652 * 'a')\n"
+Directives =Directives "" [Replace "max\\(([^,]+),([^,]+)\\)" "(\\1 > \\2 ? \\1 : \\2)"] "\nmax(1, 2)\nmax(1 + 2 + 3 + 4 + 5 + 6, 24567652 * 'a')\n"
+Header = ""
+Rest = "\nmax(1, 2)\nmax(1 + 2 + 3 + 4 + 5 + 6, 24567652 * 'a')\n"
+Result Right "\n(1 >  2 ? 1 :  2)\n(1 + 2 + 3 + 4 + 5 + 6 >  24567652 * 'a' ? 1 + 2 + 3 + 4 + 5 + 6 :  24567652 * 'a')\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src/simple
+Received output = Right "preprocess:\n    replace \"abc\" -> \"bcd\"\n\nabcdefasdf asdfasdfaacbc asdfabcabcabc\n\nasdfabcabcabacabc  sdgj456ytgfbc 6li36fg8xoc viklm,\n39eadfkglsfjfaklbcabc\nabacabcasdo83re9asd0uoj kljhslkjdfgh    j   l;sglkjabc;lkjsd;flawwe9rsfdkvxc m,.\n"
+Directives =Directives "" [Replace "abc" "bcd"] "\nabcdefasdf asdfasdfaacbc asdfabcabcabc\n\nasdfabcabcabacabc  sdgj456ytgfbc 6li36fg8xoc viklm,\n39eadfkglsfjfaklbcabc\nabacabcasdo83re9asd0uoj kljhslkjdfgh    j   l;sglkjabc;lkjsd;flawwe9rsfdkvxc m,.\n"
+Header = ""
+Rest = "\nabcdefasdf asdfasdfaacbc asdfabcabcabc\n\nasdfabcabcabacabc  sdgj456ytgfbc 6li36fg8xoc viklm,\n39eadfkglsfjfaklbcabc\nabacabcasdo83re9asd0uoj kljhslkjdfgh    j   l;sglkjabc;lkjsd;flawwe9rsfdkvxc m,.\n"
+Result Right "\nbcddefasdf asdfasdfaacbc asdfbcdbcdbcd\n\nasdfbcdbcdabacbcd  sdgj456ytgfbc 6li36fg8xoc viklm,\n39eadfkglsfjfaklbcbcd\nabacbcdasdo83re9asd0uoj kljhslkjdfgh    j   l;sglkjbcd;lkjsd;flawwe9rsfdkvxc m,.\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/replace_test"
+checking that . and ../replace_result1 are the same
+checking that ./src and ../replace_result1/src are the same
+checking that ./src/multiple_regex and ../replace_result1/src/multiple_regex are the same
+checking that ./src/non_overlapping and ../replace_result1/src/non_overlapping are the same
+checking that ./src/order and ../replace_result1/src/order are the same
+checking that ./src/overlapping and ../replace_result1/src/overlapping are the same
+checking that ./src/regex and ../replace_result1/src/regex are the same
+checking that ./src/simple and ../replace_result1/src/simple are the same
+checking that ./src.bak and ../replace_result1/src.bak are the same
+checking that ./src.bak/multiple_regex and ../replace_result1/src.bak/multiple_regex are the same
+checking that ./src.bak/non_overlapping and ../replace_result1/src.bak/non_overlapping are the same
+checking that ./src.bak/order and ../replace_result1/src.bak/order are the same
+checking that ./src.bak/overlapping and ../replace_result1/src.bak/overlapping are the same
+checking that ./src.bak/regex and ../replace_result1/src.bak/regex are the same
+checking that ./src.bak/simple and ../replace_result1/src.bak/simple are the same
+checking that . and ../../testdump/replace___backup are the same
+checking that ./src and ../../testdump/replace___backup/src are the same
+checking that ./src/multiple_regex and ../../testdump/replace___backup/src/multiple_regex are the same
+checking that ./src/non_overlapping and ../../testdump/replace___backup/src/non_overlapping are the same
+checking that ./src/order and ../../testdump/replace___backup/src/order are the same
+checking that ./src/overlapping and ../../testdump/replace___backup/src/overlapping are the same
+checking that ./src/regex and ../../testdump/replace___backup/src/regex are the same
+checking that ./src/simple and ../../testdump/replace___backup/src/simple are the same
+Test case CmdTest {testName = "replace", testNumber = 1, testCommandRun =
+"--src src", testCommandClean = "--src src --clean"}: Pass
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src", srcLoc = AtOut}
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src/reverse
+Received output = Right "preprocess:\n    pass ../../scripts/reverse.py\n\nqwertyuiop\nasdfghjkl\nzxcvbnm\n\n1qaz2wsx\n\n3edc4rfv\n\n5tgb6yhn\n\n1234567890\n"
+Directives =Directives "" [PassThrough "../../scripts/reverse.py"] "\nqwertyuiop\nasdfghjkl\nzxcvbnm\n\n1qaz2wsx\n\n3edc4rfv\n\n5tgb6yhn\n\n1234567890\n"
+Header = ""
+Rest = "\nqwertyuiop\nasdfghjkl\nzxcvbnm\n\n1qaz2wsx\n\n3edc4rfv\n\n5tgb6yhn\n\n1234567890\n"
+Result Right "\npoiuytrewq\nlkjhgfdsa\nmnbvcxz\n\nxsw2zaq1\n\nvfr4cde3\n\nnhy6bgt5\n\n0987654321\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src/cut
+Received output = Right "preprocess:\n    pass ../../scripts/cut.py\n\nArticle VI - The law is the expression of the general will. All the citizens have the right of contributing personally or through their representatives to its formation. It must be the same for all, either that it protects, or that it punishes. All the citizens, being equal in its eyes, are equally admissible to all public dignities, places and employments, according to their capacity and without distinction other than that of their virtues and of their talents.\n\nArticle VII - No man can be accused, arrested nor detained but in the cases determined by the law, and according to the forms which it has prescribed. Those who solicit, dispatch, carry out or cause to be carried out arbitrary orders, must be punished; but any citizen called or seized under the terms of the law must obey at once; he renders himself culpable by resistance.\n\nArticle VIII - The law should establish only penalties that are strictly and evidently necessary, and no one can be punished but under a law established and promulgated before the offense and legally applied.\n\nArticle IX - Any man being presumed innocent until he is declared culpable, if it is judged indispensable to arrest him, any rigor which would not be necessary for the securing of his person must be severely reprimanded by the law.\n\nArticle X - No one may be disturbed for his opinions, even religious ones, provided that their manifestation does not trouble the public order established by the law.\n"
+Directives =Directives "" [PassThrough "../../scripts/cut.py"] "\nArticle VI - The law is the expression of the general will. All the citizens have the right of contributing personally or through their representatives to its formation. It must be the same for all, either that it protects, or that it punishes. All the citizens, being equal in its eyes, are equally admissible to all public dignities, places and employments, according to their capacity and without distinction other than that of their virtues and of their talents.\n\nArticle VII - No man can be accused, arrested nor detained but in the cases determined by the law, and according to the forms which it has prescribed. Those who solicit, dispatch, carry out or cause to be carried out arbitrary orders, must be punished; but any citizen called or seized under the terms of the law must obey at once; he renders himself culpable by resistance.\n\nArticle VIII - The law should establish only penalties that are strictly and evidently necessary, and no one can be punished but under a law established and promulgated before the offense and legally applied.\n\nArticle IX - Any man being presumed innocent until he is declared culpable, if it is judged indispensable to arrest him, any rigor which would not be necessary for the securing of his person must be severely reprimanded by the law.\n\nArticle X - No one may be disturbed for his opinions, even religious ones, provided that their manifestation does not trouble the public order established by the law.\n"
+Header = ""
+Rest = "\nArticle VI - The law is the expression of the general will. All the citizens have the right of contributing personally or through their representatives to its formation. It must be the same for all, either that it protects, or that it punishes. All the citizens, being equal in its eyes, are equally admissible to all public dignities, places and employments, according to their capacity and without distinction other than that of their virtues and of their talents.\n\nArticle VII - No man can be accused, arrested nor detained but in the cases determined by the law, and according to the forms which it has prescribed. Those who solicit, dispatch, carry out or cause to be carried out arbitrary orders, must be punished; but any citizen called or seized under the terms of the law must obey at once; he renders himself culpable by resistance.\n\nArticle VIII - The law should establish only penalties that are strictly and evidently necessary, and no one can be punished but under a law established and promulgated before the offense and legally applied.\n\nArticle IX - Any man being presumed innocent until he is declared culpable, if it is judged indispensable to arrest him, any rigor which would not be necessary for the securing of his person must be severely reprimanded by the law.\n\nArticle X - No one may be disturbed for his opinions, even religious ones, provided that their manifestation does not trouble the public order established by the law.\n"
+Result Right "\ncle VI - The law is the expression of the general will. All the citizens have the right of contributing personally or through their representatives to its formation. It must be the same for all, either that it protects, or that it punishes. All the citizens, being equal in its eyes, are equally admissible to all public dignities, places and employments, according to their capacity and without distinction other than that of their virtues and of their talents.\n\ncle VII - No man can be accused, arrested nor detained but in the cases determined by the law, and according to the forms which it has prescribed. Those who solicit, dispatch, carry out or cause to be carried out arbitrary orders, must be punished; but any citizen called or seized under the terms of the law must obey at once; he renders himself culpable by resistance.\n\ncle VIII - The law should establish only penalties that are strictly and evidently necessary, and no one can be punished but under a law established and promulgated before the offense and legally applied.\n\ncle IX - Any man being presumed innocent until he is declared culpable, if it is judged indispensable to arrest him, any rigor which would not be necessary for the securing of his person must be severely reprimanded by the law.\n\ncle X - No one may be disturbed for his opinions, even religious ones, provided that their manifestation does not trouble the public order established by the law.\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src/cutend
+Received output = Right "preprocess:\n    pass ../../scripts/reverse.py\n    pass ../../scripts/cut.py\n    pass ../../scripts/reverse.py\n\nWe the People of the United St\nates, in Order to form a more\nperfect Union, establish Justi\nce, insure domestic Tranquilit\ny, provide for the common defe\nnce, promote the general Welfa\nre, and secure the Blessings o\nf Liberty to ourselves and our\n Posterity, do ordain and esta\nblish this Constitution for th\ne United States of America.\n"
+Directives =Directives "" [PassThrough "../../scripts/reverse.py",PassThrough "../../scripts/cut.py",PassThrough "../../scripts/reverse.py"] "\nWe the People of the United St\nates, in Order to form a more\nperfect Union, establish Justi\nce, insure domestic Tranquilit\ny, provide for the common defe\nnce, promote the general Welfa\nre, and secure the Blessings o\nf Liberty to ourselves and our\n Posterity, do ordain and esta\nblish this Constitution for th\ne United States of America.\n"
+Header = ""
+Rest = "\nWe the People of the United St\nates, in Order to form a more\nperfect Union, establish Justi\nce, insure domestic Tranquilit\ny, provide for the common defe\nnce, promote the general Welfa\nre, and secure the Blessings o\nf Liberty to ourselves and our\n Posterity, do ordain and esta\nblish this Constitution for th\ne United States of America.\n"
+Result Right "\nWe the People of the Unite\nates, in Order to form a \nperfect Union, establish J\nce, insure domestic Tranqu\ny, provide for the common \nnce, promote the general W\nre, and secure the Blessin\nf Liberty to ourselves and\n Posterity, do ordain and \nblish this Constitution fo\ne United States of Amer\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src/id
+Received output = Right "preprocess:\n    pass ../../scripts/id.py\n\nArticle I - Men are born and remain free and equal in rights. Social distinctions can be founded only on the common good.\n\nArticle II - The goal of any political association is the conservation of the natural and imprescriptible rights of man. These rights are liberty, property, safety and resistance against oppression.\n\nArticle III - The principle of any sovereignty resides essentially in the Nation. No body, no individual can exert authority which does not emanate expressly from it.\n\nArticle IV - Liberty consists of doing anything which does not harm others: thus, the exercise of the natural rights of each man has only those borders which assure other members of the society the enjoyment of these same rights. These borders can be determined only by the law.\n\nArticle V - The law has the right to forbid only actions harmful to society. Anything which is not forbidden by the law cannot be impeded, and no one can be constrained to do what it does not order.\n"
+Directives =Directives "" [PassThrough "../../scripts/id.py"] "\nArticle I - Men are born and remain free and equal in rights. Social distinctions can be founded only on the common good.\n\nArticle II - The goal of any political association is the conservation of the natural and imprescriptible rights of man. These rights are liberty, property, safety and resistance against oppression.\n\nArticle III - The principle of any sovereignty resides essentially in the Nation. No body, no individual can exert authority which does not emanate expressly from it.\n\nArticle IV - Liberty consists of doing anything which does not harm others: thus, the exercise of the natural rights of each man has only those borders which assure other members of the society the enjoyment of these same rights. These borders can be determined only by the law.\n\nArticle V - The law has the right to forbid only actions harmful to society. Anything which is not forbidden by the law cannot be impeded, and no one can be constrained to do what it does not order.\n"
+Header = ""
+Rest = "\nArticle I - Men are born and remain free and equal in rights. Social distinctions can be founded only on the common good.\n\nArticle II - The goal of any political association is the conservation of the natural and imprescriptible rights of man. These rights are liberty, property, safety and resistance against oppression.\n\nArticle III - The principle of any sovereignty resides essentially in the Nation. No body, no individual can exert authority which does not emanate expressly from it.\n\nArticle IV - Liberty consists of doing anything which does not harm others: thus, the exercise of the natural rights of each man has only those borders which assure other members of the society the enjoyment of these same rights. These borders can be determined only by the law.\n\nArticle V - The law has the right to forbid only actions harmful to society. Anything which is not forbidden by the law cannot be impeded, and no one can be constrained to do what it does not order.\n"
+Result Right "\nArticle I - Men are born and remain free and equal in rights. Social distinctions can be founded only on the common good.\n\nArticle II - The goal of any political association is the conservation of the natural and imprescriptible rights of man. These rights are liberty, property, safety and resistance against oppression.\n\nArticle III - The principle of any sovereignty resides essentially in the Nation. No body, no individual can exert authority which does not emanate expressly from it.\n\nArticle IV - Liberty consists of doing anything which does not harm others: thus, the exercise of the natural rights of each man has only those borders which assure other members of the society the enjoyment of these same rights. These borders can be determined only by the law.\n\nArticle V - The law has the right to forbid only actions harmful to society. Anything which is not forbidden by the law cannot be impeded, and no one can be constrained to do what it does not order.\n"
+Output file = /home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src/compose
+Received output = Right "preprocess:\n    pass ../../scripts/reverse.py\n    pass ../../scripts/reverse.py\n\nArticle XI - The free communication of thoughts and of opinions is one of the most precious rights of man: any citizen thus may speak, write, print freely, except to respond to the abuse of this liberty, in the cases determined by the law.\n\nArticle XII - The guarantee of the rights of man and of the citizen necessitates a public force: this force is thus instituted for the advantage of all and not for the particular utility of those in whom it is trusted.\n\nArticle XIII - For the maintenance of the public force and for the expenditures of administration, a common contribution is indispensable; it must be equally distributed between all the citizens, according to their ability to pay.\n\nArticle XIV - Each citizen has the right to ascertain, by himself or through his representatives, the need for a public tax, to consent to it freely, to know the uses to which it is put, and of determining the proportion, basis, collection, and duration.\n\nArticle XV - The society has the right of requesting account from any public agent of its administration.\n"
+Directives =Directives "" [PassThrough "../../scripts/reverse.py",PassThrough "../../scripts/reverse.py"] "\nArticle XI - The free communication of thoughts and of opinions is one of the most precious rights of man: any citizen thus may speak, write, print freely, except to respond to the abuse of this liberty, in the cases determined by the law.\n\nArticle XII - The guarantee of the rights of man and of the citizen necessitates a public force: this force is thus instituted for the advantage of all and not for the particular utility of those in whom it is trusted.\n\nArticle XIII - For the maintenance of the public force and for the expenditures of administration, a common contribution is indispensable; it must be equally distributed between all the citizens, according to their ability to pay.\n\nArticle XIV - Each citizen has the right to ascertain, by himself or through his representatives, the need for a public tax, to consent to it freely, to know the uses to which it is put, and of determining the proportion, basis, collection, and duration.\n\nArticle XV - The society has the right of requesting account from any public agent of its administration.\n"
+Header = ""
+Rest = "\nArticle XI - The free communication of thoughts and of opinions is one of the most precious rights of man: any citizen thus may speak, write, print freely, except to respond to the abuse of this liberty, in the cases determined by the law.\n\nArticle XII - The guarantee of the rights of man and of the citizen necessitates a public force: this force is thus instituted for the advantage of all and not for the particular utility of those in whom it is trusted.\n\nArticle XIII - For the maintenance of the public force and for the expenditures of administration, a common contribution is indispensable; it must be equally distributed between all the citizens, according to their ability to pay.\n\nArticle XIV - Each citizen has the right to ascertain, by himself or through his representatives, the need for a public tax, to consent to it freely, to know the uses to which it is put, and of determining the proportion, basis, collection, and duration.\n\nArticle XV - The society has the right of requesting account from any public agent of its administration.\n"
+Result Right "\nArticle XI - The free communication of thoughts and of opinions is one of the most precious rights of man: any citizen thus may speak, write, print freely, except to respond to the abuse of this liberty, in the cases determined by the law.\n\nArticle XII - The guarantee of the rights of man and of the citizen necessitates a public force: this force is thus instituted for the advantage of all and not for the particular utility of those in whom it is trusted.\n\nArticle XIII - For the maintenance of the public force and for the expenditures of administration, a common contribution is indispensable; it must be equally distributed between all the citizens, according to their ability to pay.\n\nArticle XIV - Each citizen has the right to ascertain, by himself or through his representatives, the need for a public tax, to consent to it freely, to know the uses to which it is put, and of determining the proportion, basis, collection, and duration.\n\nArticle XV - The society has the right of requesting account from any public agent of its administration.\n"
+abcdef src.bak
+("src","src","src.bak")
+Dirs {bakOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src.bak", outOf = "/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test/src", srcLoc = AtOut}
+"/home/kavi/Dropbox/workspaces/Haskell/spp"
+"/home/kavi/Dropbox/workspaces/Haskell/spp/testsuite/pass_test"
+checking that . and ../pass_result1 are the same
+checking that ./src and ../pass_result1/src are the same
+checking that ./src/compose and ../pass_result1/src/compose are the same
+checking that ./src/cut and ../pass_result1/src/cut are the same
+checking that ./src/cutend and ../pass_result1/src/cutend are the same
+checking that ./src/id and ../pass_result1/src/id are the same
+checking that ./src/reverse and ../pass_result1/src/reverse are the same
+checking that ./src.bak and ../pass_result1/src.bak are the same
+checking that ./src.bak/compose and ../pass_result1/src.bak/compose are the same
+checking that ./src.bak/cut and ../pass_result1/src.bak/cut are the same
+checking that ./src.bak/cutend and ../pass_result1/src.bak/cutend are the same
+checking that ./src.bak/id and ../pass_result1/src.bak/id are the same
+checking that ./src.bak/reverse and ../pass_result1/src.bak/reverse are the same
+checking that . and ../../testdump/pass___backup are the same
+checking that ./src and ../../testdump/pass___backup/src are the same
+checking that ./src/compose and ../../testdump/pass___backup/src/compose are the same
+checking that ./src/cut and ../../testdump/pass___backup/src/cut are the same
+checking that ./src/cutend and ../../testdump/pass___backup/src/cutend are the same
+checking that ./src/id and ../../testdump/pass___backup/src/id are the same
+checking that ./src/reverse and ../../testdump/pass___backup/src/reverse are the same
+Test case CmdTest {testName = "pass", testNumber = 1, testCommandRun = "--src
+src --no-clean-on-errors", testCommandClean = "--src src --clean"}: Pass

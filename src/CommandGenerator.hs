@@ -35,7 +35,7 @@ uscmd _ (Replace regex replacement) original
 uscmd path (Exec toExec) original
         = executeAndOutputOriginal path toExec original
 uscmd path (PassThrough toPass) original
-        = fmap Right (readProcess toPass [path] original)
+        = fmap Right (readProcess toPass [] original)
             `catch` eitherHandler (sppError (PassThroughError toPass) path (Just original))
 uscmd path DoWrite original
         = processParseResult
