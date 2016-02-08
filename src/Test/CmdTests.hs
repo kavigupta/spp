@@ -11,6 +11,8 @@ import Control.Applicative
 import System.Directory
 import System.Posix.Directory
 import System.FilePath
+import qualified System.IO as I
+import GHC.IO.Handle
 import System.Process
 import Data.ByteString(readFile)
 
@@ -59,7 +61,8 @@ toProgress (Failure x) = Finished (Fail (intercalate "\n" x))
 
 runTest :: CmdTest -> IO CmdTestResult
 runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testCommandClean=clean} = do
-        -- save backup
+        newOut <- I.openFile "log" I.AppendMode 
+        hDuplicateTo newOut I.stdout
         createDirectoryIfMissing True "testdump"
         removeDirectoryIfExists pathActual
         removeDirectoryIfExists pathBak
@@ -84,6 +87,7 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
         removeDirectoryRecursive pathTest
         _ <- system $ "cp -r " ++ pathBak ++ "/. " ++ pathTest
         let worked = sppworked `mappend` cleanworked
+        I.hClose newOut
         return worked
     where
     resultName = tname ++ "_result" ++ show num
