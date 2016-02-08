@@ -10,6 +10,7 @@ import Interface.Errors
 
 import System.Process(readProcess, system)
 import System.FilePath
+import System.Directory(removeFile, doesFileExist)
 
 import Text.Regex
 import Control.Applicative hiding ((<|>), many)
@@ -26,8 +27,11 @@ type Action = String -> IO Errored
 
 -- Applies the given command in
 getCommand :: FilePath -> Command -> Action
-getCommand path cmd = inDir (takeDirectory path) . uscmd path cmd
-
+getCommand path cmd item = inDir (takeDirectory path) wwp
+    where
+    wwp = withWrittenPath path action
+    action = uscmd path cmd item
+        
 -- Gets the action for the given system command
 uscmd :: FilePath -> Command -> Action
 uscmd _ (Replace regex replacement) original
@@ -35,7 +39,7 @@ uscmd _ (Replace regex replacement) original
 uscmd path (Exec toExec) original
         = executeAndOutputOriginal path toExec original
 uscmd path (PassThrough toPass) original
-        = fmap Right (readProcess toPass [path] original)
+        = fmap Right (readProcess toPass [] original)
             `catch` eitherHandler (sppError (PassThroughError toPass) path (Just original))
 uscmd path DoWrite original
         = processParseResult
@@ -51,6 +55,15 @@ uscmd path DoInclude original
             processInclude
             (sppError IncludeParseError path (Just original))
             original
+
+withWrittenPath :: FilePath -> IO a -> IO a
+withWrittenPath path f = do
+    exists <- doesFileExist ".spp-current-file"
+    when exists $ removeFile ".spp-current-file"
+    writeFile ".spp-current-file" path 
+    result <- f
+    removeFile ".spp-current-file"
+    return result 
 
 -- Executes the given command and outputs the original text
 --  This should not throw errors, since it catches all of them in the either handler

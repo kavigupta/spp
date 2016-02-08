@@ -24,6 +24,7 @@ preprocess sppopts buFile =
             -- Ignore the possibility of error at this line.
             mcontents <- fmap Right (readFile (backupFile buFile) >>= evaluate)
                     `catch` (return . Left . show :: IOError -> IO (Either String String))
+            putStrLn $ "Received output = "++ show mcontents
             case mcontents of
                 (Left _) -> return $ Right ()
                 (Right contents) -> do
@@ -38,7 +39,15 @@ preprocess sppopts buFile =
 
 performCommands :: String -> Directives Command -> IO (Either SPPError String)
 performCommands path (Directives header commands rest) = do
+        putStr "Directives ="
+        print (Directives header commands rest)
+        putStr "Header = "
+        print header
+        putStr "Rest = "
+        print rest
         result <- performAll actions rest
+        putStr "Result "
+        print result
         return $ (header ++) <$> result
     where actions = map (getCommand path) commands
 

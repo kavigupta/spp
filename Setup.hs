@@ -10,11 +10,13 @@ import Control.Monad
 import Text.Regex.Posix((=~))
 
 main = do
-    configureCode <- rawSystem "cabal" ["configure"]
+    configureCode <- rawSystem "cabal" ["configure", "--enable-tests"]
     buildCode <- rawSystem "cabal" ["build"]
     when (buildCode /= ExitSuccess) $ die "Build failed"
     hlintRun
     copyFile "dist/build/spp/spp" "spp"
+    exists <- doesFileExist "log"
+    when exists $ removeFile "log"
     buildTest <- rawSystem "cabal" ["test"]
     when (buildTest /= ExitSuccess) $ die "Tests failed"
 

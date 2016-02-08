@@ -2,7 +2,8 @@ module Tools.Files(
         eitherHandler,
         allFiles,
         realContents,
-        actual
+        actual,
+        removeDirectoryIfExists
     ) where
 
 import Interface.Errors
@@ -10,7 +11,7 @@ import Control.Exception
 
 import System.Directory
 
-import Control.Monad(forM)
+import Control.Monad(forM, when)
 
 -- Handles an error by using the left error reporting mechanism
 eitherHandler :: IOExcHandler -> IOException -> IO (Either SPPError a)
@@ -36,3 +37,8 @@ realContents :: FilePath -> IO [String]
 realContents path = do
     contents <- getDirectoryContents path
     return $ filter actual contents
+
+removeDirectoryIfExists :: FilePath -> IO ()
+removeDirectoryIfExists path = do
+    exists <- doesDirectoryExist path
+    when exists $ removeDirectoryRecursive path 

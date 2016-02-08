@@ -11,6 +11,8 @@ import Control.Applicative
 import System.Directory
 import System.Posix.Directory
 import System.FilePath
+import qualified System.IO as I
+import GHC.IO.Handle
 import System.Process
 import Data.ByteString(readFile)
 
@@ -59,7 +61,11 @@ toProgress (Failure x) = Finished (Fail (intercalate "\n" x))
 
 runTest :: CmdTest -> IO CmdTestResult
 runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testCommandClean=clean} = do
-        -- save backup
+        newOut <- I.openFile "log" I.AppendMode 
+        hDuplicateTo newOut I.stdout
+        createDirectoryIfMissing True "testdump"
+        removeDirectoryIfExists pathActual
+        removeDirectoryIfExists pathBak
         _ <- system $ "cp -r " ++ pathTest ++ "/. " ++ pathBak
         startingdir <- getWorkingDirectory
         print startingdir
@@ -69,28 +75,29 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
         -- run spp
         _ <- system $ spploc ++ toRun
         changeWorkingDirectory startingdir
-        _ <- system $ "cp -r " ++ pathTest ++ " " ++ pathActual
+        _ <- system $ "cp -r " ++ pathTest ++ "/. " ++ pathActual
         changeWorkingDirectory pathTest
         -- check that the result is the same as the desired result
         sppworked <- checkSame "." $ ".." </> resultName
         -- run spp --clean
         _ <- system $ spploc ++ clean
         -- check that the resutl is the same as the original
-        cleanworked <- checkSame "." $ "../../testdump" </> backupName
+        cleanworked <- checkSame "." $ "../.." </> pathBak
         changeWorkingDirectory startingdir
         removeDirectoryRecursive pathTest
         _ <- system $ "cp -r " ++ pathBak ++ "/. " ++ pathTest
         let worked = sppworked `mappend` cleanworked
+        I.hClose newOut
         return worked
     where
     resultName = tname ++ "_result" ++ show num
     pathActual = "testdump" </> resultName ++ "__actual"
-    backupName = tname ++ "___backup"
     pathTest = "testsuite" </> tname ++ "_test"
-    pathBak = "testdump" </> backupName
+    pathBak = "testdump" </> tname ++ "___backup"
 
 checkSame :: FilePath -> FilePath -> IO CmdTestResult
 checkSame a b = do
+    putStrLn $ "checking that " ++ a ++ " and " ++ b ++ " are the same"
     adir <- doesDirectoryExist a
     bdir <- doesDirectoryExist b
     if adir && bdir then
