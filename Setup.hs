@@ -15,6 +15,8 @@ main = do
     when (buildCode /= ExitSuccess) $ die "Build failed"
     hlintRun
     copyFile "dist/build/spp/spp" "spp"
+    exists <- doesFileExist "log"
+    when exists $ removeFile "log"
     buildTest <- rawSystem "cabal" ["test"]
     when (buildTest /= ExitSuccess) $ die "Tests failed"
 

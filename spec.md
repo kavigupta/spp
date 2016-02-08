@@ -71,18 +71,18 @@ These directives both specify a program in the format
 <exec | pass> <program>
 ```
 
-The program specified will be executed with the additional argument of the path of the file. It is executed from the parent directory of the current file, and is fed the contents of the current file. In other words, it is as if this is performed:
+The program specified will be executed. It is executed from the parent directory of the current file, and is fed the contents of the current file. In other words, it is as if this is performed:
 
 ```bash
 working_dir=$PWD
 cd $parent_dir
-cat $filename | program $filename > $filename
+cat $filename | program > $filename
 cd $working_dir
 ```
 
 The `> $filename` is included for only `pass`, not for `exec`.
 
-A known problem is that `program` must be a single executable. (see Issue 1).
+A known problem is that `program` must be a single executable. (see Issue 1). The file `.spp-current-file` in the directory containing the file will contain `$filename` for use by the program.
 
 ## The DoWrite Directive
 
