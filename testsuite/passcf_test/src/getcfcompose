@@ -1,6 +1,6 @@
 preprocess:
-    pass ../../scripts/getcfandprint.py
-    pass ../../scripts/reverse.py
+    pass python3 ../../scripts/getcfandprint.py
+    pass python3 ../../scripts/reverse.py
 
 For taking away our Charters, abolishing our most valuable Laws, and altering fundamentally the Forms of our Governments:
 For suspending our own Legislatures, and declaring themselves invested with power to legislate for us in all cases whatsoever.

@@ -1,7 +1,7 @@
 preprocess:
-    pass ../../scripts/cut.py
-    pass ../../scripts/write_file_and_id.py
-    pass ../../scripts/reverse.py
+    pass python3 ../../scripts/cut.py
+    pass python3 ../../scripts/write_file_and_id.py
+    pass python3 ../../scripts/reverse.py
 
 ARTICLE I
 Share

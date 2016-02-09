@@ -1,5 +1,5 @@
 preprocess:
-    pass ../../scripts/cut.py
+    pass python3 ../../scripts/cut.py
 
 Article VI - The law is the expression of the general will. All the citizens have the right of contributing personally or through their representatives to its formation. It must be the same for all, either that it protects, or that it punishes. All the citizens, being equal in its eyes, are equally admissible to all public dignities, places and employments, according to their capacity and without distinction other than that of their virtues and of their talents.
 

@@ -1,7 +1,7 @@
 preprocess:
-    pass ../../scripts/reverse.py
-    pass ../../scripts/cut.py
-    pass ../../scripts/reverse.py
+    pass python3 ../../scripts/reverse.py
+    pass python3 ../../scripts/cut.py
+    pass python3 ../../scripts/reverse.py
 
 We the People of the United St
 ates, in Order to form a more

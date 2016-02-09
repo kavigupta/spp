@@ -1,6 +1,6 @@
 preprocess:
-    pass ../../scripts/reverse.py
-    pass ../../scripts/reverse.py
+    pass python3 ../../scripts/reverse.py
+    pass python3 ../../scripts/reverse.py
 
 Article XI - The free communication of thoughts and of opinions is one of the most precious rights of man: any citizen thus may speak, write, print freely, except to respond to the abuse of this liberty, in the cases determined by the law.
 
