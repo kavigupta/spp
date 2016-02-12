@@ -1,0 +1,57 @@
+preprocess:
+    replace "a" "b"
+    exec python3 ../../scripts/write_file_and_id.py
+    replace "b" "c"
+    exec python3 ../../scripts/write_file_and_id.py
+    replace "c" "d"
+    exec python3 ../../scripts/write_file_and_id.py
+    replace "d" "e"
+
+    
+CHAPTER I: PURPOSES AND PRINCIPLES
+ 
+Article 1
+The Purposes of the United Nations are:
+
+To maintain international peace and security, and to that end: to take effective
+ collective measures for the prevention and removal of threats to the peace, and
+ for the suppression of acts of aggression or other breaches of the peace, and t
+o bring about by peaceful means, and in conformity with the principles of justic
+e and international law, adjustment or settlement of international disputes or s
+ituations which might lead to a breach of the peace;
+To develop friendly relations among nations based on respect for the principle o
+f equal rights and self-determination of peoples, and to take other appropriate 
+measures to strengthen universal peace;
+To achieve international co-operation in solving international problems of an ec
+onomic, social, cultural, or humanitarian character, and in promoting and encour
+aging respect for human rights and for fundamental freedoms for all without dist
+inction as to race, sex, language, or religion; and
+To be a centre for harmonizing the actions of nations in the attainment of these
+ common ends.
+Article 2
+The Organization and its Members, in pursuit of the Purposes stated in Article 1
+, shall act in accordance with the following Principles.
+
+The Organization is based on the principle of the sovereign equality of all its 
+Members.
+All Members, in order to ensure to all of them the rights and benefits resulting
+ from membership, shall fulfill in good faith the obligations assumed by them in
+ accordance with the present Charter.
+All Members shall settle their international disputes by peaceful means in such 
+a manner that international peace and security, and justice, are not endangered.
+All Members shall refrain in their international relations from the threat or us
+e of force against the territorial integrity or political independence of any st
+ate, or in any other manner inconsistent with the Purposes of the United Nations
+.
+All Members shall give the United Nations every assistance in any action it take
+s in accordance with the present Charter, and shall refrain from giving assistan
+ce to any state against which the United Nations is taking preventive or enforce
+ment action.
+The Organization shall ensure that states which are not Members of the United Na
+tions act in accordance with these Principles so far as may be necessary for the
+ maintenance of international peace and security.
+Nothing contained in the present Charter shall authorize the United Nations to i
+ntervene in matters which are essentially within the domestic jurisdiction of an
+y state or shall require the Members to submit such matters to settlement under 
+the present Charter; but this principle shall not prejudice the application of e
+nforcement measures under Chapter Vll.

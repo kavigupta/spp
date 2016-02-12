@@ -19,6 +19,7 @@ cmdTests =
         , CmdTest "pass"            1 "--src src" "--src src --clean"
         , CmdTest "passcf"          1 "--src src" "--src src --clean"
         , CmdTest "passse"          1 "--src src" "--src src --clean"
+        , CmdTest "exec"            1 "--src src" "--src src --clean"
     ]
 
 tests :: IO [Test]
