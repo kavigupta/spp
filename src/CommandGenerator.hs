@@ -8,7 +8,7 @@ import Tools.Files
 import Tools.Shell
 import Interface.Errors
 
-import System.Process(readProcess, system)
+import System.ProcessNew(readCreateProcess, system, shell)
 import System.FilePath
 import System.Directory(removeFile, doesFileExist)
 
@@ -39,8 +39,12 @@ uscmd _ (Replace regex replacement) original
 uscmd path (Exec toExec) original
         = executeAndOutputOriginal path toExec original
 uscmd path (PassThrough toPass) original
-        = fmap Right (readProcess toPass [] original)
-            `catch` eitherHandler (sppError (PassThroughError toPass) path (Just original))
+        = fmap Right sh
+            `catch` eitherHandler
+                (sppError (PassThroughError toPass) path (Just original))
+    where
+    sh = readCreateProcess proc original -- TODO ignoring exit code
+    proc = shell toPass
 uscmd path DoWrite original
         = processParseResult
             (sppError WriteIOError path (Just original))
