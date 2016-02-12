@@ -22,7 +22,7 @@ main = do
 
 hlintRun :: IO ()
 hlintRun = do
-    (_,lintResult1, lintResult2) <- readProcessWithExitCode "hlint" ["."] ""
+    (_,lintResult1, lintResult2) <- readProcessWithExitCode "hlint" ["src"] ""
     let lintResult = lintResult1 ++ lintResult2
     when (lintResult =~ "([0-9]+)\\s+suggestions?")
         $ die ("Hlint suggestions ==>\n" ++ lintResult)
