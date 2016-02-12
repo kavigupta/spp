@@ -8,7 +8,7 @@ import Tools.Files
 import Tools.Shell
 import Interface.Errors
 
-import System.ProcessNew(readCreateProcess, system, shell)
+import System.ProcessNew(readCreateProcess, shell)
 import System.FilePath
 import System.Directory(removeFile, doesFileExist)
 
@@ -43,8 +43,7 @@ uscmd path (PassThrough toPass) original
             `catch` eitherHandler
                 (sppError (PassThroughError toPass) path (Just original))
     where
-    sh = readCreateProcess proc original -- TODO ignoring exit code
-    proc = shell toPass
+    sh = pass toPass original -- TODO ignoring exit code
 uscmd path DoWrite original
         = processParseResult
             (sppError WriteIOError path (Just original))
@@ -60,6 +59,9 @@ uscmd path DoInclude original
             (sppError IncludeParseError path (Just original))
             original
 
+pass :: String -> String -> IO String
+pass toPass = readCreateProcess (shell toPass)
+
 withWrittenPath :: FilePath -> IO a -> IO a
 withWrittenPath path f = do
     exists <- doesFileExist ".spp-current-file"
@@ -73,7 +75,7 @@ withWrittenPath path f = do
 --  This should not throw errors, since it catches all of them in the either handler
 executeAndOutputOriginal :: FilePath -> String -> Action
 executeAndOutputOriginal path toExec original = do
-    result <- fmap Right (system toExec)
+    result <- fmap Right (pass toExec original)
         `catch` eitherHandler (sppError (ExecError toExec) path (Just original))
     return $ result >>= const (Right original)
 

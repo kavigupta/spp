@@ -3,7 +3,7 @@ import fileinput
 
 
 with open(".spp-current-file") as f:
-    loc = open(f.read() + "-temp", "w")
+    loc = open(f.read() + "-temp", "a")
 
 for line in fileinput.input():
     line = line[:-1]

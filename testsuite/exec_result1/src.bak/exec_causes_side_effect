@@ -1,7 +1,6 @@
 preprocess:
     exec python3 ../../scripts/write_file_and_id.py
     exec echo We the people of the United States of America > "ecse-temp1"
-    exec cat ".spp-current-file" > "ecse-temp2"
 
 In order to gain a clear and just idea of the design and end of government, let 
 us suppose a small number of persons settled in some sequestered part of the ear

@@ -1,11 +1,11 @@
 preprocess:
-    replace "a" "b"
+    replace "a" -> "b"
     exec python3 ../../scripts/write_file_and_id.py
-    replace "b" "c"
+    replace "b" -> "c"
     exec python3 ../../scripts/write_file_and_id.py
-    replace "c" "d"
+    replace "c" -> "d"
     exec python3 ../../scripts/write_file_and_id.py
-    replace "d" "e"
+    replace "d" -> "e"
 
     
 CHAPTER I: PURPOSES AND PRINCIPLES
