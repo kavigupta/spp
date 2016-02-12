@@ -1,5 +1,5 @@
 preprocess:
-    pass ../../scripts/write_file_and_id.py
+    pass python3 ../../scripts/write_file_and_id.py
 
 ARTICLE I
 

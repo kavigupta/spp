@@ -1,5 +1,5 @@
 preprocess:
-    pass ../../scripts/id.py
+    pass python3 ../../scripts/id.py
 
 Article I - Men are born and remain free and equal in rights. Social distinctions can be founded only on the common good.
 
