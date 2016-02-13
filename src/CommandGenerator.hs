@@ -9,7 +9,7 @@ import Tools.Shell
 import Interface.Errors
 
 import System.ProcessNew(readCreateProcess, shell)
-import System.FilePath
+import System.FilePath (takeDirectory)
 import System.Directory(removeFile, doesFileExist)
 
 import Text.Regex
@@ -17,6 +17,8 @@ import Control.Applicative hiding ((<|>), many)
 import Control.Monad
 
 import Control.Exception(catch)
+import FileHandler(BackedUpFile, outputFile, sourceFile)
+
 
 import Text.Parsec
 import Tools.Parser
@@ -26,10 +28,12 @@ type Errored = Either SPPError String
 type Action = String -> IO Errored
 
 -- Applies the given command in
-getCommand :: FilePath -> Command -> Action
-getCommand path cmd item = inDir (takeDirectory path) wwp
+getCommand :: BackedUpFile -> Command -> Action
+getCommand buf cmd item = inDir (takeDirectory out) wwp
     where
-    wwp = withWrittenPath path action
+    out = outputFile buf
+    path = sourceFile buf
+    wwp = withWrittenPath out action
     action = uscmd path cmd item
         
 -- Gets the action for the given system command

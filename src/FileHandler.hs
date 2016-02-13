@@ -1,6 +1,6 @@
 {-# LANGUAGE DoAndIfThenElse #-}
 module FileHandler(
-        BackedUpFile(..),
+        BackedUpFile(..), sourceFile,
         createBackups, removeBackups,
         setWritable
     ) where
@@ -27,6 +27,11 @@ data BackedUpFile = BackedUpFile {
     outputFile :: FilePath
 }
 
+sourceFile :: BackedUpFile -> FilePath
+sourceFile buf = case sourceLocated buf of
+    AtBak -> backupFile buf
+    AtOut -> outputFile buf
+
 copyDirectories :: IOExcHandler -> FilePath -> FilePath -> IO (Either SPPError ())
 copyDirectories handler src dst = unsafeCp `catch` eitherHandler handler
     where
@@ -38,7 +43,7 @@ setWritable b f = do
     setPermissions f (p {writable = b})
 
 createBackups :: Dirs -> IO (Either SPPError [BackedUpFile])
-createBackups root@(Dirs {srcLoc=srcl, bakOf=bak, outOf=out})
+createBackups root@Dirs {srcLoc=srcl, bakOf=bak, outOf=out}
         = case srcl of
             AtBak ->
                 put bak out OutputExistsError

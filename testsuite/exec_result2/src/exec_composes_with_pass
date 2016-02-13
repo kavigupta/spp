@@ -1,0 +1,33 @@
+preprocess:
+    exec python3 ../../scripts/a.py
+    pass python3 ../../scripts/b.py
+    exec python3 ../../scripts/c.py
+
+Chapter II
+CHAPTER II: MEMBERSHIP
+
+Article 3
+The original Members of the United Nations shall be the states which, having par
+ticipated in the United Nations Conference on International Organization at San 
+Francisco, or having previously signed the Declaration by United Nations of 1 Ja
+nuary 1942, sign the present Charter and ratify it in accordance with Articl
+e 110.
+
+Article 4
+Membership in the United Nations is open to all other peace-loving states which 
+accept the obligations contained in the present Charter and, in the judgment of 
+the Organization, are able and willing to carry out these obligations.
+The admission of any such state to membership in the United Nations will be effe
+cted by a decision of the General Assembly upon the recommendation of the Securi
+ty Council.
+Article 5
+A Member of the United Nations against which preventive or enforcement action ha
+s been taken by the Security Council may be suspended from the exercise of the r
+ights and privileges of membership by the General Assembly upon the recommen
+dation of the Security Council. The exercise of these rights and privileges may 
+be restored by the Security Council.
+
+Article 6
+A Member of the United Nations which has persistently violated the Principles co
+ntained in the present Charter may be expelled from the Organization by the Gene
+ral Assembly upon the recommendation of the Security Council.
