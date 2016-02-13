@@ -29,16 +29,13 @@ preprocess sppopts buFile =
                 (Left _) -> return $ Right ()
                 (Right contents) -> do
                     -- There should be no error at this line given that process should throw no error
-                    output <- process sppopts srcPath contents
+                    output <- process sppopts buFile contents
                     case output of
                         Left err -> return $ Left err
                         Right outputValue -> Right <$> writeFile (outputFile buFile) outputValue
-    where srcPath = case sourceLocated buFile of
-            AtBak -> backupFile buFile
-            AtOut -> outputFile buFile
 
-performCommands :: String -> Directives Command -> IO (Either SPPError String)
-performCommands path (Directives header commands rest) = do
+performCommands :: BackedUpFile -> Directives Command -> IO (Either SPPError String)
+performCommands buf (Directives header commands rest) = do
         putStr "Directives ="
         print (Directives header commands rest)
         putStr "Header = "
@@ -49,17 +46,17 @@ performCommands path (Directives header commands rest) = do
         putStr "Result "
         print result
         return $ (header ++) <$> result
-    where actions = map (getCommand path) commands
+    where actions = map (getCommand buf) commands
 
 {-
 Creates an IO instance for preprocessing a series of lines.
 -}
-process :: SPPOpts -> FilePath -> String -> IO (Either SPPError String)
-process sppopts path str
+process :: SPPOpts -> BackedUpFile -> String -> IO (Either SPPError String)
+process sppopts buf str
         = either (return . Left) id result
     where
     result :: Either SPPError (IO (Either SPPError String))
-    result = performCommands path <$> parseDirectives (directiveStart sppopts) path str
+    result = performCommands buf <$> parseDirectives (directiveStart sppopts) (sourceFile buf) str
 {-
     Perform all the actions in the given list of actions.
     If any of the values are `Left` errors, the entire result is an error.
