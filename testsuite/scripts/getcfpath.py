@@ -9,7 +9,7 @@ else:
     write = lambda st: f.write(st + "\n")    
 
 with open(".spp-current-file") as cf:
-    write(cf.read())
+    write(cf.read()[-16:])
 write(os.getcwd()[-16:])
 
 for _ in fileinput.input():
