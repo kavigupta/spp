@@ -16,7 +16,7 @@ main :: IO ()
 main = processArguments doProcessing
 
 doProcessing :: SPPOpts -> IO ()
-doProcessing (Clean directories) = runClean directories
+doProcessing (Clean _ directories) = runClean directories
 doProcessing opts@(Preprocess {}) = runPreprocessor opts
 
 {-

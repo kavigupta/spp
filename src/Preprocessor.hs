@@ -20,17 +20,17 @@ An IO Action for either processing a file or producing an error without doing an
 preprocess :: SPPOpts -> BackedUpFile -> IO (Either SPPError ())
 preprocess sppopts buFile =
         do
-            putStrLn $ "Output file = " ++ outputFile buFile
+            putStrLn $ "outp file = " ++ outputFile buFile
             -- Ignore the possibility of error at this line.
             mcontents <- fmap Right (readFile (backupFile buFile) >>= evaluate)
                     `catch` (return . Left . show :: IOError -> IO (Either String String))
-            putStrLn $ "Received output = "++ show mcontents
+            putStrLn $ "Received outp = "++ show mcontents
             case mcontents of
                 (Left _) -> return $ Right ()
                 (Right contents) -> do
                     -- There should be no error at this line given that process should throw no error
-                    output <- process sppopts buFile contents
-                    case output of
+                    outp <- process sppopts buFile contents
+                    case outp of
                         Left err -> return $ Left err
                         Right outputValue -> Right <$> writeFile (outputFile buFile) outputValue
 

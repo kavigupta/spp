@@ -3,6 +3,8 @@ module Interface.Args (
         Dirs (..),
         SourceLocation(..),
         SPPOpts(..),
+        output,
+        PrintLevel(..),
         processArguments
     ) where
 
@@ -31,9 +33,11 @@ data RawDirs = RawDirs {
 }
 
 data SPPOpts = Clean {
+        printLevel :: PrintLevel,
         dirs :: Dirs
     } |
     Preprocess {
+        printLevel :: PrintLevel,
         dirs :: Dirs,
         directiveStart :: String,
         noCleanOnErrors :: Bool
@@ -54,14 +58,17 @@ data Options = Options {
     -- The string to start directives with
     rawDirectiveStart :: Maybe String,
     -- Clean up on errors
-    rawNoCleanOnErrors :: Bool
+    rawNoCleanOnErrors :: Bool,
+    -- Whether or not to print debug statements
+    isDebug :: Bool,
+    -- Whether or not to print verbose statements
+    isVerbose :: Bool
 }
 
 --TODO add update support
 
 checkDirs :: RawDirs -> IO Dirs
 checkDirs (RawDirs {rawSrc=src,rawOut=out,rawBak=bak}) = do
-        putStrLn $ "abcdef " ++ bak
         csrc <- cleanCanon src
         cout <- cleanCanon out
         cbak <- cleanCanon bak
@@ -85,12 +92,18 @@ checkDirs (RawDirs {rawSrc=src,rawOut=out,rawBak=bak}) = do
 sanitizeOptions :: Options -> IO SPPOpts
 sanitizeOptions opts
         | clean opts    = case (rawDirectiveStart opts, rawNoCleanOnErrors opts) of
-            (Nothing, False) -> Clean <$> extractDirs opts
+            (Nothing, False) -> Clean (rawPrintLevel opts) <$> extractDirs opts
             (Just _, _) -> errorDie "--directive-start should not be used with --clean"
             (_, True) -> errorDie "--no-clean-on-errors should not be used with --clean"
         | otherwise     = do
                     dirse <- extractDirs opts
-                    return $ Preprocess dirse (fromMaybe "" (rawDirectiveStart opts)) (rawNoCleanOnErrors opts)
+                    return $ Preprocess (rawPrintLevel opts) dirse (fromMaybe "" (rawDirectiveStart opts)) (rawNoCleanOnErrors opts)
+
+rawPrintLevel :: Options -> PrintLevel
+rawPrintLevel opts
+    | isDebug opts      = Debug
+    | isVerbose opts    = Verbose
+    | otherwise         = Info
 
 extractDirs :: Options -> IO Dirs
 extractDirs opts = extractRawDirs opts >>= checkDirs
@@ -122,7 +135,9 @@ optionParser = Options `parsedBy`
         optFlag magicallyNothing "out" `andMaybeBy`
         optFlag magicallyNothing "bak" `andMaybeBy`
         optFlag magicallyNothing "directive-start" `andBy`
-        boolFlag "no-clean-on-errors"
+        boolFlag "no-clean-on-errors" `andBy`
+        boolFlag "debug" `andBy`
+        boolFlag "verbose"
 
 infixl 1 `andMaybeBy`
 
@@ -140,3 +155,10 @@ cleanCanon path = do
     canon <- canonicalizePath path
     unless exists $ removeDirectory path
     return canon
+
+data PrintLevel = Debug | Verbose | Info
+    deriving (Eq, Ord)
+
+output :: PrintLevel -> SPPOpts -> String -> IO ()
+output level opts toPrint
+    = when (level <= printLevel opts) $ putStr toPrint
