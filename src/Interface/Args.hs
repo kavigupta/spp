@@ -67,12 +67,14 @@ data Options = Options {
 
 --TODO add update support
 
-checkDirs :: RawDirs -> IO Dirs
-checkDirs (RawDirs {rawSrc=src,rawOut=out,rawBak=bak}) = do
+checkDirs :: PrintLevel -> RawDirs -> IO Dirs
+checkDirs level (RawDirs {rawSrc=src,rawOut=out,rawBak=bak}) = do
         csrc <- cleanCanon src
         cout <- cleanCanon out
         cbak <- cleanCanon bak
-        print (src, out, bak)
+        filtOutput level Verbose $ "The source directory you selected was " ++ show src
+                ++ ", the output directory was " ++ show out
+                ++ ", the backup directory was " ++ show bak 
         u <- fromCanonicalTriple csrc cout cbak
         print u
         return u
@@ -106,7 +108,7 @@ rawPrintLevel opts
     | otherwise         = Info
 
 extractDirs :: Options -> IO Dirs
-extractDirs opts = extractRawDirs opts >>= checkDirs
+extractDirs opts = extractRawDirs opts >>= checkDirs (rawPrintLevel opts)
 
 errorDie :: String -> IO a
 errorDie str = putStrLn str >> exitFailure >> return undefined
@@ -159,6 +161,10 @@ cleanCanon path = do
 data PrintLevel = Debug | Verbose | Info
     deriving (Eq, Ord)
 
-output :: PrintLevel -> SPPOpts -> String -> IO ()
-output level opts toPrint
+output :: SPPOpts -> PrintLevel -> String -> IO ()
+output opts level toPrint
     = when (level <= printLevel opts) $ putStr toPrint
+
+filtOutput :: PrintLevel -> PrintLevel -> String -> IO ()
+filtOutput deflevel level toPrint
+    = when (level <= deflevel) $ putStr toPrint
