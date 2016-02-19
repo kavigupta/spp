@@ -3,6 +3,8 @@ module Interface.Args (
         Dirs (..),
         SourceLocation(..),
         SPPOpts(..),
+        output,
+        PrintLevel(..),
         processArguments
     ) where
 
@@ -31,9 +33,11 @@ data RawDirs = RawDirs {
 }
 
 data SPPOpts = Clean {
+        printLevel :: PrintLevel,
         dirs :: Dirs
     } |
     Preprocess {
+        printLevel :: PrintLevel,
         dirs :: Dirs,
         directiveStart :: String,
         noCleanOnErrors :: Bool
@@ -54,55 +58,63 @@ data Options = Options {
     -- The string to start directives with
     rawDirectiveStart :: Maybe String,
     -- Clean up on errors
-    rawNoCleanOnErrors :: Bool
+    rawNoCleanOnErrors :: Bool,
+    -- Whether or not to print debug statements
+    isDebug :: Bool,
+    -- Whether or not to print verbose statements
+    isVerbose :: Bool
 }
 
 --TODO add update support
 
-checkDirs :: RawDirs -> IO Dirs
-checkDirs (RawDirs {rawSrc=src,rawOut=out,rawBak=bak}) = do
-        putStrLn $ "abcdef " ++ bak
+checkDirs :: PrintLevel -> RawDirs -> IO Dirs
+checkDirs level (RawDirs {rawSrc=src,rawOut=out,rawBak=bak}) = do
         csrc <- cleanCanon src
         cout <- cleanCanon out
         cbak <- cleanCanon bak
-        print (src, out, bak)
         u <- fromCanonicalTriple csrc cout cbak
-        print u
+        filtOutput level Verbose $ "You selected the directories " ++ show u ++ "\n"
         return u
     where
     fromCanonicalTriple :: String -> String -> String -> IO Dirs
     fromCanonicalTriple csrc cout cbak
         | cout == cbak =
-            putStrLn "The backup and output directories cannot be the same" >> exitFailure
+            filtOutput level Info "The backup and output directories cannot be the same\n" >> exitFailure
         | csrc == cout =
             return Dirs {outOf=csrc, bakOf=cbak, srcLoc=AtOut}
         | csrc == cbak =
             return Dirs {bakOf=csrc, outOf=cout, srcLoc=AtBak}
         | otherwise =
-            putStrLn "The source must be the same as the backup or the output. Otherwise, the backup is redundant" >> exitFailure
+            filtOutput level Info "The source must be the same as the backup or the output. Otherwise, the backup is redundant\n" >> exitFailure
 
 
 sanitizeOptions :: Options -> IO SPPOpts
 sanitizeOptions opts
         | clean opts    = case (rawDirectiveStart opts, rawNoCleanOnErrors opts) of
-            (Nothing, False) -> Clean <$> extractDirs opts
-            (Just _, _) -> errorDie "--directive-start should not be used with --clean"
-            (_, True) -> errorDie "--no-clean-on-errors should not be used with --clean"
+            (Nothing, False) -> Clean (rawPrintLevel opts) <$> extractDirs opts
+            (Just _, _) -> errorDie (rawPrintLevel opts) "--directive-start should not be used with --clean"
+            (_, True) -> errorDie (rawPrintLevel opts) "--no-clean-on-errors should not be used with --clean"
         | otherwise     = do
                     dirse <- extractDirs opts
-                    return $ Preprocess dirse (fromMaybe "" (rawDirectiveStart opts)) (rawNoCleanOnErrors opts)
+                    return $ Preprocess (rawPrintLevel opts) dirse (fromMaybe "" (rawDirectiveStart opts)) (rawNoCleanOnErrors opts)
+
+rawPrintLevel :: Options -> PrintLevel
+rawPrintLevel opts
+    | isDebug opts      = Debug
+    | isVerbose opts    = Verbose
+    | otherwise         = Info
 
 extractDirs :: Options -> IO Dirs
-extractDirs opts = extractRawDirs opts >>= checkDirs
+extractDirs opts = extractRawDirs opts >>= checkDirs (rawPrintLevel opts)
 
-errorDie :: String -> IO a
-errorDie str = putStrLn str >> exitFailure >> return undefined
+errorDie :: PrintLevel -> String -> IO a
+errorDie level str = filtOutput level Info (str ++ "\n") >> exitFailure >> return undefined
 
 extractRawDirs :: Options -> IO RawDirs
 extractRawDirs opts = fromSrcOutBak (rawSrcDir opts) (rawOutDir opts) (rawBakDir opts)
     where
     fromSrcOutBak src (Just out) (Just bak)
-        | out == bak    = errorDie "The backup and output directories cannot be the same"
+        | out == bak    = errorDie (rawPrintLevel opts) "The backup and output directories cannot be the same"
         | otherwise     = return RawDirs {rawSrc=src, rawOut=out, rawBak=bak}
     fromSrcOutBak src Nothing (Just bak)
         = fromSrcOutBak src (Just src) (Just bak)
@@ -122,7 +134,9 @@ optionParser = Options `parsedBy`
         optFlag magicallyNothing "out" `andMaybeBy`
         optFlag magicallyNothing "bak" `andMaybeBy`
         optFlag magicallyNothing "directive-start" `andBy`
-        boolFlag "no-clean-on-errors"
+        boolFlag "no-clean-on-errors" `andBy`
+        boolFlag "debug" `andBy`
+        boolFlag "verbose"
 
 infixl 1 `andMaybeBy`
 
@@ -140,3 +154,14 @@ cleanCanon path = do
     canon <- canonicalizePath path
     unless exists $ removeDirectory path
     return canon
+
+data PrintLevel = Debug | Verbose | Info
+    deriving (Eq, Ord)
+
+output :: SPPOpts -> PrintLevel -> String -> IO ()
+output opts level toPrint
+    = when (level <= printLevel opts) $ putStr toPrint
+
+filtOutput :: PrintLevel -> PrintLevel -> String -> IO ()
+filtOutput deflevel level toPrint
+    = when (level <= deflevel) $ putStr toPrint

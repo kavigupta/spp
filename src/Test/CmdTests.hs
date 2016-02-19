@@ -68,10 +68,8 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
         removeDirectoryIfExists pathBak
         _ <- system $ "cp -r " ++ pathTest ++ "/. " ++ pathBak
         startingdir <- getWorkingDirectory
-        print startingdir
         let spploc = startingdir </> "spp "
         changeWorkingDirectory pathTest
-        getWorkingDirectory >>= print
         -- run spp
         _ <- system $ spploc ++ toRun
         changeWorkingDirectory startingdir
