@@ -16,7 +16,7 @@ main :: IO ()
 main = processArguments doProcessing
 
 doProcessing :: SPPOpts -> IO ()
-doProcessing (Clean _ directories) = runClean directories
+doProcessing opts@(Clean _ directories) = runClean opts directories
 doProcessing opts@(Preprocess {}) = runPreprocessor opts
 
 {-
@@ -25,30 +25,30 @@ Runs the preprocessor on the given options
 runPreprocessor :: SPPOpts -> IO ()
 runPreprocessor sppopts = do
     maybeBak <- createBackups $ dirs sppopts
-    bks <- onErrorExit maybeBak errorReporter
+    bks <- onErrorExit maybeBak (errorReporter sppopts)
     results <- forM bks $ preprocess sppopts
     forM_ bks $ setWritable False . outputFile
     let perhapsfail = actualError $ concatErrors results
     onErrorExit perhapsfail $ \failure -> do
-            errorReporter failure
+            errorReporter sppopts failure
             unless (noCleanOnErrors sppopts) $ do
                 backfail <- removeBackups UponFailure (dirs sppopts)
-                onErrorExit backfail errorReporter
+                onErrorExit backfail (errorReporter sppopts)
 
-runClean :: Dirs -> IO ()
-runClean root = do
+runClean :: SPPOpts -> Dirs -> IO ()
+runClean opts root = do
     backfail <- removeBackups UponRequest root
-    onErrorExit backfail errorReporter
+    onErrorExit backfail (errorReporter opts)
 
 onErrorExit :: Either SPPError a -> (SPPError -> IO b) -> IO a
 onErrorExit (Left err) handler = handler err >> exitFailure
 onErrorExit (Right x) _        = return x
 
-errorReporter :: SPPError -> IO ()
-errorReporter err = do
+errorReporter :: SPPOpts -> SPPError -> IO ()
+errorReporter opts err = do
         width <- terminalWidth
         let val = indentHangs width (show err)
-        putStrLn val
+        output opts Info val
 
 
 terminalWidth :: IO Int

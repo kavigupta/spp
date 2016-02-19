@@ -20,11 +20,11 @@ An IO Action for either processing a file or producing an error without doing an
 preprocess :: SPPOpts -> BackedUpFile -> IO (Either SPPError ())
 preprocess sppopts buFile =
         do
-            putStrLn $ "outp file = " ++ outputFile buFile
+            output sppopts Verbose $ "Output File = " ++ outputFile buFile ++ "\n"
             -- Ignore the possibility of error at this line.
             mcontents <- fmap Right (readFile (backupFile buFile) >>= evaluate)
                     `catch` (return . Left . show :: IOError -> IO (Either String String))
-            putStrLn $ "Received outp = "++ show mcontents
+            output sppopts Debug $ "Received output = "++ show mcontents ++ "\n"
             case mcontents of
                 (Left _) -> return $ Right ()
                 (Right contents) -> do
@@ -34,17 +34,11 @@ preprocess sppopts buFile =
                         Left err -> return $ Left err
                         Right outputValue -> Right <$> writeFile (outputFile buFile) outputValue
 
-performCommands :: BackedUpFile -> Directives Command -> IO (Either SPPError String)
-performCommands buf (Directives header commands rest) = do
-        putStr "Directives ="
-        print (Directives header commands rest)
-        putStr "Header = "
-        print header
-        putStr "Rest = "
-        print rest
+performCommands :: SPPOpts -> BackedUpFile -> Directives Command -> IO (Either SPPError String)
+performCommands opts buf (Directives header commands rest) = do
+        output opts Debug $ "Directives =" ++ show (Directives header commands rest) ++ "\n"
         result <- performAll actions rest
-        putStr "Result "
-        print result
+        output opts Debug $ "Result = " ++ show result ++ "\n"
         return $ (header ++) <$> result
     where actions = map (getCommand buf) commands
 
@@ -56,7 +50,7 @@ process sppopts buf str
         = either (return . Left) id result
     where
     result :: Either SPPError (IO (Either SPPError String))
-    result = performCommands buf <$> parseDirectives (directiveStart sppopts) (sourceFile buf) str
+    result = performCommands sppopts buf <$> parseDirectives (directiveStart sppopts) (sourceFile buf) str
 {-
     Perform all the actions in the given list of actions.
     If any of the values are `Left` errors, the entire result is an error.
