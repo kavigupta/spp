@@ -74,7 +74,7 @@ checkDirs level (RawDirs {rawSrc=src,rawOut=out,rawBak=bak}) = do
         cbak <- cleanCanon bak
         filtOutput level Verbose $ "The source directory you selected was " ++ show src
                 ++ ", the output directory was " ++ show out
-                ++ ", the backup directory was " ++ show bak 
+                ++ ", and the backup directory was " ++ show bak 
         u <- fromCanonicalTriple csrc cout cbak
         print u
         return u
