@@ -1,0 +1,12 @@
+preprocess:
+    include
+    replace "the" -> "a"
+    replace "nothing" -> ""
+    include
+    replace "fed" -> "def"
+    replace "1234567890" -> ""
+    include
+
+include "a"
+includenothing "b"
+include1234567890 "c"

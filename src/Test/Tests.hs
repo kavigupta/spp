@@ -24,6 +24,7 @@ cmdTests =
         , CmdTest "cwd_curfile"     1 "--src src " "--src src --clean"
         , CmdTest "include_simp"    1 "--src src " "--src src --clean"
         , CmdTest "include_long_file"   1 "--src src " "--src src --clean"
+        , CmdTest "include_composes"   1 "--src src " "--src src --clean"
     ]
 
 tests :: IO [Test]
