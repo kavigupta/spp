@@ -1,0 +1,8 @@
+preprocess:
+    include
+
+Before include
+
+include "a"
+
+After include

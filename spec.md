@@ -116,4 +116,4 @@ It enables C Preprocessor style includes of the form
 include <path>
 ```
 
-This statement is replaced by the contents of the file at that path.
+This statement is replaced by the contents of the file at that path. The whitespace after this directive can be cancelled.

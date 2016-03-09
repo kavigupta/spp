@@ -15,7 +15,7 @@ haskellString :: Parser String
 haskellString = stringLiteral (makeTokenParser haskellDef)
 
 spacedString :: String -> Parser ()
-spacedString str = spaces >> string str >> spaces
+spacedString str = skipMany nonNewlineSpace >> string str >> skipMany nonNewlineSpace
 
 doParse :: Parser a -> String -> Either ParseError a
 doParse parser input = runIdentity $ runParserT parser "(unknown)" "" input

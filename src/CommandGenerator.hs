@@ -124,8 +124,8 @@ intersperse parser = do
 -}
 writeChunk :: Parser (FilePath, String)
 writeChunk = do
-    string "write:"
-    spaces
+    string "write"
+    skipMany nonNewlineSpace
     path <- haskellString
     spacedString "<-"
     string "~~~"
@@ -137,6 +137,6 @@ writeChunk = do
 -}
 includeChunk :: Parser FilePath
 includeChunk = do
-    string "include:"
-    spaces
+    string "include"
+    skipMany nonNewlineSpace
     haskellString

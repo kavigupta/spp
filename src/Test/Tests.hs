@@ -22,7 +22,8 @@ cmdTests =
         , CmdTest "exec"            1 "--src src" "--src src --clean"
         , CmdTest "exec"            2 "--src src --out out" "--src src --out out --clean"
         , CmdTest "cwd_curfile"     1 "--src src " "--src src --clean"
-        , CmdTest "basicwrite"      1 "--src src " "--src src --clean"
+        , CmdTest "include_simp"    1 "--src src " "--src src --clean"
+        , CmdTest "include_long_file"   1 "--src src " "--src src --clean"
     ]
 
 tests :: IO [Test]
