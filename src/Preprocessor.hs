@@ -23,12 +23,6 @@ preprocessAll opts (x:xs) =
         rest <- preprocessAll opts xs
         return $ c:rest
 
-data ToPreprocess = ToPreprocess {
-          current :: BackedUpFile
-        , future :: [BackedUpFile]
-        , depChain :: [BackedUpFile]
-    }
-
 {-
 An IO Action for either processing a file or producing an error without doing anything
 -}
@@ -62,7 +56,7 @@ performCommands opts buf (Directives header commands rest) = do
         result <- performAll actions $ SPPState {fContents=rest, dependencyChain=depChain buf, possibleFiles=future buf}
         output opts Debug $ "Result = " ++ show result ++ "\n"
         return $ mapOverSuccess (mapOverContents (header ++)) result
-    where actions = map (getCommand $ current buf) commands
+    where actions = map (getCommand (preprocess opts) $ current buf) commands
 
 {-
 Creates an IO instance for preprocessing a series of lines.

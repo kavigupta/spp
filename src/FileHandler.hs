@@ -1,6 +1,6 @@
 {-# LANGUAGE DoAndIfThenElse #-}
 module FileHandler(
-        BackedUpFile(..), sourceFile,
+        BackedUpFile(..), sourceFile, sourceIs,
         createBackups, removeBackups,
         setWritable
     ) where
@@ -27,10 +27,19 @@ data BackedUpFile = BackedUpFile {
     outputFile :: FilePath
 } deriving (Show)
 
+instance Eq BackedUpFile where
+    a == b  =
+        backupFile a == backupFile b &&
+        outputFile a == outputFile b &&
+        sourceFile a == sourceFile b
+
 sourceFile :: BackedUpFile -> FilePath
 sourceFile buf = case sourceLocated buf of
     AtBak -> backupFile buf
     AtOut -> outputFile buf
+
+sourceIs :: BackedUpFile -> FilePath -> Bool
+sourceIs buf path = sourceFile buf == path
 
 copyDirectories :: IOExcHandler -> FilePath -> FilePath -> IO (Either SPPError ())
 copyDirectories handler src dst = unsafeCp `catch` eitherHandler handler

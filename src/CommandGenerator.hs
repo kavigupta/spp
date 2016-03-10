@@ -1,7 +1,7 @@
 {-# OPTIONS -fno-warn-unused-do-bind #-}
 module CommandGenerator(
         getCommand, Action, sppHandler,
-            PreprocessorResult(..),
+            PreprocessorResult(..), ToPreprocess(..),
             SPPState(..), mapOverSuccess, mapOverContents
     ) where
 
@@ -18,12 +18,20 @@ import Control.Applicative hiding ((<|>), many)
 import Control.Monad
 
 import Control.Exception(catch, IOException)
-import FileHandler(BackedUpFile, outputFile, sourceFile)
+import FileHandler(BackedUpFile, outputFile, sourceFile, sourceIs)
 
-
+import Data.List(find, delete)
 import Text.Parsec
 import Tools.Parser
 
+
+type Preprocessor = ToPreprocess -> IO (Either SPPError ())
+
+data ToPreprocess = ToPreprocess {
+          current :: BackedUpFile
+        , future :: [BackedUpFile]
+        , depChain :: [BackedUpFile]
+    }
 
 type Action = SPPState -> IO PreprocessorResult
 
@@ -48,41 +56,41 @@ sppHandler :: IOExcHandler -> IOException -> IO PreprocessorResult
 sppHandler handler = return . SPPFailure . handler
 
 -- Applies the given command in
-getCommand :: BackedUpFile -> Command -> Action
-getCommand buf cmd item = inDir (takeDirectory out) wwp
+getCommand :: Preprocessor -> BackedUpFile -> Command -> Action
+getCommand preprocessor buf cmd item = inDir (takeDirectory out) wwp
     where
     out = outputFile buf
     path = sourceFile buf
     wwp = withWrittenPath out action
-    action = uscmd path cmd item
+    action = uscmd preprocessor path cmd item
         
 -- Gets the action for the given system command
-uscmd :: FilePath -> Command -> Action
-uscmd _ (Replace regex replacement) original
+uscmd :: Preprocessor -> FilePath -> Command -> Action
+uscmd _ _ (Replace regex replacement) original
         = return . SPPSuccess $ original {fContents=newText}
     where
     originalText = fContents original
     newText = subRegex (mkRegex regex) originalText replacement
-uscmd path (Exec toExec) original
+uscmd _ path (Exec toExec) original
         = executeAndOutputOriginal path toExec original
-uscmd path (PassThrough toPass) original
+uscmd _ path (PassThrough toPass) original
         = ((\x -> SPPSuccess (original{fContents=x})) <$> sh)
             `catch` sppHandler
                 (sppError (PassThroughError toPass) path (Just . fContents $ original))
     where
     sh = pass toPass . fContents $ original -- TODO ignoring exit code
-uscmd path DoWrite original 
+uscmd _ path DoWrite original 
         = processParseResult
             (sppError WriteIOError path (Just . fContents $ original))
             writeChunk
-            processOutput
+            (\u -> (\x -> SPPSuccess $ original {fContents=x}) <$> processOutput u)
             (sppError WriteParseError path (Just . fContents $ original))
             original
-uscmd path DoInclude original
+uscmd preprocessor path DoInclude original
         = processParseResult
             (sppError IncludeIOError path (Just . fContents $ original))
             includeChunk
-            processInclude
+            (processInclude preprocessor original)
             (sppError IncludeParseError path (Just . fContents $ original))
             original
 
@@ -110,25 +118,52 @@ executeAndOutputOriginal path toExec original = do
 
 -- Processes the parse result.
 --  This should not throw errors, since it catches all of them and wraps them up in the internal Either.
-processParseResult :: IOExcHandler -> Parser a -> (([String], [a]) -> IO String) -> ParseHandler -> Action
+processParseResult :: IOExcHandler -> Parser a -> (([String], [a]) -> IO PreprocessorResult) -> ParseHandler -> Action
 processParseResult iohandler parser f parsehandler input
     = case doParse (intersperse parser) (fContents input) of
         (Left err) -> return . SPPFailure . parsehandler $ err
-        (Right x) -> ((\y -> SPPSuccess $ input {fContents=y}) <$> f x) `catch` sppHandler iohandler
+        (Right x) -> f x `catch` sppHandler iohandler
 
 -- dumps the given filepaths and strings to a file, then returns the original non-write chuncks concatenated
 processOutput :: ([String], [(FilePath, String)]) -> IO String
 processOutput (newText, toWrite) = mapM_ (uncurry writeFile) toWrite >> return (concat newText)
 
 -- Reads the files for each path to include. Then intercalates these with the originals
-processInclude :: ([String], [FilePath]) -> IO String
-processInclude (strs, paths) =
+processInclude :: Preprocessor -> SPPState -> ([String], [FilePath]) -> IO PreprocessorResult
+processInclude preprocesor state (strs, paths) =
     do
-        readFiles <- forM paths readFile
-        let paddedFiles = readFiles ++ repeat ""
-        let pad = zipWith (++) strs paddedFiles
-        return $ concat pad
+        dependencyInsurance <- ensureAllDependencies preprocesor state paths
+        case dependencyInsurance of
+            SPPSuccess state' -> do
+                readFiles <- forM paths readFile
+                let paddedFiles = readFiles ++ repeat ""
+                let pad = zipWith (++) strs paddedFiles
+                return . SPPSuccess $ state' {fContents = concat pad}
+            SPPFailure err -> return $ SPPFailure err
 
+ensureAllDependencies :: Preprocessor -> SPPState -> [FilePath] -> IO PreprocessorResult
+ensureAllDependencies _ state [] = return $ SPPSuccess state
+ensureAllDependencies pre state (x:xs) = do
+    c <- ensureDependencies pre state x
+    case c of
+        SPPSuccess state' -> ensureAllDependencies pre state' xs
+        SPPFailure err -> return $ SPPFailure err
+
+
+ensureDependencies :: Preprocessor -> SPPState -> FilePath -> IO PreprocessorResult
+ensureDependencies preprocess state@SPPState {dependencyChain=stack, possibleFiles=futu} path
+        | any (`sourceIs` path) stack
+            = return . SPPFailure $ SPPError (CircularDependencyError (map sourceFile stack ++ [path])) path Nothing Nothing
+        | otherwise
+            = case find (`sourceIs` path) futu of
+                Nothing -> return . SPPSuccess $ state
+                (Just x) -> 
+                        let future' = delete x futu
+                            depChain' = stack ++ [x]
+                        in do
+                            preprocess ToPreprocess {current=x, future=future', depChain=depChain'}
+                            return . SPPSuccess $ state {dependencyChain = depChain', possibleFiles=future'}
+    
 {-
 Applies the given parser multiple times, returning a list of all the interspersed strings as well
 -}

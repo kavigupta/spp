@@ -39,6 +39,7 @@ data ErrorType
     | WriteParseError
     | PassThroughError String
     | ExecError String
+    | CircularDependencyError [FilePath]
         deriving Eq
 
 data RestoreSituation = UponRequest | UponFailure
@@ -82,6 +83,7 @@ instance Show ErrorType where
     show IncludeParseError = "Including a file failed due to invalid syntax"
     show WriteParseError = "Writing to a file failed due to a parse error"
     show (ExecError cmd) = "Executing " ++ show cmd ++ " failed"
+    show (CircularDependencyError deps) = "Circular dependencies: " ++ intercalate " -> " deps
 
 
 instance Monoid SPPError where
