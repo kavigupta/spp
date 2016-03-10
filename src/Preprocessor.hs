@@ -38,7 +38,6 @@ preprocess sppopts buFile =
                     case outp of
                         SPPFailure err -> return $ Left err
                         SPPSuccess outputValue -> Right <$> writeFile (outputFile buFile) outputValue
-                        SPPRequire _ _ -> error "Illegal state spprequire"
 
 performCommands :: SPPOpts -> BackedUpFile -> Directives Command -> IO PreprocessorResult
 performCommands opts buf (Directives header commands rest) = do
