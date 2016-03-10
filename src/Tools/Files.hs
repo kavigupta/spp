@@ -18,8 +18,13 @@ import Control.Monad(forM, when)
 
 
 data PreprocessorResult = SPPSuccess String |
-        SPPFailure SPPError
-            deriving (Show)
+        SPPFailure SPPError | 
+        SPPRequire FilePath (IO PreprocessorResult)
+
+instance Show PreprocessorResult where
+    show (SPPSuccess str) = "SPPSuccess " ++ show str
+    show (SPPFailure err) = "SPPFailure " ++ show err
+    show (SPPRequire path _) = "SPPRequire " ++ path
 
 mapOverSuccess :: (String -> String) -> PreprocessorResult -> PreprocessorResult
 mapOverSuccess f (SPPSuccess x) = SPPSuccess . f $ x
