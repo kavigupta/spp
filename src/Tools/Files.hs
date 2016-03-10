@@ -5,7 +5,8 @@ module Tools.Files(
         realContents,
         actual,
         removeDirectoryIfExists,
-        PreprocessorResult(..)
+        PreprocessorResult(..),
+        mapOverSuccess
     ) where
 
 import Interface.Errors
@@ -18,6 +19,11 @@ import Control.Monad(forM, when)
 
 data PreprocessorResult = SPPSuccess String |
         SPPFailure SPPError
+            deriving (Show)
+
+mapOverSuccess :: (String -> String) -> PreprocessorResult -> PreprocessorResult
+mapOverSuccess f (SPPSuccess x) = SPPSuccess . f $ x
+mapOverSuccess _ x              = x
 
 -- Handles an error by using the left error reporting mechanism
 eitherHandler :: IOExcHandler -> IOException -> IO (Either SPPError a)

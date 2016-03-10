@@ -52,7 +52,7 @@ test-suite test-spp
     test-module:        Test.Tests
     type:               detailed-0.9
     ghc-options:        -Wall -Werror
-    other-modules:      Test.CmdTests, Tools.Files
+    other-modules:      Test.CmdTests, Tools.Files, Interface.Errors
     build-depends:
         base >=4.6,
         text >=1.2, MissingH >=1.3,
