@@ -10,6 +10,7 @@ import Control.Exception(catch, evaluate)
 
 import FileHandler
 import Interface.Args
+import Tools.Files
 import CommandGenerator
 import Directive.Identifier
 import Directive.Parser
@@ -38,7 +39,7 @@ preprocess sppopts buFile =
                         Left err -> return $ Left err
                         Right outputValue -> Right <$> writeFile (outputFile buFile) outputValue
 
-performCommands :: SPPOpts -> BackedUpFile -> Directives Command -> IO (Either SPPError String)
+performCommands :: SPPOpts -> BackedUpFile -> Directives Command -> IO PreprocessorResult
 performCommands opts buf (Directives header commands rest) = do
         output opts Debug $ "Directives =" ++ show (Directives header commands rest) ++ "\n"
         result <- performAll actions rest

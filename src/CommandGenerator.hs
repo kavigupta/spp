@@ -23,9 +23,7 @@ import FileHandler(BackedUpFile, outputFile, sourceFile)
 import Text.Parsec
 import Tools.Parser
 
-type Errored = Either SPPError String
-
-type Action = String -> IO Errored
+type Action = String -> IO PreprocessorResult
 
 -- Applies the given command in
 getCommand :: BackedUpFile -> Command -> Action
@@ -39,12 +37,12 @@ getCommand buf cmd item = inDir (takeDirectory out) wwp
 -- Gets the action for the given system command
 uscmd :: FilePath -> Command -> Action
 uscmd _ (Replace regex replacement) original
-        = return . Right $ subRegex (mkRegex regex) original replacement
+        = return . SPPSuccess $ subRegex (mkRegex regex) original replacement
 uscmd path (Exec toExec) original
         = executeAndOutputOriginal path toExec original
 uscmd path (PassThrough toPass) original
-        = fmap Right sh
-            `catch` eitherHandler
+        = fmap SPPSuccess sh
+            `catch` sppHandler
                 (sppError (PassThroughError toPass) path (Just original))
     where
     sh = pass toPass original -- TODO ignoring exit code
@@ -79,17 +77,19 @@ withWrittenPath path f = do
 --  This should not throw errors, since it catches all of them in the either handler
 executeAndOutputOriginal :: FilePath -> String -> Action
 executeAndOutputOriginal path toExec original = do
-    result <- fmap Right (pass toExec original)
-        `catch` eitherHandler (sppError (ExecError toExec) path (Just original))
-    return $ result >>= const (Right original)
+    result <- fmap SPPSuccess (pass toExec original)
+        `catch` sppHandler (sppError (ExecError toExec) path (Just original))
+    return $ case result of
+        (SPPFailure x) -> SPPFailure x
+        _ -> SPPSuccess original
 
 -- Processes the parse result.
 --  This should not throw errors, since it catches all of them and wraps them up in the internal Either.
 processParseResult :: IOExcHandler -> Parser a -> (([String], [a]) -> IO String) -> ParseHandler -> Action
 processParseResult iohandler parser f parsehandler input
     = case doParse (intersperse parser) input of
-        (Left err) -> return . Left . parsehandler $ err
-        (Right x) -> (Right <$> f x) `catch` eitherHandler iohandler
+        (Left err) -> return . SPPFailure . parsehandler $ err
+        (Right x) -> (SPPSuccess <$> f x) `catch` sppHandler iohandler
 
 -- dumps the given filepaths and strings to a file, then returns the original non-write chuncks concatenated
 processOutput :: ([String], [(FilePath, String)]) -> IO String

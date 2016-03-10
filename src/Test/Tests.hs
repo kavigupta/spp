@@ -25,6 +25,9 @@ cmdTests =
         , CmdTest "include_simp"    1 "--src src " "--src src --clean"
         , CmdTest "include_long_file"   1 "--src src " "--src src --clean"
         , CmdTest "include_composes"   1 "--src src " "--src src --clean"
+        , CmdTest "include_should_force_preprocessing"   1 "--src src " "--src src --clean"
+        , CmdTest "include_loop_is_error"   1 "--src src " "--src src --clean"
+        
     ]
 
 tests :: IO [Test]

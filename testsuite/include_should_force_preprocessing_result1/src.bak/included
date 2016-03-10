@@ -1,0 +1,10 @@
+preprocess:
+    include
+
+should include everything
+
+include "include_1"
+
+then everything else should work.
+
+include "z"
