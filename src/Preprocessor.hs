@@ -1,9 +1,10 @@
 #!/usr/bin/runhaskell
 {-# LANGUAGE ExplicitForAll #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-module Preprocessor (preprocess) where
+module Preprocessor (preprocessAll) where
 
 import Control.Applicative hiding ((<|>))
+import Control.Monad
 
 import Control.Exception(catch, evaluate)
 
@@ -13,6 +14,9 @@ import CommandGenerator
 import Directive.Identifier
 import Directive.Parser
 import Interface.Errors
+
+preprocessAll :: SPPOpts -> [BackedUpFile] -> IO [Either SPPError ()]
+preprocessAll opts buf = forM buf $ preprocess opts
 
 {-
 An IO Action for either processing a file or producing an error without doing anything

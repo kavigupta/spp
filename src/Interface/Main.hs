@@ -26,14 +26,18 @@ runPreprocessor :: SPPOpts -> IO ()
 runPreprocessor sppopts = do
     maybeBak <- createBackups $ dirs sppopts
     bks <- onErrorExit maybeBak (errorReporter sppopts)
-    results <- forM bks $ preprocess sppopts
+    results <- preprocessAll sppopts bks
     forM_ bks $ setWritable False . outputFile
     let perhapsfail = actualError $ concatErrors results
-    onErrorExit perhapsfail $ \failure -> do
-            errorReporter sppopts failure
-            unless (noCleanOnErrors sppopts) $ do
-                backfail <- removeBackups UponFailure (dirs sppopts)
-                onErrorExit backfail (errorReporter sppopts)
+    onErrorExit perhapsfail $ failureHandling sppopts
+
+failureHandling :: SPPOpts -> SPPError -> IO ()
+failureHandling sppopts failure = do
+    errorReporter sppopts failure
+    unless (noCleanOnErrors sppopts) $ do
+        backfail <- removeBackups UponFailure (dirs sppopts)
+        onErrorExit backfail (errorReporter sppopts)
+
 
 runClean :: SPPOpts -> Dirs -> IO ()
 runClean opts root = do
