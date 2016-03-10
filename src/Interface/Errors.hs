@@ -34,6 +34,7 @@ data ErrorType
     | InvalidDirective
     | IncludeIOError
     | IncludeParseError
+    | ReadIOError
     | WriteIOError
     | WriteParseError
     | PassThroughError String
@@ -76,6 +77,7 @@ instance Show ErrorType where
     show InvalidDirective = "Processing a directive failed due to invalid syntax"
     show IncludeIOError = "Including a file failed due to an IO error"
     show WriteIOError = "Writing a file failed due to an IO error"
+    show ReadIOError = "Reading a file failed due to an IO error"
     show (PassThroughError cmd) = "Passing a file through " ++ show cmd ++ " failed"
     show IncludeParseError = "Including a file failed due to invalid syntax"
     show WriteParseError = "Writing to a file failed due to a parse error"

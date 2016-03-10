@@ -8,6 +8,7 @@ import Control.Monad
 
 import Control.Exception(catch, evaluate)
 
+import Data.List(isInfixOf)
 import FileHandler
 import Interface.Args
 import CommandGenerator
@@ -27,16 +28,23 @@ preprocess sppopts buFile =
             output sppopts Verbose $ "Output File = " ++ outputFile buFile ++ "\n"
             -- Ignore the possibility of error at this line.
             mcontents <- fmap Right (readFile (backupFile buFile) >>= evaluate)
-                    `catch` (return . Left . show :: IOError -> IO (Either String String))
+                    `catch` (return . Left :: IOError -> IO (Either IOError String))
             output sppopts Debug $ "Received output = "++ show mcontents ++ "\n"
             case mcontents of
-                (Left _) -> return $ Right ()
+                (Left err)
+                    | isBinaryError err
+                        -> return $ Right ()
+                    | otherwise
+                        -> return $ Left $ sppError ReadIOError (sourceFile buFile) Nothing err
                 (Right contents) -> do
                     -- There should be no error at this line given that process should throw no error
                     outp <- process sppopts buFile contents
                     case outp of
                         SPPFailure err -> return $ Left err
                         SPPSuccess outputValue -> Right <$> writeFile (outputFile buFile) (fContents outputValue)
+
+isBinaryError :: IOError -> Bool
+isBinaryError err = "hGetContents: invalid argument (invalid byte sequence)" `isInfixOf` show err
 
 performCommands :: SPPOpts -> BackedUpFile -> Directives Command -> IO PreprocessorResult
 performCommands opts buf (Directives header commands rest) = do
