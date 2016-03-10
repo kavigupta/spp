@@ -1,12 +1,9 @@
 module Tools.Files(
         eitherHandler,
-        sppHandler,
         allFiles,
         realContents,
         actual,
         removeDirectoryIfExists,
-        PreprocessorResult(..),
-        mapOverSuccess
     ) where
 
 import Interface.Errors
@@ -16,21 +13,9 @@ import System.Directory
 
 import Control.Monad(forM, when)
 
-
-data PreprocessorResult = SPPSuccess String |
-        SPPFailure SPPError
-            deriving (Show)
-
-mapOverSuccess :: (String -> String) -> PreprocessorResult -> PreprocessorResult
-mapOverSuccess f (SPPSuccess x) = SPPSuccess . f $ x
-mapOverSuccess _ x              = x
-
 -- Handles an error by using the left error reporting mechanism
 eitherHandler :: IOExcHandler -> IOException -> IO (Either SPPError a)
 eitherHandler handler = return . Left . handler
-
-sppHandler :: IOExcHandler -> IOException -> IO PreprocessorResult
-sppHandler handler = return . SPPFailure . handler
 
 allFiles :: FilePath -> IO [FilePath]
 allFiles path

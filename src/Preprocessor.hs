@@ -10,7 +10,6 @@ import Control.Exception(catch, evaluate)
 
 import FileHandler
 import Interface.Args
-import Tools.Files
 import CommandGenerator
 import Directive.Identifier
 import Directive.Parser

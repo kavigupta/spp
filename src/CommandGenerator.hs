@@ -1,10 +1,11 @@
 {-# OPTIONS -fno-warn-unused-do-bind #-}
 module CommandGenerator(
-        getCommand, Action
+        getCommand, Action, sppHandler,
+            PreprocessorResult(..),
+            SPPState(..), mapOverSuccess
     ) where
 
 import Directive.Parser
-import Tools.Files
 import Tools.Shell
 import Interface.Errors
 
@@ -16,14 +17,32 @@ import Text.Regex
 import Control.Applicative hiding ((<|>), many)
 import Control.Monad
 
-import Control.Exception(catch)
+import Control.Exception(catch, IOException)
 import FileHandler(BackedUpFile, outputFile, sourceFile)
 
 
 import Text.Parsec
 import Tools.Parser
 
+
 type Action = String -> IO PreprocessorResult
+
+data SPPState = SPPState {
+          fContents :: String
+        , dependencyChain :: [BackedUpFile]
+        , possibleFiles :: [BackedUpFile]
+    }
+
+data PreprocessorResult = SPPSuccess String |
+        SPPFailure SPPError
+            deriving (Show)
+
+mapOverSuccess :: (String -> String) -> PreprocessorResult -> PreprocessorResult
+mapOverSuccess f (SPPSuccess x) = SPPSuccess . f $ x
+mapOverSuccess _ x              = x
+
+sppHandler :: IOExcHandler -> IOException -> IO PreprocessorResult
+sppHandler handler = return . SPPFailure . handler
 
 -- Applies the given command in
 getCommand :: BackedUpFile -> Command -> Action
