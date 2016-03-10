@@ -36,14 +36,14 @@ preprocess sppopts buFile =
                     outp <- process sppopts buFile contents
                     case outp of
                         SPPFailure err -> return $ Left err
-                        SPPSuccess outputValue -> Right <$> writeFile (outputFile buFile) outputValue
+                        SPPSuccess outputValue -> Right <$> writeFile (outputFile buFile) (fContents outputValue)
 
 performCommands :: SPPOpts -> BackedUpFile -> Directives Command -> IO PreprocessorResult
 performCommands opts buf (Directives header commands rest) = do
         output opts Debug $ "Directives =" ++ show (Directives header commands rest) ++ "\n"
-        result <- performAll actions rest
+        result <- performAll actions $ SPPState {fContents=rest, dependencyChain=[], possibleFiles=[]}
         output opts Debug $ "Result = " ++ show result ++ "\n"
-        return $ mapOverSuccess (header ++) result
+        return $ mapOverSuccess (mapOverContents (header ++)) result
     where actions = map (getCommand buf) commands
 
 {-
@@ -60,9 +60,10 @@ process sppopts buf str
     If any of the values are `Left` errors, the entire result is an error.
     Otherwise, the result is considered to be all the other actions chained together
 -}
-performAll :: [String -> IO PreprocessorResult] -> String -> IO PreprocessorResult
+performAll :: [Action] -> Action
 performAll = foldr comp (return . SPPSuccess)
     where
+    comp :: Action -> Action -> Action
     comp g f x = g x >>= \u -> case u of
         (SPPSuccess y) -> f y
         (SPPFailure z) -> return $ SPPFailure z

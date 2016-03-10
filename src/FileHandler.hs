@@ -25,7 +25,7 @@ data BackedUpFile = BackedUpFile {
     sourceLocated :: SourceLocation,
     backupFile :: FilePath,
     outputFile :: FilePath
-}
+} deriving (Show)
 
 sourceFile :: BackedUpFile -> FilePath
 sourceFile buf = case sourceLocated buf of

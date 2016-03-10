@@ -2,7 +2,7 @@
 module CommandGenerator(
         getCommand, Action, sppHandler,
             PreprocessorResult(..),
-            SPPState(..), mapOverSuccess
+            SPPState(..), mapOverSuccess, mapOverContents
     ) where
 
 import Directive.Parser
@@ -25,21 +25,24 @@ import Text.Parsec
 import Tools.Parser
 
 
-type Action = String -> IO PreprocessorResult
+type Action = SPPState -> IO PreprocessorResult
 
 data SPPState = SPPState {
           fContents :: String
         , dependencyChain :: [BackedUpFile]
         , possibleFiles :: [BackedUpFile]
-    }
+    } deriving (Show)
 
-data PreprocessorResult = SPPSuccess String |
+data PreprocessorResult = SPPSuccess SPPState |
         SPPFailure SPPError
             deriving (Show)
 
-mapOverSuccess :: (String -> String) -> PreprocessorResult -> PreprocessorResult
+mapOverSuccess :: (SPPState -> SPPState) -> PreprocessorResult -> PreprocessorResult
 mapOverSuccess f (SPPSuccess x) = SPPSuccess . f $ x
 mapOverSuccess _ x              = x
+
+mapOverContents :: (String -> String) -> SPPState -> SPPState
+mapOverContents f x = x {fContents = f $ fContents x}
 
 sppHandler :: IOExcHandler -> IOException -> IO PreprocessorResult
 sppHandler handler = return . SPPFailure . handler
@@ -56,28 +59,31 @@ getCommand buf cmd item = inDir (takeDirectory out) wwp
 -- Gets the action for the given system command
 uscmd :: FilePath -> Command -> Action
 uscmd _ (Replace regex replacement) original
-        = return . SPPSuccess $ subRegex (mkRegex regex) original replacement
+        = return . SPPSuccess $ original {fContents=newText}
+    where
+    originalText = fContents original
+    newText = subRegex (mkRegex regex) originalText replacement
 uscmd path (Exec toExec) original
         = executeAndOutputOriginal path toExec original
 uscmd path (PassThrough toPass) original
-        = fmap SPPSuccess sh
+        = ((\x -> SPPSuccess (original{fContents=x})) <$> sh)
             `catch` sppHandler
-                (sppError (PassThroughError toPass) path (Just original))
+                (sppError (PassThroughError toPass) path (Just . fContents $ original))
     where
-    sh = pass toPass original -- TODO ignoring exit code
-uscmd path DoWrite original
+    sh = pass toPass . fContents $ original -- TODO ignoring exit code
+uscmd path DoWrite original 
         = processParseResult
-            (sppError WriteIOError path (Just original))
+            (sppError WriteIOError path (Just . fContents $ original))
             writeChunk
             processOutput
-            (sppError WriteParseError path (Just original))
+            (sppError WriteParseError path (Just . fContents $ original))
             original
 uscmd path DoInclude original
         = processParseResult
-            (sppError IncludeIOError path (Just original))
+            (sppError IncludeIOError path (Just . fContents $ original))
             includeChunk
             processInclude
-            (sppError IncludeParseError path (Just original))
+            (sppError IncludeParseError path (Just . fContents $ original))
             original
 
 pass :: String -> String -> IO String
@@ -96,8 +102,8 @@ withWrittenPath path f = do
 --  This should not throw errors, since it catches all of them in the either handler
 executeAndOutputOriginal :: FilePath -> String -> Action
 executeAndOutputOriginal path toExec original = do
-    result <- fmap SPPSuccess (pass toExec original)
-        `catch` sppHandler (sppError (ExecError toExec) path (Just original))
+    result <- fmap (\x -> SPPSuccess $ original {fContents = x}) (pass toExec $ fContents original)
+        `catch` sppHandler (sppError (ExecError toExec) path (Just . fContents $ original))
     return $ case result of
         (SPPFailure x) -> SPPFailure x
         _ -> SPPSuccess original
@@ -106,9 +112,9 @@ executeAndOutputOriginal path toExec original = do
 --  This should not throw errors, since it catches all of them and wraps them up in the internal Either.
 processParseResult :: IOExcHandler -> Parser a -> (([String], [a]) -> IO String) -> ParseHandler -> Action
 processParseResult iohandler parser f parsehandler input
-    = case doParse (intersperse parser) input of
+    = case doParse (intersperse parser) (fContents input) of
         (Left err) -> return . SPPFailure . parsehandler $ err
-        (Right x) -> (SPPSuccess <$> f x) `catch` sppHandler iohandler
+        (Right x) -> ((\y -> SPPSuccess $ input {fContents=y}) <$> f x) `catch` sppHandler iohandler
 
 -- dumps the given filepaths and strings to a file, then returns the original non-write chuncks concatenated
 processOutput :: ([String], [(FilePath, String)]) -> IO String
