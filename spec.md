@@ -110,7 +110,7 @@ This directive is similar to `DoWrite` in the way that it takes the form of a si
 include
 ```
 
-It enables C Preprocessor style includes of the form
+It enables C Preprocessor style includes of the form. Include statements force the file included to be preprocessed if it is present in the directory of preprocessing. If there is a dependency loop, where `a` includes `b` includes `c` includes `d` includes `a`, then an error is raised.
 
 ```
 include <path>
