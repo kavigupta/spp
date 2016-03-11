@@ -1,0 +1,218 @@
+
+SECTION II.
+
+Of the Invention of Centripetal Forces.
+
+PROPOSITION I. THEOREM I.
+
+    The areas, which revolving bodies describe by radii drawn to an immovable ce
+ntre of force do lie in the same immovable planes, and are proportional to the t
+imes in which they are described.
+
+    For suppose the time to be divided into equal parts, and in the first part o
+f that time let the body by its innate force describe the right line AB In the s
+econd part of that time, the same would (by Law I.), if not hindered, proceed di
+rectly to c, along the line Bc equal to AB; so that by the radii AS, BS, cS, dra
+wn to the centre, the equal areas ASB, BSc, would be  Principia1846-105.png desc
+ribed. But when the body is arrived at B, suppose that a centripetal force acts 
+at once with a great impulse; and, turning aside the body from the right line Bc
+, compels it afterwards to continue its motion along the right line BC. Draw cC 
+parallel to BS meeting BC in C; and at the end of the second part of the time, t
+he body (by Cor. I. of the Laws) will be found in C, in the same plane with the 
+triangle ASB. Join SC, and, because SB and Cc are parallel, the triangle SBC wil
+l be equal to the triangle SBc, and therefore also to the triangle SAB. By the l
+ike argument, if the centripetal force acts successively in C, D, E. &c.; and ma
+kes the body, in each single particle of time, to describe the right lines CD, D
+E, EF, &c., they will all lie in the same plane; and the triangle SCD will be eq
+ual to the triangle SBC, and SDE to SCD, and SEF to SDE. And therefore, in equal
+ times, equal areas are described in one immovable plane: and, by composition, a
+ny sums SADS, SAFS, of those areas, are one to the other as the times in which t
+hey are described. Now let the number of those triangles be augmented, and their
+ breadth diminished in infinitum; and (by Cor. 4, Lem. III.) their ultimate peri
+meter ADF will be a curve line: and therefore the centripetal force, by which th
+e body is perpetually drawn back from the tangent of this curve, will act contin
+ually; and any described areas SADS, SAFS, which are always proportional to the 
+times of description, will, in this case also, be proportional to those times.  
+ Q.E.D.
+
+LEMMA II.
+Principia1846-095.png
+If in any figure AacE, terminated by the right lines Aa, AE, and the curve acE, 
+there be inscribed any number of parallelograms Ab, Bc, Cd, &c., comprehended un
+der equal bases AB, BC, CD, &c., and the sides, Bb, Cc, Dd, &c., parallel to one
+ side Aa of the figure; and the parallelograms aKbl, bLcm, cMdn, &c., are comple
+ted. Then if the breadth of those parallelograms be supposed to be diminished, a
+nd their number to be augmented in infinitum; I say, that the ultimate ratios wh
+ich the inscribed figure AKbLcMdD, the circumscribed figure AalbmcndoE, and curv
+ilinear figure AabcdE, will have to one another, are ratios of equality.
+
+For the difference of the inscribed and circumscribed figures is the sum of the 
+parallelograms Kl, Lm, Mu, Do, that is (from the equality of all their bases), t
+he rectangle under one of their bases Kb and the sum of their altitudes Aa, that
+ is, the rectangle ABla. But this rectangle, because its breadth AB is supposed 
+diminished in infinitum, becomes less than any given space. And therefore (by Le
+m. I) the figures inscribed and circumscribed become ultimately equal one to the
+ other; and much more will the intermediate curvilinear figure be ultimately equ
+al to either.    Q.E.D.
+
+
+
+LEMMA III.
+The same ultimate ratios are also ratios of equality, when the, breadths, AB, BC
+, DC, &c., of the parallelograms are unequal, and are all diminished in infinitu
+m.
+
+Principia1846-095.png
+For suppose AF equal to the greatest breadth, and complete the parallelogram FAa
+f. This parallelogram will be greater than the difference of the inscribed and c
+ircumscribed figures; but, because its breadth AF is diminished in infinitum, it
+ will be come less than any given rectangle.   Q.E.D.
+
+Cor. 1. Hence the ultimate sum of those evanescent parallelograms will in all pa
+rts coincide with the curvilinear figure.
+
+Cor. 2. Much more will the rectilinear figure comprehended under the chords of t
+he evanescent arcs ab, bc, cd, &c., ultimately coincide with the curvilinear fig
+ure.
+
+Cor. 3. And also the circumscribed rectilinear figure comprehended under the tan
+gents of the same arcs.
+
+Cor. 4 And therefore these ultimate figures (as to their perimeters acE) are not
+ rectilinear, but curvilinear limits of rectilinear figures.
+
+
+
+LEMMA IV.
+Principia1846-096.png
+If in two figures AacE, PprT, you inscribe (as before) two ranks of parallelogra
+ms, an equal number in each rank, and, when their breadths are diminished in inf
+initum, the ultimate ratios of the parallelograms in one figure to those in the 
+other, each to each respectively, are the same; I say, that those two figures Aa
+cE, PprT, are to one another in that same ratio.
+
+For as the parallelograms in the one are severally to the parallelograms in the 
+other, so (by composition) is the sum of all in the one to the sum of all in the
+ other; and so is the one figure to the other; because (by Lem. III) the former 
+figure to the former sum, and the latter figure to the latter sum, are both in t
+he ratio of equality.   Q.E.D.
+
+Cor. Hence if two quantities of any kind are any how divided into an equal numbe
+r of parts, and those parts, when their number is augmented, and their magnitude
+ diminished in infinitum, have a given ratio one to the other, the first to the 
+first, the second to the second, and so on in order, the whole quantities will b
+e one to the other in that same given ratio. For if, in the figures of this Lemm
+a, the parallelograms are taken one to the other in the ratio of the parts, the 
+sum of the parts will always be as the sum of the parallelograms; and therefore 
+supposing the number of the parallelograms and parts to be augmented, and their 
+magnitudes diminished in infinitum, those sums will be in the ultimate ratio of 
+the parallelogram in the one figure to the correspondent parallelogram in the ot
+her; that is (by the supposition), in the ultimate ratio of any part of the one 
+quantity to the correspondent part of the other.
+
+
+
+LEMMA V.
+In similar figures, all sorts of homologous sides, whether curvilinear or rectil
+inear, are proportional; and the areas are in the duplicate ratio of the homolog
+ous sides.
+
+
+
+LEMMA VI.
+Principia1846-097.png
+If any arc ACB, given in position is subtended by its chord AB, and in any point
+ A, in the middle of the continued curvature, is touched by a right line AD, pro
+duced both ways; then if the points A and B approach one another and meet, I say
+, the angle BAD, contained between, the chord and the tangent, will be diminishe
+d in infinitum, and ultimately will vanish.
+
+For if that angle does not vanish, the arc ACB will contain with the tangent AD 
+an angle equal to a rectilinear angle; and therefore the curvature at the point 
+A will not be continued, which is against the supposition.
+
+
+
+LEMMA VII.
+The same things being supposed, I say that the ultimate ratio of the arc, chord,
+ and tangent, any one to any other, is the ratio of equality.
+
+For while the point B approaches towards the point A, consider always AB and AD 
+as produced to the remote points b and d, and parallel to the secant BD draw bd:
+ and let the arc Acb be always similar to the arc ACB. Then, supposing the point
+s A and B to coincide, the angle dAb will vanish, by the preceding Lemma; and th
+erefore the right lines Ab, Ad (which are always finite), and the intermediate a
+rc Acb, will coincide, and become equal among themselves. Wherefore, the right l
+ines AB, AD, and the intermediate arc ACB (which are always proportional to the 
+former), will vanish, and ultimately acquire the ratio of equality.   Q.E.D.
+
+Principia1846-098a.png
+Cor. 1. Whence if through B we draw BF parallel to the tangent, always cutting a
+ny right line AF passing through A in F, this line BF will be ultimately in the 
+ratio of equality with the evanescent arc ACB; because, completing the parallelo
+gram AFBD, it is always in a ratio of equality with AD.
+
+Cor. 2. And if through B and A more right lines are drawn, as BE, BD, AF, AG, cu
+tting the tangent AD and its parallel BF; the ultimate ratio of all the abscissa
+s AD, AE, BF, BG, and of the chord and arc AB, any one to any other, will be the
+ ratio of equality.
+
+Cor. 3. And therefore in all our reasoning about ultimate ratios, we may freely 
+use any one of those lines for any other.
+
+
+
+LEMMA VIII.
+If the right lines AR, BR, with the arc ACB, the chord AB, and the tangent AD, c
+onstitute three triangles RAB, RACB, RAD, and the points A and B approach and me
+et: I say, that the ultimate form of these evanescent triangles is that of simil
+itude, and their ultimate ratio that of equality.
+
+Principia1846-098b.png
+For while the point B approaches towards the point A, consider always AB, AD, AR
+, as produced to the remote points b, d, and r, and rbd as drawn parallel to RD,
+ and let the arc Acb be always similar to the arc ACB. Then supposing the points
+ A and B to coincide, the angle bAd will vanish; and therefore the three triangl
+es rAb, rAcb, rAd (which are always finite), will coincide, and on that account 
+become both similar and equal. And therefore the triangles RAB, RACB, RAD, which
+ are always similar and proportional to these, will ultimately be come both simi
+lar and equal among themselves.   Q.E.D.
+
+Cor. And hence in all reasonings about ultimate ratios, we may indifferently use
+ any one of those triangles for any other.
+Cor. 1. The velocity of a body attracted towards an immovable centre, in spa
+ces void of resistance, is reciprocally as the perpendicular let fall from that 
+centre on the right line that touches the orbit. For the velocities in those pla
+ces A, B, C, D, E, are as the bases AB, BC, CD, DE, EF, of equal triangles; and 
+these bases are reciprocally as the perpendiculars let fall upon them.
+
+    Cor. 2. If the chords AB, BC of two arcs, successively described in equal ti
+mes by the same body, in spaces void of resistance, are completed into a paralle
+logram ABCV, and the diagonal BV of this parallelogram; in the position which it
+ ultimately acquires when those arcs are diminished in infinitum, is produced bo
+th ways, it will pass through the centre of force.
+
+    Cor. 3. If the chords AB, BC, and DE, EF, of arcs described in equal times, 
+in spaces void of resistance, are completed into the parallelograms ABCV, DEFZ; 
+the forces in B and E are one to the other in the ultimate ratio of the diagonal
+s BV, EZ, when those arcs are diminished in infinitum. For the motions BC and EF
+ of the body (by Cor. 1 of the Laws) are compounded of the motions Bc, BV, and E
+f, EZ: but BV and EZ, which are equal to Cc and Ff, in the demonstration of this
+ Proposition, were generated by the impulses of the centripetal force in B and E
+, and are therefore proportional to those impulses.
+
+    Cor. 4. The forces by which bodies, in spaces void of resistance, are drawn 
+back from rectilinear motions, and turned into curvilinear orbits, are one to an
+other as the versed sines of arcs described in equal times; which versed sines t
+end to the centre of force, and bisect the chords when those arcs are diminished
+ to infinity. For such versed sines are the halves of the diagonals mentioned in
+ Cor. 3.
+
+    Cor. 5. And therefore those forces are to the force of gravity as the said v
+ersed sines to the versed sines perpendicular to the horizon of those parabolic 
+arcs which projectiles describe in the same time.
+
+    Cor. 6. And the same things do all hold good (by Cor. 5 of the Laws), when t
+he planes in which the bodies are moved, together with the centres of force whic
+h are placed in those planes, are not at rest, but move uniformly forward in rig
+ht lines.

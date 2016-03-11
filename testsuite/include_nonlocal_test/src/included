@@ -1,0 +1,8 @@
+preprocess:
+    include
+
+include "include_1"
+
+include "subfolder/subincl"
+
+include "../include_from_sub"
