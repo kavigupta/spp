@@ -11,7 +11,7 @@ import Interface.Errors
 
 import System.ProcessNew(readCreateProcess, shell)
 import System.FilePath (takeDirectory)
-import System.Directory(removeFile, doesFileExist)
+import System.Directory(removeFile, doesFileExist, canonicalizePath)
 
 import Text.Regex
 import Control.Applicative hiding ((<|>), many)
@@ -36,7 +36,8 @@ data ToPreprocess = ToPreprocess {
 type Action = SPPState -> IO PreprocessorResult
 
 data SPPState = SPPState {
-          fContents :: String
+          cFile :: BackedUpFile
+        , fContents :: String
         , dependencyChain :: [BackedUpFile]
         , possibleFiles :: [BackedUpFile]
     } deriving (Show)
@@ -103,7 +104,8 @@ withWrittenPath path f = do
     when exists $ removeFile ".spp-current-file"
     writeFile ".spp-current-file" path 
     result <- f
-    removeFile ".spp-current-file"
+    exists' <- doesFileExist ".spp-current-file"
+    when exists' $ removeFile ".spp-current-file"
     return result 
 
 -- Executes the given command and outputs the original text
@@ -144,7 +146,8 @@ processInclude preprocesor state (strs, paths) =
 ensureAllDependencies :: Preprocessor -> SPPState -> [FilePath] -> IO PreprocessorResult
 ensureAllDependencies _ state [] = return $ SPPSuccess state
 ensureAllDependencies pre state (x:xs) = do
-    c <- ensureDependencies pre state x
+    path' <- canonicalizePath x
+    c <- ensureDependencies pre state path'
     case c of
         SPPSuccess state' -> ensureAllDependencies pre state' xs
         SPPFailure err -> return $ SPPFailure err
@@ -159,11 +162,13 @@ ensureDependencies preprocess state@SPPState {dependencyChain=stack, possibleFil
                 Nothing -> return . SPPSuccess $ state
                 (Just x) -> 
                         let future' = delete x futu
-                            depChain' = stack ++ [x]
+                            depChain' = stack ++ [cFile state]
                         in do
-                            preprocess ToPreprocess {current=x, future=future', depChain=depChain'}
-                            return . SPPSuccess $ state {dependencyChain = depChain', possibleFiles=future'}
-    
+                            resultpp <- preprocess ToPreprocess {current=x, future=future', depChain=depChain'}
+                            case resultpp of
+                                Right () ->
+                                    return . SPPSuccess $ state {dependencyChain = depChain', possibleFiles=future'}
+                                Left err -> return $ SPPFailure err
 {-
 Applies the given parser multiple times, returning a list of all the interspersed strings as well
 -}

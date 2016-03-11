@@ -53,7 +53,7 @@ isBinaryError err = "hGetContents: invalid argument (invalid byte sequence)" `is
 performCommands :: SPPOpts -> ToPreprocess -> Directives Command -> IO PreprocessorResult
 performCommands opts buf (Directives header commands rest) = do
         output opts Debug $ "Directives =" ++ show (Directives header commands rest) ++ "\n"
-        result <- performAll actions $ SPPState {fContents=rest, dependencyChain=depChain buf, possibleFiles=future buf}
+        result <- performAll actions $ SPPState {cFile=current buf, fContents=rest, dependencyChain=depChain buf, possibleFiles=future buf}
         output opts Debug $ "Result = " ++ show result ++ "\n"
         return $ mapOverSuccess (mapOverContents (header ++)) result
     where actions = map (getCommand (preprocess opts) $ current buf) commands
