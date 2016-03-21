@@ -84,12 +84,12 @@ The `> $filename` is included for only `pass`, not for `exec`.
 
 A known problem is that `program` must be a single executable. (see Issue 1). The file `.spp-current-file` in the directory containing the file will contain `$filename` for use by the program.
 
-## The DoWrite Directive
+## The Write Directive
 
 This directive takes the simple, literal form
 
 ```
-writeout
+write
 ```
 
 This directive enables the following commands in the text:
@@ -104,7 +104,7 @@ The entire directive will be deleted and `<text>` will be written to the given f
 
 ## The Include Directive
 
-This directive is similar to `DoWrite` in the way that it takes the form of a single word:
+This directive is similar to `write` in the way that it takes the form of a single word:
 
 ```
 include

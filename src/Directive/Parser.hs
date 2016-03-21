@@ -45,7 +45,7 @@ passThrough = do
     return $ PassThrough toPass
 
 write :: Parser Command
-write = spacedString "writeout" >> return DoWrite
+write = spacedString "write" >> return DoWrite
 
 include :: Parser Command
 include = spacedString "include" >> return DoInclude

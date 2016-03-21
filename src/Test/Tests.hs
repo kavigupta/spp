@@ -28,6 +28,7 @@ cmdTests =
         , CmdTest "include_should_force_preprocessing"   1 "--src src " "--src src --clean"
         , CmdTest "include_loop_is_error"   1 "--src src " "--src src --clean"
         , CmdTest "include_nonlocal"   1 "--src src " "--src src --clean"
+        , CmdTest "write_basic"     1 "--src src " "--src src --clean"
         
     ]
 
