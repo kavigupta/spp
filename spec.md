@@ -110,10 +110,10 @@ This directive is similar to `DoWrite` in the way that it takes the form of a si
 include
 ```
 
-It enables C Preprocessor style includes of the form. Include statements force the file included to be preprocessed if it is present in the directory of preprocessing. If there is a dependency loop, where `a` includes `b` includes `c` includes `d` includes `a`, then an error is raised.
+It enables C Preprocessor style includes of the form. Include statements force the file included to be preprocessed if it is present in the directory of preprocessing. If there is a dependency loop, where `a` includes `b` includes `c` includes `d` includes `a`, then an error is raised. Anything outside the target folder is not forced to be preprocessed.
 
 ```
 include <path>
 ```
 
-This statement is replaced by the contents of the file at that path. The whitespace after this directive can be cancelled.
+This statement is replaced by the contents of the file at that path. The whitespace after this directive will be ignored, including new lines.
