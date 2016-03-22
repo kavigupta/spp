@@ -2,4 +2,5 @@ test
 dist
 .cabal-sandbox
 testdump
+testdump-file
 log

@@ -1,8 +1,0 @@
-preprocess:
-    replace "abc" -> "def"
-    replace "def" -> "abc"
-
-abcabcabcabcabcabc
-
-
-defdefdefdefdefdefdefabcdefabcdef

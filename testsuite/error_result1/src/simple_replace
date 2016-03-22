@@ -1,7 +1,0 @@
-preprocess:
-    replace "abc" -> "def"
-    replace "d" -> "e"
-    replace "1" -> "def"
-    replace "def" -> "ghi"
-
-abc abcabc def 111

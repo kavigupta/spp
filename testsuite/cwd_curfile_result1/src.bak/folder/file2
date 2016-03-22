@@ -1,3 +1,0 @@
-preprocess:
-    pass python3 ../../../scripts/getcfpath.py -
-    exec python3 ../../../scripts/getcfpath.py file2-output
