@@ -1,15 +1,27 @@
 #!/usr/bin/runhaskell
 import Distribution.Simple
 
+import Data.List
+
 import System.Process
 import System.Exit
 import System.Directory
+import System.Environment
 
 import Control.Monad
 
 import Text.Regex.Posix((=~))
 
 main = do
+    args <- getArgs
+    case args of
+        [] -> build
+        ["mount"] -> doMounts
+        ["unmount"] -> doUnmounts
+        _ -> die $ "Invalid arguments " ++ unwords args
+
+build :: IO ()
+build = do
     configureCode <- rawSystem "cabal" ["configure", "--enable-tests"]
     buildCode <- rawSystem "cabal" ["build"]
     when (buildCode /= ExitSuccess) $ die "Build failed"
@@ -46,8 +58,8 @@ doMounts = do
 
 doUnmounts :: IO ()
 doUnmounts = do
-    _ <- system "sudo umount testdump"
+    _ <- system "sudo umount -l testdump"
     _ <- system "rmdir testdump"
-    _ <- system "sudo umount testsuite"
+    _ <- system "sudo umount -l testsuite"
     _ <- system "rmdir testsuite"
     return ()
