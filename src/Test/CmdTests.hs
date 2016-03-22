@@ -89,9 +89,9 @@ runTest CmdTest {testName=tname, testNumber=num, testCommandRun=toRun, testComma
         return worked
     where
     resultName = tname ++ "_result" ++ show num
-    pathActual = "testdump" </> resultName ++ "__actual"
-    pathTest = "testsuite" </> tname ++ "_test"
-    pathBak = "testdump" </> tname ++ "___backup"
+    pathActual = "/mnt/testdump" </> resultName ++ "__actual"
+    pathTest = "/mnt/testsuite" </> tname ++ "_test"
+    pathBak = "/mnt/testdump" </> tname ++ "___backup"
 
 checkSame :: FilePath -> FilePath -> IO CmdTestResult
 checkSame a b = do
