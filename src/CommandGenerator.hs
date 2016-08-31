@@ -9,7 +9,7 @@ import Directive.Parser
 import Tools.Shell
 import Interface.Errors
 
-import System.ProcessNew(readCreateProcess, shell)
+import System.Process(readCreateProcess, shell)
 import System.FilePath (takeDirectory)
 import System.Directory(removeFile, doesFileExist, canonicalizePath)
 
