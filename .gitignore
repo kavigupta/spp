@@ -4,3 +4,4 @@ dist
 testdump
 testdump-file
 log
+cabal.sandbox.config

@@ -4,7 +4,7 @@ import Distribution.Simple
 import Data.List
 
 import System.Process
-import System.Exit
+import System.Exit hiding (die)
 import System.Directory
 import System.Environment
 
