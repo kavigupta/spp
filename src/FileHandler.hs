@@ -19,7 +19,6 @@ import Shelly.Lifted(cp_r, fromText, shelly)
 import Data.Text(pack)
 import Data.Function(on)
 import Control.Monad(liftM2)
-import Control.Applicative((<$>))
 
 data BackedUpFile = BackedUpFile {
     sourceLocated :: SourceLocation,

@@ -8,7 +8,6 @@ module Interface.Errors (
 import Text.Parsec
 import Control.Exception
 
-import Data.Monoid
 import Data.List
 import Data.String.Utils
 

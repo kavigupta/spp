@@ -14,7 +14,6 @@ import System.FilePath (takeDirectory)
 import System.Directory(removeFile, doesFileExist, canonicalizePath)
 
 import Text.Regex
-import Control.Applicative hiding ((<|>), many)
 import Control.Monad
 
 import Control.Exception(catch, IOException)

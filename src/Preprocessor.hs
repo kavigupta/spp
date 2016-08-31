@@ -3,8 +3,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Preprocessor (preprocessAll) where
 
-import Control.Applicative hiding ((<|>))
-
 import Control.Exception(catch, evaluate)
 
 import Data.List(isInfixOf)

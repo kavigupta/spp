@@ -10,7 +10,6 @@ module Interface.Args (
 
 import System.Console.ArgParser
 import System.Console.ArgParser.Parser
-import Control.Applicative
 
 import System.Directory
 import System.Exit

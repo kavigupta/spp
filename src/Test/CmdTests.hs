@@ -4,9 +4,7 @@ module Test.CmdTests(CmdTest(..), runTests) where
 import Prelude hiding (readFile)
 
 import Data.List(sort, intercalate)
-import Data.Monoid
 import Control.Monad
-import Control.Applicative
 
 import System.Directory
 import System.Posix.Directory

@@ -13,7 +13,6 @@ import Interface.Errors
 import Text.Parsec
 
 import Control.Monad
-import Control.Applicative((<$>))
 
 -- | Represents the directives along with the rest of the file
 data Directives a = Directives
