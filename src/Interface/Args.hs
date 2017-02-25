@@ -154,7 +154,7 @@ cleanCanon path = do
     unless exists $ removeDirectory path
     return canon
 
-data PrintLevel = Debug | Verbose | Info
+data PrintLevel = Info | Debug | Verbose
     deriving (Eq, Ord)
 
 output :: SPPOpts -> PrintLevel -> String -> IO ()
